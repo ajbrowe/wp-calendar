@@ -136,7 +136,8 @@ class fsCalendar {
 		add_submenu_page(self::$plugin_filename, __('Calendar', self::$plugin_textdom), __('Add new', self::$plugin_textdom), 1, self::$plugin_filename.'&action=new', array(&$this, 'createCalendarPage'));
 		
 		// Options
-		add_submenu_page('options-general.php', __('Calendar', self::$plugin_textdom), __('Calendar', self::$plugin_textdom), 1, self::$plugin_filename.'&action=settings', array(&$this, 'createCalendarPage'));
+		$menutitle = '<img src="'.self::$plugin_img_url.'icon.png" alt=""> '.__('Calendar', self::$plugin_textdom);
+		add_submenu_page('options-general.php', __('Calendar', self::$plugin_textdom), $menutitle, 8, self::$plugin_filename.'&action=settings', array(&$this, 'createCalendarPage'));
 	}
 	
 	/**
