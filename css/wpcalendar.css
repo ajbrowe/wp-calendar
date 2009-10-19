@@ -1,0 +1,12 @@
+#page_is_cal {
+	margin: 0px;
+	background-image: url(../images/calendar.png);
+	background-repeat: no-repeat;
+	background-position: 0px 0px; 
+	padding-left: 18px;
+}
+#page_is_cal span {
+	background-color: yellow;
+	padding: 2px;
+	color: red;
+}
