@@ -1322,7 +1322,7 @@ class fsCalendar {
 		
 		dbDelta($sql);
 		
-		$sql = "DROP TABLE fsevents_cats";
+		$sql = "DROP TABLE `fsevents_cats`";
 		$wpdb->query($sql);
 	}
 
