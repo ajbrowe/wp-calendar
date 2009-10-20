@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.7
 Tested up to: 2.8.4
-Stable tag: 1.0.0_RC1
+Stable tag: 1.0.0_RC2
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
