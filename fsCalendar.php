@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WP Calendar
-Plugin URI: http://www.faebusoft.ch/downloads/calendar
+Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.0 RC 1
+Version: 1.0.0 RC 2
 License: GPL
 Last Update: 25.09.2009
 */
@@ -237,7 +237,7 @@ class fsCalendar {
 	 */
 	function hookAddPlugInSettingsLink($links, $file) {
 		if ($file == self::$plugin_filename) {
-			array_unshift($links, '<a href="options-general.php?page='.$file.'">'.__('Settings', self::$plugin_textdom).'</a>');
+			array_unshift($links, '<a href="options-general.php?page='.$file.'&amp;action=settings">'.__('Settings', self::$plugin_textdom).'</a>');
 		}
 		return $links;
 	}
@@ -621,9 +621,9 @@ class fsCalendar {
 				case 'startdate':
 					if (!empty($evt->tsfrom)) {
 						if (isset($opts['fmt']))
-							$rep = date($opts['fmt'], $evt->tsfrom);
+							$rep = date_i18n($opts['fmt'], $evt->tsfrom);
 						else
-							$rep = date('d.m.Y', $evt->tsfrom);
+							$rep = date_i18n('d.m.Y', $evt->tsfrom);
 					} else {
 						$rep = '';
 					}
@@ -638,9 +638,9 @@ class fsCalendar {
 							$ret = '';
 						} else {
 							if (isset($opts['fmt']))
-								$rep = date($opts['fmt'], $evt->tsto);
+								$rep = date_i18n($opts['fmt'], $evt->tsto);
 							else
-								$rep = date('d.m.Y', $evt->tsto);
+								$rep = date_i18n('d.m.Y', $evt->tsto);
 						}
 					} else {
 						$rep = '';	
@@ -653,9 +653,9 @@ class fsCalendar {
 							$ret = '';
 						} else {
 							if (isset($opts['fmt']))
-								$rep = date($opts['fmt'], $evt->tsfrom);
+								$rep = date_i18n($opts['fmt'], $evt->tsfrom);
 							else
-								$rep = date('H:i', $evt->tsfrom);
+								$rep = date_i18n('H:i', $evt->tsfrom);
 						}
 					} else {
 						$rep = '';	
@@ -664,9 +664,9 @@ class fsCalendar {
 				case 'endtime':
 					if (!empty($evt->tsto)) {
 						if (isset($opts['fmt']))
-							$rep = date($opts['fmt'], $evt->tsto);
+							$rep = date_i18n($opts['fmt'], $evt->tsto);
 						else
-							$rep = date('H:i', $evt->tsto);
+							$rep = date_i18n('H:i', $evt->tsto);
 					} else {
 						$rep = '';	
 					}
@@ -705,9 +705,9 @@ class fsCalendar {
 				case 'publishdate':
 					if (!empty($evt->publishdate)) {
 						if (isset($opts['fmt']))
-							$rep = date($opts['fmt'], $evt->publishdate);
+							$rep = date_i18n($opts['fmt'], $evt->publishdate);
 						else
-							$rep = date('d.m.Y', $evt->publishdate);
+							$rep = date_i18n('d.m.Y', $evt->publishdate);
 					} else {
 						$rep = '';	
 					}
@@ -715,9 +715,9 @@ class fsCalendar {
 				case 'publishtime':
 					if (!empty($evt->publishdate)) {
 						if (isset($opts['fmt']))
-							$rep = date($opts['fmt'], $evt->publishdate);
+							$rep = date_i18n($opts['fmt'], $evt->publishdate);
 						else
-							$rep = date('H:i', $evt->publishdate);
+							$rep = date_i18n('H:i', $evt->publishdate);
 					} else {
 						$rep = '';	
 					}
@@ -1304,31 +1304,26 @@ class fsCalendar {
 		
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		
-		$sql = "CREATE TABLE `".$wp->prefix.'fsevents'."` (
-			`eventid` INT NOT NULL AUTO_INCREMENT  ,
-			`subject` VARCHAR( 255 ) NOT NULL ,
-			`tsfrom` INT NOT NULL ,
-			`tsto` INT NOT NULL ,
-			`allday` TINYINT( 1 ) NOT NULL DEFAULT '0',
-			`description` TEXT NULL ,
-			`location` VARCHAR( 255 ) NULL ,
-			`author` BIGINT NOT NULL
-			`createdate` INT NOT NULL
-			`publishauthor` BIGINT NOT NULL
-			`publishdate` INT NOT NULL
-			`state` VARCHAR( 10 ) NOT NULL,
+		$sql = "CREATE TABLE `".$wpdb->prefix."fsevents` (
+			`eventid` INT NOT NULL AUTO_INCREMENT,
+			`subject` VARCHAR(255) NOT NULL,
+			`tsfrom` INT NOT NULL,
+			`tsto` INT NOT NULL,
+			`allday` TINYINT(1) NOT NULL DEFAULT '0',
+			`description` TEXT NULL,
+			`location` VARCHAR(255) NULL,
+			`author` BIGINT NOT NULL,
+			`createdate` INT NOT NULL,
+			`publishauthor` BIGINT NOT NULL,
+			`publishdate` INT NOT NULL,
+			`state` VARCHAR(10) NOT NULL,
 			PRIMARY KEY  (`eventid`)
 			);";
 		
 		dbDelta($sql);
 		
-		$sql = "CREATE TABLE `".$wp->prefix."fsevents_cats` (
-			`eventid` BIGINT NOT NULL,
-			`catid` BIGINT NOT NULL,
-			PRIMARY KEY  (`eventid`, `catid`)
-			);";
-		
-		dbDelta($sql);
+		$sql = "DROP TABLE fsevents_cats";
+		$wpdb->query($sql);
 	}
 
 	
@@ -1449,10 +1444,10 @@ class fsEvent {
 		}
 		
 		if ($admin_fields) {
-			$this->date_admin_from = date($this->date_admin_format, $this->tsfrom);
-			$this->date_admin_to   = date($this->date_admin_format, $this->tsto);
-			$this->time_admin_from = date($this->time_admin_format, $this->tsfrom);
-			$this->time_admin_to   = date($this->time_admin_format, $this->tsto);
+			$this->date_admin_from = date_i18n($this->date_admin_format, $this->tsfrom);
+			$this->date_admin_to   = date_i18n($this->date_admin_format, $this->tsto);
+			$this->time_admin_from = date_i18n($this->time_admin_format, $this->tsfrom);
+			$this->time_admin_to   = date_i18n($this->time_admin_format, $this->tsto);
 		}
 	}	
 
@@ -1510,7 +1505,7 @@ class fsEvent {
 			}
 		}
 		
-		return date($fmt, $this->tsfrom);
+		return date_i18n($fmt, $this->tsfrom);
 	}
 	
 	/**
@@ -1537,7 +1532,7 @@ class fsEvent {
 			}
 		}
 		
-		return date($fmt, $this->tsto);
+		return date_i18n($fmt, $this->tsto);
 	}
 	
 	function userCanPublishEvent() {

@@ -41,5 +41,10 @@ Please refer to the usage documentation in the calendar's options page.
 
 == Changelog ==
 
+= 1.0.0 RC 2 =
+* FIXED: Database Table has not been created
+* FIXED: Events could not be saved
+* FIXED: Using date_i18n instead of date function 
+
 = 1.0.0 RC 1 =
 * Initial Release Candidate

@@ -152,19 +152,13 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 						$time = time();
 						$sql = $wpdb->prepare("INSERT INTO ".$wpdb->prefix.'fsevents '."
 							(subject, tsfrom, tsto, allday, description, location, author, createdate, state)
-							VALUES (%s, $ts_from, $ts_to, $evt->allday, %s, %s, %s, $user_ID, $time, %s)", 
+							VALUES (%s, $ts_from, $ts_to, $evt->allday, %s, %s, $user_ID, $time, %s)", 
 				        	$evt->subject, $evt->description, $evt->location, $evt->state);
-				        echo $sql;
-				        
-				        print_r($evt);
 					} else {
 						$errors[] = __('No permission to create event', self::$plugin_textdom);
 					}
 				}
 		        
-				print_r($errors);
-				
-				echo $sql.'---------';
 				
 		        if ($wpdb->query($sql) !== false) {
 		        	if ($evt->eventid <= 0) {
