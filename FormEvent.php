@@ -276,8 +276,8 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 				}
 				$current = mktime($std, $min, 0, $mon, $day, $yea);
 			}
-			$evt->date_admin_from = date($evt->date_admin_format, $current);
-			$evt->time_admin_from = date($evt->time_admin_format, $current);
+			$evt->date_admin_from = date_i18n($evt->date_admin_format, $current);
+			$evt->time_admin_from = date_i18n($evt->time_admin_format, $current);
 			
 			// End date/time
 			$min += $add_min;
@@ -287,8 +287,8 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 			}
 			$std += $add_hour;
 			$future = mktime($std, $min, 0, $mon, $day, $yea);
-			$evt->date_admin_to = date($evt->date_admin_format, $future);
-			$evt->time_admin_to = date($evt->time_admin_format, $future);
+			$evt->date_admin_to = date_i18n($evt->date_admin_format, $future);
+			$evt->time_admin_to = date_i18n($evt->time_admin_format, $future);
 			$evt->allday    = false;
 			
 			
@@ -378,13 +378,13 @@ if (count($success) > 0) {
 						<?php _e('Created by', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : $evt->author_t); ?></span>
 					</div>
 					<div class="misc-pub-section">
-						<?php _e('Created', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? date($evt->date_time_format, $evt->createdate) : '-'); ?></span>
+						<?php _e('Created', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
 					</div>
 					<div class="misc-pub-section">
 						<?php _e('Published by', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : $evt->publishauthor_t); ?></span>
 					</div>
 					<div class="misc-pub-section">
-						<?php _e('Published', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? date($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
+						<?php _e('Published', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
 					</div>
 				</div>
 				<div class="clear"/></div>
@@ -600,7 +600,7 @@ function fse_ValidateDate($date, $fmt, $ret_sep = false) {
 	if ($ret_sep == true) {
 		return array('d'=>$day, 'm'=>$month, 'y'=>$year);
 	} else {
-		return date($fmt, $ts);
+		return date_i18n($fmt, $ts);
 	}
 }
 

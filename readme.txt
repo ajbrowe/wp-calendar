@@ -29,6 +29,42 @@ you find any bugs and spelling or grammatical errors, please write a comment on 
 
 5. Go to `Calendar` > `Add new` to add a new event
 
+== Frequently Asked Questions ==
+
+= How do I display a single event =
+You can use any event details of one (or more) events in any of your posts and/or pages. All you have to do is to put the designated tags (e.g. {event_subject}) in your
+post's or page's content. To determine the event you can eighter pass the ID by URL using the parameter `event` (e.g. www.yourdomain.com/mypage/?event=238) or you
+define the ID(s) static in your content by using the tag `{event_id; id=x}`. Using the second method let you display more than one event, since you can use
+the tag `{event_id}` every time you wish to load another event.
+
+= How do I display a list of events =
+Normally you show a list of events by including the function `fse_print_events` or `fse_print_events_list` in your theme. Please refer to the usage documentation
+in the calendar options for all the possible parameters, which can be used to control the output.
+
+= I don't want an event to be printed out, but i need its data for further use =
+You should not read directly from the database. Instead use the function `fse_get_event` and pass an integer event id. If the event is not found, the function
+returns false. Otherwise it returns an event object. Use the function `print_r` to get an overview of all the attributes. 
+
+= I use the function `fse_get_event` but the content isn't filtered and has no line breaks =
+When you access the attribute `description` all you get is the raw content. Use the method `getDescription` of your event object to get a filtered content.
+
+= How do I get formatted dates when using the function `fse_get_event` =
+You can eighter use the methods `getStart` and `getEnd` or you can use the php's `date` function passing the attributes `tsfrom` and `tsto`. The first method uses the format defined 
+in the calendar object, but you can also pass your own date format as an optional parameter.
+
+= The methods `getStart` any `getEnd` always return a date AND time =
+The methods `getStart` and `getEnd` accept two parameters. With the first one you can pass a date format. If it is not supplied, the standard format from the options 
+will be used. But there is also a second parameter, which accept one of the following integer values: 1=date+time, 2=date only, 3=time only. If you just want to 
+have the time returned, but using the standard output format, call the function as follows: `echo $evt->getStart('', 3);`
+
+= Can I refer to other events in an event's description =
+Yes you can. The description of the content is filtered by the content filter `the_content`. You can use the same tags as for posts and pages (e.g. {event_subject}). 
+You must pass the ID of this refered event by the tag `{event_id; id=x}` before using any other tags.
+
+= No end date is printed out =
+Check your setting. You can predefine, if you want an end date always to be displayed, or only if it differs from the start date. You can also pass the parameter `alwaysshowenddate` when 
+using tags or functions. Please refer to the usage documentation in the calendar options.
+
 == Screenshots ==
 
 1. The options panel
@@ -40,6 +76,13 @@ you find any bugs and spelling or grammatical errors, please write a comment on 
 Please refer to the usage documentation in the calendar's options page.
 
 == Changelog ==
+
+= 1.0.0 RC 3 =
+* FIXED: Date format in event's edit page
+* FIXED: The description of the content is now filtered by the filter `the_content`
+* FIXED: Removed code redundancy when printing start/end date/time
+* FIXED: Tag {event_url} printed something, even if no ID was specified
+* FIXED: Missing line breaks in content output
 
 = 1.0.0 RC 2 =
 * FIXED: Database Table has not been created

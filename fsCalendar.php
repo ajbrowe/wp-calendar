@@ -5,7 +5,7 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.0 RC 2
+Version: 1.0.0 RC 3
 License: GPL
 Last Update: 25.09.2009
 */
@@ -20,6 +20,7 @@ define('FSE_GROUPBY_MONTH', 'm'); // Event grouping by month
 define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 
 class fsCalendar {
+	
 	const DAY_IN_SECONDS = 86400;
 
 	private static $plugin_name     = 'Calendar';
@@ -507,7 +508,7 @@ class fsCalendar {
 	 * @param $evt Event Object (optional)
 	 * @return String Filtered content
 	 */
-	function filterContent($content, $evt = NULL, $showenddate = '') {
+	function filterContent($content, $evt = NULL) {
 				
 		preg_match_all('/\{event[s]?_(.+?)\}/', $content, $matches, PREG_SET_ORDER);
 				
@@ -526,11 +527,8 @@ class fsCalendar {
 					$page_url .= '&event=';	
 			}
 		}
-		
-		// Load from options
-		if ($showenddate == '') {
-			$showenddate = get_option('fse_show_enddate') == 1 ? true : false;
-		}
+
+		$showenddate = get_option('fse_show_enddate') == 1 ? true : false;
 		
 		if (!empty($evt)) {
 		// We just create an event object, if it does no exist, all var are empty!
@@ -604,7 +602,7 @@ class fsCalendar {
 					$rep = $evt->location;
 					break;
 				case 'description':
-					$rep = $evt->description;
+					$rep = $evt->getDescription();
 					break;
 				case 'author':
 					$rep = $evt->author_t;
@@ -620,27 +618,27 @@ class fsCalendar {
 					break; 
 				case 'startdate':
 					if (!empty($evt->tsfrom)) {
-						if (isset($opts['fmt']))
-							$rep = date_i18n($opts['fmt'], $evt->tsfrom);
-						else
-							$rep = date_i18n('d.m.Y', $evt->tsfrom);
+						$rep = $evt->getStart($opts['fmt'], 2);
 					} else {
 						$rep = '';
 					}
 					break;
 				case 'enddate':
 					if (!empty($evt->tsto)) {
+						
+						if (isset($args['alwaysshowenddate']))
+							$l_sed = ($args['alwaysshowenddate'] == 1 ? true : false);
+						else
+							$l_sed = $showenddate;
+						
 						// Do not display if date AND time is the same
-						if ($showenddate == false && 
+						if ($l_sed == false && 
 							( date('d', $evt->tsto) == date('d', $evt->tsfrom) ||
 							  date('m', $evt->tsto) == date('m', $evt->tsfrom) ||
 							  date('Y', $evt->tsto) == date('Y', $evt->tsfrom) )) {
 							$ret = '';
 						} else {
-							if (isset($opts['fmt']))
-								$rep = date_i18n($opts['fmt'], $evt->tsto);
-							else
-								$rep = date_i18n('d.m.Y', $evt->tsto);
+							$rep = $evt->getEnd($opts['fmt'], 2);
 						}
 					} else {
 						$rep = '';	
@@ -648,25 +646,25 @@ class fsCalendar {
 					break;
 				case 'starttime':
 					if (!empty($evt->tsfrom)) {
-												// Do not display if date AND time is the same
-						if ($showenddate == false && $evt->tsfrom == $evt->tsto) {
-							$ret = '';
-						} else {
-							if (isset($opts['fmt']))
-								$rep = date_i18n($opts['fmt'], $evt->tsfrom);
-							else
-								$rep = date_i18n('H:i', $evt->tsfrom);
-						}
+						// Do not display if date AND time is the same
+						$rep = $evt->getStart($opts['fmt'], 3);
 					} else {
 						$rep = '';	
 					}
 					break;
 				case 'endtime':
 					if (!empty($evt->tsto)) {
-						if (isset($opts['fmt']))
-							$rep = date_i18n($opts['fmt'], $evt->tsto);
+						// Do not display if date AND time is the same
+						if (isset($args['alwaysshowenddate']))
+							$l_sed = ($args['alwaysshowenddate'] == 1 ? true : false);
 						else
-							$rep = date_i18n('H:i', $evt->tsto);
+							$l_sed = $showenddate;
+							
+						if ($l_sed == false && $evt->tsfrom == $evt->tsto) {
+							$ret = '';
+						} else {
+							$rep = $evt->getEnd($opts['fmt'], 3);
+						}
 					} else {
 						$rep = '';	
 					}
@@ -757,9 +755,10 @@ class fsCalendar {
 					}
 					break;
 				case 'url':
-					if (!empty($page_url)) {
+					if (!empty($page_url) && !empty($evt->eventid))
 						$rep = $page_url.$evt->eventid;
-					}
+					else
+						$rep = '';
 					break;
 				case 'print':
 					$opts['echo'] = false; // No echo!
@@ -1200,8 +1199,9 @@ class fsCalendar {
 		$ret = array();
 		foreach($evt as $e) {
 			$et = new fsEvent($e, '', false);
-			if ($et->eventid > 0)
+			if ($et->eventid > 0) {
 				$ret[] = $et;
+			}
 		}
 		
 		return $ret;
@@ -1533,6 +1533,10 @@ class fsEvent {
 		}
 		
 		return date_i18n($fmt, $this->tsto);
+	}
+	
+	function getDescription() {
+		return apply_filters('the_content', $this->description);
 	}
 	
 	function userCanPublishEvent() {

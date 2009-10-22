@@ -222,11 +222,11 @@ fse_print_events(
 		<tr><th><code>{event_description}</code></th><td colspan="2"><?php _e("The event's description", self::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_startdate; fmt=x}</code></th><td colspan="2"><?php _e("The event's start date; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_enddate; fmt=x}</code></th><td colspan="2"><?php _e("The event's end date; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
+		<tr><th><code>{event_enddate; fmt=x; alwaysshowenddate=y}</code></th><td colspan="2"><?php _e("The event's end date; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_starttime; fmt=x}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_endtime; fmt=x}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
+		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_duration; type=x; suffix=y; empty=z}</code></th><td colspan="2"><?php _e("The event's duration; Pass on of the values <code>d</code>, <code>h</code>, <code>m</code> to the argument 
 			<code>type</code> to get the days, hours and minutes. You can add a suffix to the output by passing the argument <code>suffix</code>. By default empty values are not printed out, by setting the argument <code>empty</code> to 1 you can change that behaviour.", self::$plugin_textdom); ?><br />
