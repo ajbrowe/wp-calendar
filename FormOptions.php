@@ -11,9 +11,9 @@ if (!current_user_can('manage_options'))
 
 	<?php echo $this->pagePostBoxStart('fse_global', __('Global Setting', self::$plugin_textdom)); ?>
 		<table class="fs-table">
-		<tr><th><?php _e('Events per Page', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo get_option('fse_epp'); ?>" size="5" name="fse_epp" /></td></tr>
+		<tr><th><?php _e('Events per Page', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_epp')); ?>" size="5" name="fse_epp" /></td></tr>
 		<tr><th class="label"><?php _e('Date Format', self::$plugin_textdom); ?></th><td>
-		<input type="text" name="fse_df" id="fse_df" value="<?php echo get_option('fse_df'); ?>" />
+		<input type="text" name="fse_df" id="fse_df" value="<?php echo esc_attr(get_option('fse_df')); ?>" />
 		<input type="checkbox"
 			   name="fse_df_wp" 
 			   value="1"
@@ -25,7 +25,7 @@ if (!current_user_can('manage_options'))
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small>
 		</td></tr>
 		<tr><th class="label"><?php _e('Time Format', self::$plugin_textdom); ?></th><td>
-		<input type="text" name="fse_tf" id="fse_tf" value="<?php echo get_option('fse_tf'); ?>" />
+		<input type="text" name="fse_tf" id="fse_tf" value="<?php echo esc_attr(get_option('fse_tf')); ?>" />
 		<input type="checkbox" 
 			   name="fse_tf_wp"
 			   value="1"
@@ -48,7 +48,7 @@ if (!current_user_can('manage_options'))
 					  __('Saturday', self::$plugin_textdom));
 		$s = get_option('fse_ws');
 		foreach($days as $k => $d) {
-			echo '<option value="'.$k.'" '.($k == $s ? 'selected="selected"' : '').'>'.$d.'</option>';
+			echo '<option value="'.esc_attr($k).'" '.($k == $s ? 'selected="selected"' : '').'>'.esc_attr($d).'</option>';
 		}
 		?>
 		</select>
@@ -71,7 +71,7 @@ if (!current_user_can('manage_options'))
 		);
 		$s = get_option('fse_df_admin');
 		foreach($format as $k => $f) {
-			echo '<option value="'.$k.'" '.($s == $k ? 'selected="selected"' : '').'>'.$f.'</option>';
+			echo '<option value="'.esc_attr($k).'" '.($s == $k ? 'selected="selected"' : '').'>'.esc_attr($f).'</option>';
 		}
 		?>
 		</select>
@@ -81,7 +81,7 @@ if (!current_user_can('manage_options'))
 		$sep = array('.', '-', '/'); 
 		$o = get_option('fse_df_admin_sep');
 		foreach($sep as $s) {
-			echo '<option value="'.$s.'" '.($s == $o ? 'selected="selected"' : '').'>'.$s.'</option>';
+			echo '<option value="'.esc_attr($s).'" '.($s == $o ? 'selected="selected"' : '').'>'.esc_attr($s).'</option>';
 		}
 		?>
 		</select>
@@ -103,7 +103,7 @@ if (!current_user_can('manage_options'))
 		$pages = get_pages();
 		$s = get_option('fse_page');
 		foreach($pages as $p) {
-			echo '<option value="'.$p->ID.'"'.($s == $p->ID ? 'selected="selected"' : '').'>'.$p->post_title.'</option>';
+			echo '<option value="'.esc_attr($p->ID).'"'.($s == $p->ID ? 'selected="selected"' : '').'>'.esc_attr($p->post_title).'</option>';
 		}
 		?>
 		</select><br />
@@ -136,7 +136,7 @@ if (!current_user_can('manage_options'))
 		<option value="y"<?php echo (get_option('fse_groupby') == 'y' ? ' selected="selected"' : ''); ?>><?php _e('Year', self::$plugin_textdom); ?></option>
 		</select>
 		</td></tr>
-		<tr><th><?php _e('Header Format', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo get_option('fse_groupby_header'); ?>" size="10" name="fse_groupby_header" /></td></tr>
+		<tr><th><?php _e('Header Format', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_groupby_header')); ?>" size="10" name="fse_groupby_header" /></td></tr>
 		</table>
 	<?php echo $this->pagePostBoxEnd(); ?>
 	
@@ -162,6 +162,7 @@ fse_print_events(
          'before'   => '&lt;table cellpadding="0" cellspacing="0">',
          'after'    => '&lt;/table>',
          'template' => '&lt;tr>&lt;td>{event_subject}&lt;br />@{event_location}&lt;/td>&lt;/tr>'
+  )
 );
 		</pre>
 		<p><?php _e("The allowed paramters are described below. Some parameters are not supported by all functions, since they won't make any sense", self::$plugin_textdom); ?>.</p>
@@ -251,7 +252,7 @@ fse_print_events(
 	<input type="hidden" name="tb_action" value="tb_save_options" />
 	<?php echo '<input type="hidden" name="page_options" value="';
 	foreach(self::$plugin_options as $k => $v) {
-		echo $k.',';
+		echo esc_attr($k).',';
 	}
 	echo '" />'; ?>
 	</form>

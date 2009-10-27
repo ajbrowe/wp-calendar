@@ -21,40 +21,36 @@ define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 
 class fsCalendar {
 	
-	const DAY_IN_SECONDS = 86400;
-
-	private static $plugin_name     = 'Calendar';
-	private static $plugin_vers     = '1.0.0';
-	private static $plugin_id       = 'fsCal'; // Unique ID
-	private static $plugin_options  = '';
-	private static $plugin_filename = '';
-	private static $plugin_dir      = '';
-	private static $plugin_url      = '';
-	private static $plugin_css_url  = '';
-	private static $plugin_img_url  = '';
-	private static $plugin_js_url   = '';
-	private static $plugin_lang_dir = '';
-	private static $plugin_textdom  = '';
+	static $plugin_name     = 'Calendar';
+	static $plugin_vers     = '1.0.0';
+	static $plugin_id       = 'fsCal'; // Unique ID
+	static $plugin_options  = '';
+	static $plugin_filename = '';
+	static $plugin_dir      = '';
+	static $plugin_url      = '';
+	static $plugin_css_url  = '';
+	static $plugin_img_url  = '';
+	static $plugin_js_url   = '';
+	static $plugin_lang_dir = '';
+	static $plugin_textdom  = '';
 	
-	private static $valid_states;
+	static $valid_states;
 	
 	
-	public static $valid_fields = array('eventid', 
-										'subject', 
-										'tsfrom', 
-										'tsto', 
-										'allday', 
-										'description', 
-										'location', 
-										'categories',
-										'author', 
-	 									'createdate',
-										'publishauthor',
-										'publishdate',
-										'state'
-									);
-
-	private $showAnnouncement = false;
+	static $valid_fields = array('eventid', 
+						 		 'subject', 
+								 'tsfrom', 
+								 'tsto', 
+								 'allday', 
+								 'description', 
+								 'location', 
+								 'categories',
+								 'author', 
+ 								 'createdate',
+								 'publishauthor',
+								 'publishdate',
+								 'state'
+								 );
 
 	function fsCalendar() {
 		global $wpdb;
@@ -105,6 +101,15 @@ class fsCalendar {
 		add_filter('the_content',          array(&$this, 'hookFilterContent'));
 		add_filter('get_pages',            array(&$this, 'hookHidePageFromSelection'));
 
+		// Add some Filter 
+		/*if (get_magic_quotes_gpc() == false) {
+			foreach(self::$plugin_options as $k => $v) {
+				if (!is_int($v)) {
+					add_filter('option_'.$k, 'stripslashes');
+				}
+			}
+		}*/
+		
 		register_activation_hook(__FILE__, array(&$this, 'hookActivate'));
 		register_uninstall_hook(__FILE__,  array(&$this, 'hookUninstall'));
 	}
@@ -1396,7 +1401,6 @@ class fsEvent {
 			$evt->eventid = 0;
 			return;
 		}
-	
 		
 		$this->subject = $ret->subject;
 		$this->location = $ret->location;
@@ -1411,6 +1415,12 @@ class fsEvent {
 		$this->state = $ret->state;
 		
 		$this->categories = $wpdb->get_col('SELECT catid FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid);
+		
+		foreach($this as $k => $v) {
+			if (is_string($v)) {
+				$this->{$k} = stripslashes($v);
+			}
+		}
 		
 		if (is_array($this->categories)) {
 			

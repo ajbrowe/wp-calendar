@@ -254,16 +254,16 @@ foreach(self::$valid_states as $k => $l) {
 			foreach($events as $e) { 
 				$e = new fsEvent($e);
 			?>
-			<tr id="event-<?php echo $e->eventid; ?>" class="alternate status-<?php echo $e->state; ?> iedit" valign="top">
+			<tr id="event-<?php echo $e->eventid; ?>" class="alternate status-<?php echo esc_attr($e->state); ?> iedit" valign="top">
 				<th class="check-column" scope="row">
-					<input type="checkbox" value="<?php echo $e->eventid; ?>" name="events[]"/>
+					<input type="checkbox" value="<?php echo esc_attr($e->eventid); ?>" name="events[]"/>
 				</th>
 				<td>
 					<strong>
 					<a class="row-title" 
-						title="<?php _e('Edit', self::$plugin_textdom); ?> “<?php echo htmlentities($e->subject); ?>”" 
-						href="<?php echo $bl; ?>&amp;action=<?php echo ($e->userCanEditEvent() == true ? 'edit' : 'view'); ?>&amp;event=<?php echo $e->eventid; ?>">
-					<?php echo htmlentities($e->subject); ?></a>
+						title="<?php _e('Edit', self::$plugin_textdom); ?> “<?php echo esc_attr($e->subject); ?>”" 
+						href="<?php echo $bl; ?>&amp;action=<?php echo ($e->userCanEditEvent() == true ? 'edit' : 'view'); ?>&amp;event=<?php echo esc_attr($e->eventid); ?>">
+					<?php echo esc_attr($e->subject); ?></a>
 					<?php 
 					switch($e->state) {
 						case 'draft':
@@ -276,15 +276,15 @@ foreach(self::$valid_states as $k => $l) {
 					<span class="edit">
 						<?php if ($e->userCanEditEvent()) { ?>
 						<a title="<?php _e('Edit this event', self::$plugin_textdom); ?>" 
-							href="<?php echo $bl; ?>&amp;action=edit&amp;event=<?php echo $e->eventid; ?>"><?php _e('Edit', self::$plugin_textdom);?></a> |
+							href="<?php echo $bl; ?>&amp;action=edit&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('Edit', self::$plugin_textdom);?></a> |
 						<?php } else { ?>
 							<?php _e('Edit', self::$plugin_textdom);?> | 
 						<?php } ?> 
 					</span>
 					<span class="delete">
 						<?php if ($e->userCanDeleteEvent()) { ?>
-						<a class="submitdelete" onclick="if ( confirm('<?php printf(__("You are about to delete this event \\'%s\\'\\n \\'Cancel\\' to stop, \\'OK\\' to delete.", self::$plugin_textdom), $e->subject); ?>') ) { return true;}return false;"
-							href="<?php echo $bl; ?>&amp;action=delete&event=<?php echo $e->eventid; ?>" 
+						<a class="submitdelete" onclick="if ( confirm('<?php printf(__("You are about to delete this event \\'%s\\'\\n \\'Cancel\\' to stop, \\'OK\\' to delete.", self::$plugin_textdom), esc_attr($e->subject)); ?>') ) { return true;}return false;"
+							href="<?php echo $bl; ?>&amp;action=delete&event=<?php echo esc_attr($e->eventid); ?>" 
 							title="<?php _e('Delete this event', self::$plugin_textdom); ?>"><?php _e('Delete', self::$plugin_textdom);?></a> | 
 						<?php } else { ?>
 							<?php _e('Delete', self::$plugin_textdom);?> | 
@@ -292,13 +292,13 @@ foreach(self::$valid_states as $k => $l) {
 					</span>
 					<span class="view">
 						<a title="<?php _e('View this event', self::$plugin_textdom); ?>" 
-							href="<?php echo $bl; ?>&amp;action=view&amp;event=<?php echo $e->eventid; ?>"><?php _e('View', self::$plugin_textdom);?></a>
+							href="<?php echo $bl; ?>&amp;action=view&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('View', self::$plugin_textdom);?></a>
 					</span>
 					</div>
 				</td>
 				<td>
 					<?php 
-					echo '<a href="'.$bl.'&amp;event_author='.$e->author.'">'.$e->author_t.'</a>';
+					echo '<a href="'.$bl.'&amp;event_author='.esc_attr($e->author).'">'.esc_attr($e->author_t).'</a>';
 					?>
 				</td>
 				<td>
@@ -320,7 +320,7 @@ foreach(self::$valid_states as $k => $l) {
 					}
 					?>
 				</td>
-				<td><?php echo htmlentities($e->location); ?></td>
+				<td><?php echo format_to_post($e->location); ?></td>
 				<td><?php
 				$first = true;
 				foreach($e->categories_t as $k => $c) {
@@ -329,11 +329,11 @@ foreach(self::$valid_states as $k => $l) {
 					} else {
 						$first = false;	
 					}
-					echo '<a href="'.$bl.'&amp;event_category='.$k.'">'.$c.'</a>';
+					echo '<a href="'.$bl.'&amp;event_category='.esc_attr($k).'">'.esc_attr($c).'</a>';
 					
 				}
 				?></td>
-				<td><?php echo self::$valid_states[$e->state]; ?> <?php _e('on', self::$plugin_textdom) ?><br />
+				<td><?php echo esc_attr(self::$valid_states[$e->state]); ?> <?php _e('on', self::$plugin_textdom) ?><br />
 				<?php echo date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
 			</tr>
 			<?php

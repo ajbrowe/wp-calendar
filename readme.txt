@@ -15,7 +15,36 @@ different functions and integrated in any post and page by using different tags.
 
 = Important Note =
 This plugin is a release candidate. All the functions have been tested and the translation is done by myself. If
-you find any bugs and spelling or grammatical errors, please write a comment on the (http://www.faebusoft.ch/downloads/wp-calendar "plugin website"). 
+you find any bugs and spelling or grammatical errors, please write a comment on the [plug-in website](http://www.faebusoft.ch/downloads/wp-calendar).
+
+= Features =
+* Normal and all-day events
+* Event categorization (using WP categories)
+* Event states (draft, published)
+* Easy to use admin interface (Wordpress style)
+* Event overview including filters and pagination
+* Mass operations on events (delete, set state)
+* Graphical calendar to choose dates
+* Same authority checks as for post and pages
+* Date format configuration
+* Easy and fully documented integration
+* Supporting special tags in post/page content and title
+* Different functions for integration in your theme
+* Single event output
+* Multi event output with many options
+* Event grouping in output (per day, month or year)
+* Multi output allows filters on every field
+* Output of all fields (author, publisher, dates, states,…)
+* Internationalization including dates
+
+= Planned =
+* Repeating events
+* Customer fields
+* Google Maps integration
+* Graphical ajax calendar
+* Dashboard integration
+* Calendar widgets
+
 
 == Installation ==
 
@@ -57,6 +86,8 @@ The methods `getStart` and `getEnd` accept two parameters. With the first one yo
 will be used. But there is also a second parameter, which accept one of the following integer values: 1=date+time, 2=date only, 3=time only. If you just want to 
 have the time returned, but using the standard output format, call the function as follows: `echo $evt->getStart('', 3);`
 
+= When i use the function `fse_get_event` the ouptut of its attribute has wrong characters =
+
 = Can I refer to other events in an event's description =
 Yes you can. The description of the content is filtered by the content filter `the_content`. You can use the same tags as for posts and pages (e.g. {event_subject}). 
 You must pass the ID of this refered event by the tag `{event_id; id=x}` before using any other tags.
@@ -83,6 +114,8 @@ Please refer to the usage documentation in the calendar's options page.
 * FIXED: Removed code redundancy when printing start/end date/time
 * FIXED: Tag {event_url} printed something, even if no ID was specified
 * FIXED: Missing line breaks in content output
+* FIXED: Slashes are not removed properly
+* FIXED: Error in Code Example (usage documentation)
 
 = 1.0.0 RC 2 =
 * FIXED: Database Table has not been created

@@ -19,12 +19,19 @@ if (isset($_POST['eventid'])) {
 	$evt->date_admin_to     = $_POST['event_to'];
 	$evt->time_admin_from   = $_POST['event_tfrom'];
 	$evt->time_admin_to     = $_POST['event_tto'];
-	$evt->location    = $_POST['event_location'];
-	$evt->description = $_POST['event_desc'];
-	$evt->subject     = $_POST['event_subject'];
-	$evt->state       = $_POST['event_state'];
-	$evt->categories  = $_POST['post_category'];
-	$evt->allday      = (isset($_POST['event_allday']) ? 1 : 0);
+	$evt->location    		= $_POST['event_location'];
+	$evt->description 		= $_POST['event_desc'];
+	$evt->subject     		= $_POST['event_subject'];
+	$evt->state       		= $_POST['event_state'];
+	$evt->categories  		= $_POST['post_category'];
+	$evt->allday     		= (isset($_POST['event_allday']) ? 1 : 0);
+	
+	foreach($evt as $k => $v) {
+		if (is_string($v)) {
+			$evt->{$k} = stripslashes($v);
+		}
+	}
+	
 	$referer = $_POST['referer'];
 } else {
 	if (isset($_GET['event'])) {
@@ -375,13 +382,13 @@ if (count($success) > 0) {
 						<?php } ?>
 					</div>
 					<div class="misc-pub-section">
-						<?php _e('Created by', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : $evt->author_t); ?></span>
+						<?php _e('Created by', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : esc_attr($evt->author_t)); ?></span>
 					</div>
 					<div class="misc-pub-section">
 						<?php _e('Created', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
 					</div>
 					<div class="misc-pub-section">
-						<?php _e('Published by', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : $evt->publishauthor_t); ?></span>
+						<?php _e('Published by', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
 					</div>
 					<div class="misc-pub-section">
 						<?php _e('Published', self::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
@@ -478,7 +485,7 @@ if (count($success) > 0) {
 			<?php _e('Subject', self::$plugin_textdom); ?>
 			<input id="title" 
 				type="text"
-				value="<?php echo $evt->subject; ?>" 
+				value="<?php echo esc_attr($evt->subject); ?>" 
 				tabindex="1" 
 				name="event_subject" 
 				maxlength="255" 
@@ -489,7 +496,7 @@ if (count($success) > 0) {
 			<?php _e('Location', self::$plugin_textdom); ?>
 			<input id="location" 
 				type="text"
-				value="<?php echo $evt->location; ?>" 
+				value="<?php echo esc_attr($evt->location); ?>" 
 				tabindex="2" 
 				name="event_location" 
 				maxlength="255" 
