@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.7
 Tested up to: 2.8.4
-Stable tag: 1.0.0_RC3
+Stable tag: 1.0.0 RC4
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -14,7 +14,7 @@ To manage the event, the same authority checks as for post are used. The plug-in
 different functions and integrated in any post and page by using different tags.
 
 = Important Note =
-This plugin is a release candidate. All the functions have been tested and the translation is done by myself. If
+This plugin is still a release candidate. All the functions have been tested and the translation is done by myself. If
 you find any bugs and spelling or grammatical errors, please write a comment on the [plug-in website](http://www.faebusoft.ch/downloads/wp-calendar).
 
 = Features =
@@ -106,7 +106,20 @@ using tags or functions. Please refer to the usage documentation in the calendar
 
 Please refer to the usage documentation in the calendar's options page.
 
+For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebu.ch/integration-von-wp-calendar). This post 
+will be translated in the next few months to english. 
+
 == Changelog ==
+= 1.0.0 RC 4 =
+* FIXED: Parameter `alwaysshowenddate` not working
+* FIXED: Error, when using a tag which uses a template as parameter, which uses tags aswell
+* FIXED: Parameter are not parsed correctly, when using (escaped) quotes
+* FIXED: Could not delete events
+* FIXED: Table `fsevents_cats` is missing
+* FIXED: Bulk Operation `Publish` is not working
+* FIXED: Events are displayed event if they are in draft state
+* FIXED: Enddate not showing even if different to the start date
+* FIXED: Date selection concepts reworked, by default events are selected if they allready started, but not yet finished
 
 = 1.0.0 RC 3 =
 * FIXED: Date format in event's edit page

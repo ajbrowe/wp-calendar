@@ -171,7 +171,8 @@ fse_print_events(
 		<tr><th><?php _e('Parameter', self::$plugin_textdom); ?></th><td><?php _e('Default', self::$plugin_textdom); ?></td><td><?php _e('Description', self::$plugin_textdom); ?></td></tr>
 		<tr><th><code>echo</code></th><td>true</td><td><?php _e('The functions <code>fse_print_events</code> and <code>fse_print_events_list</code> normally echos the result. By setting the parameter <code>echo</code> to false, the result is returned instead', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>number</code></th><td><?php _e('Calendar Options', self::$plugin_textdom); ?></td><td><?php _e('The number of events to return or print', self::$plugin_textdom); ?>.</td></tr>
-		<tr><th><code>template</code></th><td><?php _e('Calendar Options', self::$plugin_textdom); ?></td><td><?php _e('The template used for processing the output of an event. You can use the same tags as in post and pages, described <a href="#usage_posts">here</a>', self::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>template</code></th><td><?php _e('Calendar Options', self::$plugin_textdom); ?></td><td><?php _e('The template used for processing the output of an event. You can use the same tags as in post and pages, described <a href="#usage_posts">here</a>', self::$plugin_textdom); ?>.
+		<?php _e('If you use the parameter `template` in a tags (e.g. {events_print; template="{event_subject}"}, make sure, you <b><u>escape</u></b> all the parentheses (e.g. {events_print; template="\{event_subject\}"})', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>before</code></th><td>''</td><td><?php _e('Additional HTML code to print before', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>after</code></th><td>''</td><td><?php _e('Additional HTML code to print after', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>alwaysshowenddate</code></th><td><?php _e('Calendar Options', self::$plugin_textdom); ?></td><td><?php _e('If set to false, the enddate is left empty, if it is not differing from the start date', self::$plugin_textdom); ?>.</td></tr>
@@ -193,7 +194,7 @@ fse_print_events(
 		</th></tr>
 		<tr><th><code>datefrom</code></th><td><?php _e('Current time', self::$plugin_textdom); ?></td><td><?php _e('Timestamp of start time', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>dateto</code></th><td>''</td><td><?php _e('Timestamp of end time', self::$plugin_textdom); ?>.</td></tr>
-		<tr><th><code>datemode</code></th><td>FSE_DATE_MODE_START</td><td><?php _e('Use one of the above described constants', self::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>datemode</code></th><td>FSE_DATE_MODE_ALL</td><td><?php _e('Use one of the above described constants', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>allday</code></th><td>-</td><td><?php _e('True or False to select eighter only allday or non-allday events', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th colspan="3"><strong><?php _e('Date/Time filtering', self::$plugin_textdom); ?></strong></th></tr>
 		<tr><th><code>orderby</code></th><td>datefrom</td><td><?php _e('An array of fields to be sorted. This parameter is not available for the function <code>fse_print_events_list</code>, when grouping is active', self::$plugin_textdom); ?>.</td></tr>

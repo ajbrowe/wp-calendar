@@ -88,7 +88,8 @@ class fsCalendar {
 		
 		
 		// General/Frontend Hooks
-		add_action('init',                 array(&$this, 'hookRegisterTextDomain'));
+		add_action('init',                 array(&$this, 'hookInit'));
+		
 		
 		// Admin Hooks
 		add_action('admin_menu',           array(&$this, 'hookAddAdminMenu'), 98);
@@ -115,11 +116,14 @@ class fsCalendar {
 	}
 
 	/**
-	 * Load text domain
+	 * Initialize some vars
 	 * @return void
 	 */
-	function hookRegisterTextDomain() {
+	function hookInit() {
 		load_plugin_textdomain(self::$plugin_textdom, false, self::$plugin_lang_dir);
+		self::$valid_states    = array('draft'=>__('Draft', self::$plugin_textdom),
+									   'publish'=>__('Published', self::$plugin_textdom)
+								 );
 	}
 	
 	/**
@@ -329,10 +333,6 @@ class fsCalendar {
 		global $wpdb;
 		global $user_ID;
 		
-		self::$valid_states    = array('draft'=>__('Draft', self::$plugin_textdom),
-									   'publish'=>__('Published', self::$plugin_textdom)
-								 );
-		
 		$action = $_GET['action'];
 		
 		
@@ -514,9 +514,16 @@ class fsCalendar {
 	 * @return String Filtered content
 	 */
 	function filterContent($content, $evt = NULL) {
+		
+		// Match all tags, but make sure that no escaped {} are selected!
+		preg_match_all('/[^\\\](\{event[s]?_(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
 				
-		preg_match_all('/\{event[s]?_(.+?)\}/', $content, $matches, PREG_SET_ORDER);
-				
+		foreach($matches as $k => $m) {
+			$matches[$k][0] = $m[1];
+			$matches[$k][1] = $m[2];
+			unset($matches[$k][2]);
+		}
+		
 		if (count($matches) == 0) {
 			return $content;
 		}
@@ -551,7 +558,6 @@ class fsCalendar {
 		$diff  = $end - $start;
 		
 		
-		
 		if ($evt->allday == 1) {
 			$dur_days = floor($diff / 1440)+1; // Add 1 day
 		} else {
@@ -561,9 +567,46 @@ class fsCalendar {
 			$diff -= ($dur_hours * 60);
 			$dur_minutes = $diff;
 		}
-		
+
 		foreach($matches as $m) {
-			$token = explode(';', $m[1]);
+			//$token = explode(';', $m[1]);
+			$token = array();
+			$qopen = false;
+			$esc   = false;
+			$temp  = '';
+			
+			// Covert URL Encodings
+			$m[1] = html_entity_decode($m[1]);
+			$m[1] = str_replace(array('&#8221;', '&#8243;'), array('"', '"'), $m[1]);
+			/*$m[1] = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $m[1]);
+			$m[1] = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $m[1]);*/
+						
+			for ($i=0; $i<strlen($m[1]); $i++) {
+				if ($m[1][$i] == '"' && $esc == false) {
+					$qopen = !$qopen;
+					$esc   = false;
+					$temp .= '"';
+				} elseif ($m[1][$i] == "\\") {
+					// Maybe already escaped, just add it as well
+					if ($esc == true) {
+						$temp .= '\\'; // Make 2!
+						$esc = false;	
+					} else {
+						$esc = true;
+					}
+				} elseif ($m[1][$i] == ';' && $qopen == false) {
+					$token[] = trim($temp);
+					$temp = '';	
+					$esc = false;
+				} else {
+					$temp .= $m[1][$i];
+					$esc = false;
+				}
+			}
+			if (!empty($temp)) {
+				$token[] = $temp;	
+			}
+			
 			unset($opts); // Reset options
 			if (count($token) > 1) {
 				for($i=1; $i<count($token); $i++) {
@@ -630,20 +673,19 @@ class fsCalendar {
 					break;
 				case 'enddate':
 					if (!empty($evt->tsto)) {
-						
-						if (isset($args['alwaysshowenddate']))
-							$l_sed = ($args['alwaysshowenddate'] == 1 ? true : false);
+						if (isset($opts['alwaysshowenddate']))
+							$l_sed = ($opts['alwaysshowenddate'] == 1 ? true : false);
 						else
 							$l_sed = $showenddate;
 						
 						// Do not display if date AND time is the same
 						if ($l_sed == false && 
-							( date('d', $evt->tsto) == date('d', $evt->tsfrom) ||
-							  date('m', $evt->tsto) == date('m', $evt->tsfrom) ||
+							( date('d', $evt->tsto) == date('d', $evt->tsfrom) &&
+							  date('m', $evt->tsto) == date('m', $evt->tsfrom) &&
 							  date('Y', $evt->tsto) == date('Y', $evt->tsfrom) )) {
-							$ret = '';
+							$rep = '';
 						} else {
-							$rep = $evt->getEnd($opts['fmt'], 2);
+							$rep = $evt->getEnd($opts['fmt'], 2).'---';
 						}
 					} else {
 						$rep = '';	
@@ -660,8 +702,8 @@ class fsCalendar {
 				case 'endtime':
 					if (!empty($evt->tsto)) {
 						// Do not display if date AND time is the same
-						if (isset($args['alwaysshowenddate']))
-							$l_sed = ($args['alwaysshowenddate'] == 1 ? true : false);
+						if (isset($opts['alwaysshowenddate']))
+							$l_sed = ($opts['alwaysshowenddate'] == 1 ? true : false);
 						else
 							$l_sed = $showenddate;
 							
@@ -969,28 +1011,22 @@ class fsCalendar {
 				$filter['datemode']	= FSE_DATE_MODE_ALL;
 			}
 			
-			if (!isset($filter['dateto'])) {
-				if ($filter['datemode'] == FSE_DATE_MODE_START) {
-					$where .= ' (e.tsfrom >= '.$filter['datefrom'].')';	
-				} else {
-					$where .= ' (e.tsto >= '.$filter['datefrom'].')';	
-				}	
-			} elseif (!isset($filter['datefrom'])) {
-				if ($filter['datemode'] == FSE_DATE_MODE_END) {
-					$where .= ' (e.tsto <= '.$filter['dateto'].')';	
-				} else {
-					$where .= ' (e.tsfrom <= '.$filter['dateto'].')';	
-				}
-			} else {
-				if ($filter['datemode'] == FSE_DATE_MODE_ALL) {
-					$where .= ' ((e.tsfrom >= '.$filter['datefrom'].' AND e.tsfrom <= '.$filter['dateto'].') OR '.
-					  ' (e.tsto   >= '.$filter['datefrom'].' AND e.tsto   <= '.$filter['dateto'].') OR '.
-					  ' (e.tsfrom < '.$filter['datefrom'].' AND e.tsto > '.$filter['dateto'].'))';
-				} elseif ($filter['datemode'] == FSE_DATE_MODE_START) {
-					$where .= ' (e.tsfrom >= '.$filter['datefrom'].' AND e.tsfrom <= '.$filter['dateto'].')';
-				} else {
-					$where .= ' (e.tsto >= '.$filter['datefrom'].' AND e.tsto <= '.$filter['dateto'].')';
-				}
+			// Make date selection complete
+			if (!isset($filter['datefrom']))
+				$filter['datefrom'] = 0;
+			if (!isset($filter['dateto']))
+				$filter['dateto'] = mktime(23, 59, 59, 12, 31, 2037);
+		
+			// Events must always start before the end and 
+			// must end after start
+			$where .= ' (e.tsfrom <= '.$filter['dateto'].') AND '.
+					  ' (e.tsto >= '.$filter['datefrom'].') '; 
+				
+			// 
+			if ($filter['datemode'] == FSE_DATE_MODE_START) {
+				$where .= ' AND (e.tsfrom >= '.$filter['datefrom'].')';
+			} elseif ($filter['datemode'] == FSE_DATE_MODE_END) {
+				$where .= ' AND (e.tsfrom <= '.$filter['dateto'].')';
 			}
 			
 			$where .= ' AND';
@@ -1031,7 +1067,7 @@ class fsCalendar {
 				$sql .= ' LIMIT '.intval($start).', '.intval($limit);	
 			}
 		}
-				
+		
 		$res = $wpdb->get_col($sql);
 		
 		if ($res === NULL)
@@ -1069,15 +1105,16 @@ class fsCalendar {
 	 */
 	function getEventsExternal($args = array()) {
 		$author = $dateto = $allday = '';
-		$datemode = FSE_DATE_MODE_START;
-		$d = time();
+		$datemode = FSE_DATE_MODE_ALL;
 		$state = 'publish';
-		$datefrom = mktime(0,0,0, date('m', $d), date('d', $d), date('Y', $d));
+		//$d = time();
+		//$datefrom = mktime(0,0,0, date('m', $d), date('d', $d), date('Y', $d));
+		$datefrom = mktime();
 		$categories = $orderby = $orderdir = $include = $exclude = array();
 		
 		// Get some values from options
 		$number = intval(get_option('fse_number'));
-		
+				
 		foreach($args as $k => $a) {
 			switch($k) {
 				case 'number':
@@ -1196,7 +1233,7 @@ class fsCalendar {
 		if (is_bool($allday) == true) // Type!
 			$filter['allday'] = $allday;
 		$filter['datemode'] = $datemode;
-		
+				
 		$evt = $this->getEvents($filter, $sortstring, $number);
 		if ($evt === false) {
 			return false;
@@ -1327,8 +1364,13 @@ class fsCalendar {
 		
 		dbDelta($sql);
 		
-		$sql = "DROP TABLE `fsevents_cats`";
-		$wpdb->query($sql);
+		$sql = "CREATE TABLE `".$wpdb->prefix."fsevents_cats` (
+			`eventid` INT NOT NULL,
+			`catid` BIGINT NOT NULL,
+			PRIMARY KEY  (`eventid`, `catid`)
+			);";
+		
+		dbDelta($sql);
 	}
 
 	

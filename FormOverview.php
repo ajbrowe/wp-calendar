@@ -13,7 +13,7 @@ if (isset($_GET['action'])) {
 	if (in_array($_GET['action'], $event_actions)) {
 		if (!empty($_GET['event'])) {
 			
-			$e = new fsEvent(intval($_GET['eventid']));
+			$e = new fsEvent(intval($_GET['event']));
 			
 			if (empty($e->eventid)) {
 				$errors[] = sprintf(__('The event %d does not exist', self::$plugin_textdom), $e->eventid);
@@ -83,7 +83,7 @@ if (isset($_GET['action'])) {
 							continue;
 						
 						if ($e->userCanEditEvent()) {
-							if ($_GET['action'] == 'publish')
+							if ($act == 'publish')
 								$sql = 'UPDATE '.$wpdb->prefix.'fsevents '.' 
 										SET state="publish", publishauthor='.intval($user_ID).', publishdate='.time().' 
 										WHERE eventid='.$id;
