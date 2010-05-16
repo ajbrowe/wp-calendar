@@ -5,7 +5,9 @@ if ( !defined('ABSPATH') )
 $steps = 15; // TODO: In Options page
 $add_min = 20;
 $add_hour = 1;
-$format = 'd.m.Y';
+
+$df = get_option('fse_df_admin');
+$ds = get_option('fse_df_admin_sep');
 
 // Get Post Data
 if (isset($_POST['eventid'])) {
@@ -44,8 +46,7 @@ if (isset($_POST['eventid'])) {
 
 $action = $_GET['action'];
 if ($action == 'new') {
-	if ($evt->eventid > 0) {
-		$action = 'edit';
+	if ($evt->eventid > 0) {		$action = 'edit';
 	} else {
 		if (!$this->userCanAddEvents()) {
 			$fatal[] = __('No permission to create event', self::$plugin_textdom);
@@ -425,36 +426,58 @@ if (count($success) > 0) {
 			<table class="fs-table">
 				<tbody>
 					<tr>
-						<th scope="row"><?php _e('From', self::$plugin_textdom); ?></th>
-						<td>
+						<th scope="row" style="vertical-align: middle;"><?php _e('From', self::$plugin_textdom); ?></th>
+						<td style="vertical-align: middle;">
 							<input type="text"
 						    	id="fse_datepicker_from<?php echo ($action=='view' ? 'dmy"' : ''); ?>" 
 						    	name="event_from" 
 						    	size="10"
 						    	value="<?php echo $evt->date_admin_from; ?>" 
+						    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('Bitte geben Sie ein korrektes Datum ein.') 
+						    		}; fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"  
+						    	onfocus="this.select();"   
 						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
 						    <input type="text"
 						    	id="time_from"
 						    	name="event_tfrom"
 						    	size="5" 
 						    	value="<?php echo $evt->time_admin_from; ?>" 
+						    	onblur="if (fse_validateTime(this) == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('Bitte geben Sie eine korrekte Uhrzeit ein.') 
+						    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" 
 						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php _e('To', self::$plugin_textdom); ?></th>
-						<td>
+						<th scope="row" style="vertical-align: middle;"><?php _e('To', self::$plugin_textdom); ?></th>
+						<td style="vertical-align: middle;">
 							<input type="text"
 						    	id="fse_datepicker_to<?php echo ($action=='view' ? 'dmy"' : ''); ?>" 
 						    	name="event_to" 
 						    	size="10"
 						    	value="<?php echo $evt->date_admin_to; ?>" 
+						    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('Bitte geben Sie ein korrektes Datum ein.') 
+						    		};fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"
+						    	onfocus="this.select();"   
 						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
 						    <input type="text"
 						    	id="time_to"
 						    	name="event_tto"
 						    	size="5"
 						    	value="<?php echo $evt->time_admin_to; ?>" 
+						    	onblur="if (fse_validateTime(this) == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('Bitte geben Sie eine korrekte Uhrzeit ein.') 
+						    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" 
 						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
 						</td>
 					</tr>
@@ -530,13 +553,30 @@ $f = str_replace('Y', 'yy', $f);
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#fse_datepicker_from').datepicker({dateFormat: '<?php echo $f; ?>'});
-	jQuery('#fse_datepicker_to').datepicker({dateFormat: '<?php echo $f; ?>'});
+	<?php if (get_option('fse_adm_gc_enabled') == 1) { 
+		$mode = get_option('fse_adm_gc_mode');
+		?>
+		jQuery('#fse_datepicker_from').datepicker(
+				{dateFormat: '<?php echo $f; ?>'
+					<?php echo (get_option('fse_adm_gc_show_week') == 1 ? ',showWeek: true' : '');?>
+					<?php echo (get_option('fse_adm_gc_show_sel') == 1 ? ',changeMonth: true, changeYear: true' : '');?>
+					, showOn: <?php echo ($mode == 0 ? "'focus'" : ($mode == 1 ? "'button'" : "'both'")); ?>
+					<?php echo (($mode == 1 || $mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
+					});
+		jQuery('#fse_datepicker_to').datepicker(
+				{dateFormat: '<?php echo $f; ?>'
+					<?php echo (get_option('fse_adm_gc_show_week') == 1 ? ',showWeek: true' : '');?>
+					<?php echo (get_option('fse_adm_gc_show_sel') == 1 ? ',changeMonth: true, changeYear: true' : '');?>
+					, showOn: <?php echo ($mode == 0 ? "'focus'" : ($mode == 1 ? "'button'" : "'both'")); ?>
+					<?php echo (($mode == 1 || $mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
+					});
+	<?php } ?>
 	fse_toogleAllday(document.forms["event"].allday);
 });
 </script>
 
 <?php
+
 echo $this->pageEnd();
 
 function fse_ValidateDate($date, $fmt, $ret_sep = false) {

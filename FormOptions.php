@@ -86,6 +86,65 @@ if (!current_user_can('manage_options'))
 		?>
 		</select>
 		</td></tr>
+		<tr><th colspan="2"><h3><?php _e('Graphical date chooser in admin interface', self::$plugin_textdom); ?></h3></th></tr>
+
+		<tr><th class="label"><?php _e('Enable', self::$plugin_textdom); ?></th><td>
+		<select name="fse_adm_gc_enabled">
+		<?php 
+		$format = array(
+			'1' => __('Graphical date chooser enabled', self::$plugin_textdom),
+			'0' => __('Graphical date chooser disabled', self::$plugin_textdom)
+		);
+		$s = get_option('fse_adm_gc_enabled');
+		foreach($format as $k => $f) {
+			echo '<option value="'.esc_attr($k).'" '.($s == $k ? 'selected="selected"' : '').'>'.esc_attr($f).'</option>';
+		}
+		?>
+		</select>
+		</td></tr>
+		<tr><th class="label"><?php _e('Mode', self::$plugin_textdom); ?></th><td>
+		<select name="fse_adm_gc_mode">
+		<?php 
+		$format = array(
+			'0' => __('Automatically open when enter field', self::$plugin_textdom),
+			'1' => __('Open manually by clicking the calendar icon', self::$plugin_textdom),
+			'2' => __('Mixed mode (Open automatically and provide icon)', self::$plugin_textdom)
+		);
+		$s = get_option('fse_adm_gc_mode');
+		foreach($format as $k => $f) {
+			echo '<option value="'.esc_attr($k).'" '.($s == $k ? 'selected="selected"' : '').'>'.esc_attr($f).'</option>';
+		}
+		?>
+		</select>
+		</td></tr>
+		<tr><th class="label"><?php _e('Week number', self::$plugin_textdom); ?></th><td>
+		<select name="fse_adm_gc_show_week">
+		<?php 
+		$format = array(
+			'1' => __('Show', self::$plugin_textdom),
+			'0' => __('Hide', self::$plugin_textdom)
+		);
+		$s = get_option('fse_adm_gc_show_week');
+		foreach($format as $k => $f) {
+			echo '<option value="'.esc_attr($k).'" '.($s == $k ? 'selected="selected"' : '').'>'.esc_attr($f).'</option>';
+		}
+		?>
+		</select>
+		</td></tr>
+		<tr><th class="label"><?php _e('Month/Year Selector', self::$plugin_textdom); ?></th><td>
+		<select name="fse_adm_gc_show_sel">
+		<?php 
+		$format = array(
+			'1' => __('Show', self::$plugin_textdom),
+			'0' => __('Hide', self::$plugin_textdom)
+		);
+		$s = get_option('fse_adm_gc_show_sel');
+		foreach($format as $k => $f) {
+			echo '<option value="'.esc_attr($k).'" '.($s == $k ? 'selected="selected"' : '').'>'.esc_attr($f).'</option>';
+		}
+		?>
+		</select>
+		</td></tr>
 		</table>
 	<?php echo $this->pagePostBoxEnd(); ?>
 
@@ -126,26 +185,73 @@ if (!current_user_can('manage_options'))
 		<tr><th><?php _e('Template', self::$plugin_textdom); ?></th><td><textarea rows="5" cols="80" name="fse_template" /><?php echo htmlentities(get_option('fse_template')); ?></textarea></td></tr>
 		<tr><th><?php _e('Template for Listoutput', self::$plugin_textdom); ?><br /><small><?php _e('The whole template is automatically surrounded by the &lt;li&gt; tag.', self::$plugin_textdom)?>.</small></th><td><textarea rows="5" cols="80" name="fse_template_lst" /><?php echo htmlentities(get_option('fse_template_lst')); ?></textarea></td></tr>
 		<tr><th colspan="2">
-		<p><?php _e('The function <code>fse_list_events</code> allows the output in an unordered list, which allows an hierarchical grouping by date entities. You can define the default group entity and the output format for the grouped entity. Please refer to the php  <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all the output format options.', self::$plugin_textdom); ?></p>
+		<p><?php _e('There is a widget which allows the output in an unordered list, which allows an hierarchical grouping by date entities. You can define the default group entity and the output format for the grouped entity. Please refer to the php  <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all the output format options.', self::$plugin_textdom); ?></p>
 		</th></tr>
 		<tr><th><?php _e('Group by', self::$plugin_textdom); ?></th><td>
 		<select name="fse_groupby">
-		<option value="d"<?php echo (get_option('fse_groupby') == '' ? ' selected="selected"' : ''); ?>><?php _e('No grouping', self::$plugin_textdom); ?></option>
 		<option value="d"<?php echo (get_option('fse_groupby') == 'd' ? ' selected="selected"' : ''); ?>><?php _e('Day', self::$plugin_textdom); ?></option>
 		<option value="m"<?php echo (get_option('fse_groupby') == 'm' ? ' selected="selected"' : ''); ?>><?php _e('Month', self::$plugin_textdom); ?></option>
 		<option value="y"<?php echo (get_option('fse_groupby') == 'y' ? ' selected="selected"' : ''); ?>><?php _e('Year', self::$plugin_textdom); ?></option>
 		</select>
 		</td></tr>
 		<tr><th><?php _e('Header Format', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_groupby_header')); ?>" size="10" name="fse_groupby_header" /></td></tr>
+		<tr><th colspan="2"><h3><?php _e('Graphical calendar (FullCalendar)', self::$plugin_textdom); ?></h3></th></tr>
+		<tr><th colspan="2">
+		<p><?php _e('WP Calendar allows an easy intergration of <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar</a>, a nice graphical calendar. '.
+					'This graphical calendar has many features and options, which can all be set when integration it in your blog (see <a href="#usage_themes">Usage</a>). '.
+					'All the options, which are relevant for localization are passed by WP Calenar (first day of week, time format, all translations like daynames). '.
+					'Since the date format varies depending on the view, you can define all the date formats here. ', self::$plugin_textdom); ?>
+			<?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?>,
+			<?php _e('but refer to the <a href="http://arshaw.com/fullcalendar/docs/utilities/formatDates/" target="_blank">documentation</a> of FullCalendar for the correct syntax (how to use brackets).', self::$plugin_textdom)?>					
+		</p>
+		</th></tr>
+		<tr><th><?php _e('Title format month view', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_fc_tit_month_fmt')); ?>" size="15" name="fse_fc_tit_month_fmt" /></td></tr>
+		<tr><th><?php _e('Title format week view', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_fc_tit_week_fmt')); ?>" size="25" name="fse_fc_tit_week_fmt" /></td></tr>
+		<tr><th><?php _e('Title format day view', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_fc_tit_day_fmt')); ?>" size="15" name="fse_fc_tit_day_fmt" /></td></tr>
+		<tr><th><?php _e('Colum header format month view', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_fc_col_month_fmt')); ?>" size="15" name="fse_fc_col_month_fmt" /></td></tr>
+		<tr><th><?php _e('Colum format week view', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_fc_col_week_fmt')); ?>" size="15" name="fse_fc_col_week_fmt" /></td></tr>
+		<tr><th><?php _e('Colum format day view', self::$plugin_textdom); ?></th><td><input type="text" value="<?php echo esc_attr(get_option('fse_fc_col_day_fmt')); ?>" size="15" name="fse_fc_col_day_fmt" /></td></tr>
 		</table>
 	<?php echo $this->pagePostBoxEnd(); ?>
 	
 	<p class="submit">
 	<input type="submit" class="button-primary" value="<?php _e('Save Changes', self::$plugin_textdom); ?>" />  
 	</p>
+
+	
 	<?php echo $this->pagePostBoxStart('fse_usage', __('Usage', self::$plugin_textdom)); ?>
 		<table class="fs-table">
-		<tr><th colspan="3"><a name="usage_themes"><h3><?php _e('Usage in Themes', self::$plugin_textdom); ?></a></h3>
+		
+		<tr><th colspan="3"><a name="usage_themes"></a><h3><?php _e('Use Widget for easy Intergration!', self::$plugin_textdom); ?></h3>
+		<p>
+		<?php _e('The easiest way to display your events in your blog is the usage of widgets. There are two widgets you can use. '.
+		'One can be used for displaying an unordered list of your events, which are grouped by year, month or day. The other one just prints your events without any grouping.<br /> '.
+		'In both widgets you can use certain filters and limit the number of events to display. '.
+		'The template can be maintained in the widgets as well. For more information about templates, please read on.', self::$plugin_textdom); ?>
+		</p>
+		<p>
+		<?php _e('If you dont want to use widgets, you can integrate all data in post/pages with the use of special tags, or you can '.
+		'integrate it directly in your theme using various php functions. Please read on for more information.', self::$plugin_textdom); ?>
+		</p>
+		</th></tr>
+		
+		<tr><th colspan="3"><a name="usage_themes"></a><h3><?php _e('Graphical Calendar', self::$plugin_textdom); ?></h3>
+		<p>
+		<?php _e('This plug-in comes with <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar</a>, a very nice, simple, customizeable ajax-based calendar. You can integrate this calendar by using the tag <code>{events_calendar}</code> in your page or post. '.
+				 'WP Calendar will set some options for your, especially all the transaltions for day- and monthnames and some WP options like the time format or the first day of the week. '.
+				 'All the date formatting options can be maintained in this options page (see above). All FullCalendar <a href="http://arshaw.com/fullcalendar/docs/" target="_blank">options</a> can be passed as a parameter of the tag. Nested options must be accessed using its path '.
+				 '(e.g. Header->right: "today"). Along with the FullCalendar options, you can also pass various parameters for filtering the output (See <a href="#filters">filter options</a>).' , self::$plugin_textdom); ?>
+		</p>
+		<p>
+		<?php _e('Here is a sample tag, which only shows events of the categories 3 and 5, and sets some options of FullCalendar', self::$plugin_textdom); ?>:
+		</p>
+		<p><code>{events_calendar; categories="3,5"; height=600; header->left="prev"; header->center="today, title"; header->right="next"; weekends=false}</code></p>
+		<p>
+		<?php _e('If you pass any parameters for date or time formatting use the <a href="http://arshaw.com/fullcalendar/docs/utilities/formatDate/" target="_blank">parameters</a> of FullCalendar and not the parameters of the php date function.', self::$plugin_textdom); ?>:
+		</p>
+		</th></tr>
+		
+		<tr><th colspan="3"><a name="usage_themes"></a><h3><?php _e('Usage in Themes', self::$plugin_textdom); ?></h3>
 		<p>
 		<?php _e('At the moment there are four functions to use', self::$plugin_textdom); ?>:
 		<ul>
@@ -157,11 +263,11 @@ if (!current_user_can('manage_options'))
 		<p><?php _e('The first three functions accept one parameter, which expects to be an associative array. Call a function like this', self::$plugin_textdom); ?>:</p> 
 		<pre>
 fse_print_events(
-  array( 'number'   => 10,
-         'exclude'  => array(387, 827),
-         'before'   => '&lt;table cellpadding="0" cellspacing="0">',
-         'after'    => '&lt;/table>',
-         'template' => '&lt;tr>&lt;td>{event_subject}&lt;br />@{event_location}&lt;/td>&lt;/tr>'
+  array( 'number'   =&gt; 10,
+         'exclude'  =&gt; array(387, 827),
+         'before'   =&gt; '&lt;table cellpadding="0" cellspacing="0">',
+         'after'    =&gt; '&lt;/table>',
+         'template' =&gt; '&lt;tr>&lt;td>{event_subject}&lt;br />@{event_location}&lt;/td>&lt;/tr>'
   )
 );
 		</pre>
@@ -176,7 +282,7 @@ fse_print_events(
 		<tr><th><code>before</code></th><td>''</td><td><?php _e('Additional HTML code to print before', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>after</code></th><td>''</td><td><?php _e('Additional HTML code to print after', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>alwaysshowenddate</code></th><td><?php _e('Calendar Options', self::$plugin_textdom); ?></td><td><?php _e('If set to false, the enddate is left empty, if it is not differing from the start date', self::$plugin_textdom); ?>.</td></tr>
-		<tr><th colspan="3"><strong><?php _e('Standard filtering', self::$plugin_textdom); ?></strong></th></tr>
+		<tr><th colspan="3"><strong><a name="filters"></a><?php _e('Standard filtering', self::$plugin_textdom); ?></strong></th></tr>
 		<tr><th><code>include</code></th><td>-</td><td><?php _e('An array of event IDs to explicitly include. In combinaion with other filter the results always is an intersection', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>exclude</code></th><td>-</td><td><?php _e('An array of event IDs to explicitly exclude', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>author</code></th><td>''</td><td><?php _e('Only events of this author will be fetched', self::$plugin_textdom); ?>.</td></tr>
@@ -211,7 +317,7 @@ fse_print_events(
 		</td></tr>
 		<tr><th><code>groupby_header</code></th><td><?php _e('Calendar options', self::$plugin_textdom); ?></td><td><?php _e('The header format when grouping, refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function', self::$plugin_textdom); ?>.</td></tr>
 		<tr><th colspan="3">&nbsp;</th></tr>
-		<tr><th colspan="3"><h3><a name="usage_posts"><?php _e('Single Event Usage in Posts and Pages', self::$plugin_textdom); ?></a></h3>
+		<tr><th colspan="3"><a name="usage_posts"></a><h3><?php _e('Single Event Usage in Posts and Pages', self::$plugin_textdom); ?></h3>
 		<p><?php _e("You can display event's details in a post or page by using predefined tags. The eventid is passed by url or directly in the post by using a special tag", self::$plugin_textdom); ?>.</p>
 		<p><?php _e('To pass the ID by url, just append the paramter <code>event</code> to your url (e.g. <code>www.yourblog.com/pages/myevent?event=37</code>). To load an event in your post without passing by url, use the tag <code>{event_id; id=x}</code> (e.g. <code>{event_id; id=538}</code> directly in your post before using the other tags. By using this tag it is also possible to load more than one event in a sequentiall mechanism. Everytime you insert the <code>event_id</code> tag another event can be loaded', self::$plugin_textdom); ?>.</p>
 		<p><?php _e('Tags can also be used in the title of the post or page. The mechanism is the same as for the content', self::$plugin_textdom); ?>.</p>
@@ -232,7 +338,7 @@ fse_print_events(
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_duration; type=x; suffix=y; empty=z}</code></th><td colspan="2"><?php _e("The event's duration; Pass on of the values <code>d</code>, <code>h</code>, <code>m</code> to the argument 
 			<code>type</code> to get the days, hours and minutes. You can add a suffix to the output by passing the argument <code>suffix</code>. By default empty values are not printed out, by setting the argument <code>empty</code> to 1 you can change that behaviour.", self::$plugin_textdom); ?><br />
-		<tr><th><code>{event_categories; exclude=x; sep=y}</code></th><td colspan="2"><?php _e("The event's categories; Yous the paramter <code>exclude</code> to pass a comma-separated list of categories to exclude from displaying", self::$plugin_textdom); ?>.
+		<tr><th><code>{event_categories; exclude=x; sep=y}</code></th><td colspan="2"><?php _e("The event's categories; Use the paramter <code>exclude</code> to pass a comma-separated list of categories to exclude from displaying", self::$plugin_textdom); ?>.
 		<?php _e("Use the paramter <code>sep</code> to define the separator (&quot;, &quot; is default). You can also pass the value <code>list</code>, which will force the output in unordered list", self::$plugin_textdom); ?> (&lt;ul&gt;&lt;li&gt;cat1&lt;/li&gt;&lt;li&gt;cat2&lt;/li&gt;&lt;/ul&gt;)
 		<tr><th><code>{event_publishdate; fmt=x}</code></th><td colspan="2"><?php _e("The event's publish date; You can pass the parameter <code>fmt</code> to define a differing format", self::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', self::$plugin_textdom)?></small></td></tr>
@@ -261,7 +367,7 @@ fse_print_events(
 	
 	<?php echo $this->pagePostContainerStart(20); ?>				
 		<?php echo $this->pagePostBoxStart('pb_about', __('About', self::$plugin_textdom)); ?>
-			<p><?php _e('For further information please visit the', self::$plugin_textdom); ?> <a href="http://www.faebusoft.ch/downloads/thickbox-announcement"><?php _e('plugin homepage', self::$plugin_textdom);?></a>.<br /> 
+			<p><?php _e('For further information please visit the', self::$plugin_textdom); ?> <a href="http://www.faebusoft.ch/downloads/wp-calendar"><?php _e('plugin homepage', self::$plugin_textdom);?></a>.<br /> 
 		<?php echo $this->pagePostBoxEnd(); ?>
 						
 		<?php echo $this->pagePostBoxStart('pb_donate', __('Donation', self::$plugin_textdom)); ?>

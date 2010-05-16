@@ -1,7 +1,7 @@
 === WP Calendar ===
 Contributors: faebu
 Tags: calendar, events
-Requires at least: 2.7
+Requires at least: 2.8
 Tested up to: 2.9.2
 Stable tag: 1.0.0_RC4
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
@@ -24,7 +24,9 @@ you find any bugs and spelling or grammatical errors, please write a comment on 
 * Easy to use admin interface (Wordpress style)
 * Event overview including filters and pagination
 * Mass operations on events (delete, set state)
-* Graphical calendar to choose dates
+* Graphical daten chooser
+* Graphical calendar for your blog
+* Widgets for your blog
 * Same authority checks as for post and pages
 * Date format configuration
 * Easy and fully documented integration
@@ -41,9 +43,7 @@ you find any bugs and spelling or grammatical errors, please write a comment on 
 * Repeating events
 * Customer fields
 * Google Maps integration
-* Graphical ajax calendar
 * Dashboard integration
-* Calendar widgets
 
 
 == Installation ==
@@ -101,6 +101,7 @@ using tags or functions. Please refer to the usage documentation in the calendar
 1. The options panel
 2. Events overview
 3. Single Event 
+4. Widget and graphical calendar support
 
 == Usage ==
 
@@ -110,6 +111,16 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.0.0 =
+* FIXED: Javascript date and time validation
+* FIXED: Dates and Times now formatting according your settings
+* FIXED: Dates and Times corrected if the finish date/time is before the start date/time
+* FEATURE: More options for the graphical date chooser
+* FEATURE: Integration of FullCalender, a nice graphical, ajax-base calender
+* FEATURE: Widget support
+* FIXED: Several Spelling errors 
+
 = 1.0.0 RC 4 =
 * FIXED: Parameter `alwaysshowenddate` not working
 * FIXED: Error, when using a tag which uses a template as parameter, which uses tags aswell

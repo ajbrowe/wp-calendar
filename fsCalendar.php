@@ -51,6 +51,12 @@ class fsCalendar {
 								 'publishdate',
 								 'state'
 								 );
+								 
+	// Options for Fullcalendar
+	static $full_calendar_header_opts = array('title', 'prev', 'next', 'prevYear', 
+											  'nextYear', 'today');
+	static $full_calendar_view_opts = array('month', 'basicWeek','basicDay', 'agendaWeek', 'agendaDay');
+	static $full_calendar_weekmode_opts = array('fixed', 'liquid', 'variable');
 
 	function fsCalendar() {
 		global $wpdb;
@@ -75,7 +81,17 @@ class fsCalendar {
 									'fse_groupby' => 'm',
 									'fse_groupby_header' => 'M Y',
 									'fse_epp' => 15,
-									'fse_page_create_notice' => 0
+									'fse_page_create_notice' => 0,
+									'fse_adm_gc_enabled' => 1,
+									'fse_adm_gc_mode' => 0,
+									'fse_adm_gc_show_week' => 0,
+									'fse_adm_gc_show_sel' => 1,
+									'fse_fc_tit_week_fmt'=>"F d[ Y]{ '&#8212;'[ F] d Y}",
+									'fse_fc_tit_month_fmt'=>'F Y',
+									'fse_fc_tit_day_fmt'=>'l, F j, Y',
+									'fse_fc_col_week_fmt'=>'D m/j',
+									'fse_fc_col_month_fmt'=>'l',
+									'fse_fc_col_day_fmt'=>'l m/j',
 								);
 		self::$plugin_filename = plugin_basename( __FILE__ );
 		self::$plugin_dir      = dirname(self::$plugin_filename);
@@ -89,13 +105,25 @@ class fsCalendar {
 		
 		// General/Frontend Hooks
 		add_action('init',                 array(&$this, 'hookInit'));
+		add_action('init',                 array(&$this, 'hookRegisterScripts'));
+		add_action('init',                 array(&$this, 'hookRegisterStyles'));
 		
+		add_action( 'wp_ajax_nopriv_wpcal-getevents', 
+										   array(&$this, 'hookAjaxGetEvents'));
+		add_action( 'wp_ajax_wpcal-getevents', 
+										   array(&$this, 'hookAjaxGetEvents'));
+		
+		
+		add_action('widgets_init', 		   array(&$this, 'hookRegisterWidgets'));
 		
 		// Admin Hooks
 		add_action('admin_menu',           array(&$this, 'hookAddAdminMenu'), 98);
 		add_action('admin_menu',           array(&$this, 'hookOrderAdminMenu'), 99);
 		add_action('admin_init',           array(&$this, 'hookRegisterScriptsAdmin'));
 		add_action('admin_init',           array(&$this, 'hookRegisterStylesAdmin'));
+		
+		
+		
 		add_filter('plugin_action_links',  array(&$this, 'hookAddPlugInSettingsLink'), 10, 2 );
 		add_filter('the_title',            array(&$this, 'hookFilterTitle'), 1, 2);
 		add_filter('wp_title',             array(&$this, 'hookFilterPageTitle'));
@@ -122,8 +150,12 @@ class fsCalendar {
 	function hookInit() {
 		load_plugin_textdomain(self::$plugin_textdom, false, self::$plugin_lang_dir);
 		self::$valid_states    = array('draft'=>__('Draft', self::$plugin_textdom),
-									   'publish'=>__('Published', self::$plugin_textdom)
-								 );
+									   'publish'=>__('Published', self::$plugin_textdom));
+	}
+	
+	function hookRegisterWidgets() {
+		register_widget('WPCalendarGrouped');
+		register_widget('WPCalendarSimple');
 	}
 	
 	/**
@@ -131,7 +163,21 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookRegisterStyles() {
-		wp_enqueue_style('thickbox');
+		wp_enqueue_style('fullcalendar', self::$plugin_css_url.'fullcalendar.css');
+	}
+	
+	/**
+	 * Register Scripts to Load
+	 * @return void
+	 */
+	function hookRegisterScripts() {
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.js');
+		//wp_enqueue_script('fullcalendar-min', self::$plugin_js_url.'fullcalendar.min.js');
+		
+		// Pass Ajax Url to Javascript Paraemter
+		wp_localize_script('fullcalendar', 'WPCalendar', array('ajaxUrl'=>admin_url('admin-ajax.php')));
 	}
 	
 	/**
@@ -326,6 +372,51 @@ class fsCalendar {
 	}
 	
 	/**
+	 * Ajax hook 
+	 * nice tutor: http://www.wphardcore.com/2010/5-tips-for-using-ajax-in-wordpress/
+	 */
+	function hookAjaxGetEvents() {
+		$start = intval($_POST['start']);
+		$end   = intval($_POST['end']);
+		
+		$args['datefrom'] = $start;
+		$args['dateto']   = $end;
+		$args['datemode'] = FSE_DATE_MODE_ALL;
+		$args['number']   = 0;
+		
+		if (isset($_POST['state']))
+			$args['state'] = $_POST['state'];
+		if (isset($_POST['author']))
+			$args['author'] = $_POST['author'];
+		if (isset($_POST['categories']))
+			$args['categories'] = $_POST['categories'];
+		if (isset($_POST['include']))
+			$args['include'] = $_POST['include'];
+		if (isset($_POST['exclude']))
+			$args['exclude'] = $_POST['exclude'];
+		$events = $this->getEventsExternal($args);
+		
+		// Process array of events
+		$events_out = array();
+		foreach($events as $evt) {
+			$e['id'] = $evt->eventid;
+			$e['title'] = $evt->subject;
+			$e['allDay'] = ($evt->allday == 1 ? true : false);
+			$e['start'] = $evt->tsfrom;
+			$e['end'] = $evt->tsto;
+			$e['editable'] = false;
+			$events_out[] = $e;
+		}
+		
+		$response = json_encode($events_out);
+		
+		header("Content-Type: application/json");
+		echo $response;
+		
+		exit;
+	}
+	
+	/**
 	 * Creates the requested Calendar page
 	 * @return unknown_type
 	 */
@@ -516,8 +607,8 @@ class fsCalendar {
 	function filterContent($content, $evt = NULL) {
 		
 		// Match all tags, but make sure that no escaped {} are selected!
-		preg_match_all('/[^\\\](\{event[s]?_(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
-				
+		preg_match_all('/[^\\\]?(\{event[s]?_(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
+						
 		foreach($matches as $k => $m) {
 			$matches[$k][0] = $m[1];
 			$matches[$k][1] = $m[2];
@@ -608,12 +699,14 @@ class fsCalendar {
 			}
 			
 			unset($opts); // Reset options
+			unset($opts_orig);
 			if (count($token) > 1) {
 				for($i=1; $i<count($token); $i++) {
-					list($opt, $val) = explode('=', $token[$i]);
+					list($opt_orig, $val) = explode('=', $token[$i]);
 					
 					$val = trim($val);
-					$opt = strtolower(trim($opt));
+					$opt_orig = trim($opt_orig);
+					$opt = strtolower($opt_orig);
 					
 					// Remove " "
 					preg_match('/^"(.*)"$/', $val, $matches);
@@ -622,6 +715,7 @@ class fsCalendar {
 					}
 					
 					$opts[$opt] = $val;
+					$opts_orig[$opt_orig] = $val;
 				}
 			}
 			$tag = strtolower(trim($token[0]));
@@ -685,7 +779,7 @@ class fsCalendar {
 							  date('Y', $evt->tsto) == date('Y', $evt->tsfrom) )) {
 							$rep = '';
 						} else {
-							$rep = $evt->getEnd($opts['fmt'], 2).'---';
+							$rep = $evt->getEnd($opts['fmt'], 2);
 						}
 					} else {
 						$rep = '';	
@@ -815,12 +909,156 @@ class fsCalendar {
 					$opts['echo'] = false; // No echo!
 					$rep = $this->printEventsList($opts);
 					break;
-				
+				case 'calendar':
+					$uniqueId = substr(uniqid('fscal-'), 0, 12);
+					$rep = '<div id="'.$uniqueId.'"></div>';
+					$rep .= "<script type=\"text/javascript\">jQuery(document).ready(function() {jQuery('#$uniqueId').fullCalendar({";
+					
+					
+					// Convert hierarchical options
+					if (is_array($opts_orig)) {
+						foreach($opts_orig as $key => $val) {
+							$keys = explode('->', $key);
+							// Process from the last to the second
+							for ($i=count($keys)-1; $i>0; $i--) {
+								$tmp[trim($keys[$i])] = $val;
+								$val = $tmp;
+							}
+							
+							if (trim($keys[0]) != $key) {
+								unset($opts_orig[$key]);
+							}
+							
+							$opts_orig[trim($keys[0])] = $val;
+						}
+					}
+					
+					// First day of week
+					if (!isset($opts_orig['firstDay'])) {
+						if (get_option('fse_ws_wp') == 1) {
+							$weekstart = get_option('start_of_week');
+						} else {
+							$weekstart = get_option('fse_ws');	
+						}
+						$rep .= "firstDay: $weekstart,";
+					}
+					
+					// Date formats
+					if (!isset($opts_orig['timeFormat'])) {
+						$fmt = $this->convertDateFmt(get_option('time_format'));
+						$rep .= "timeFormat: \"$fmt\",";
+					}
+					
+					// Translation of month and day names
+					if (!isset($opts_orig['monthNames'])) {
+						$rep .= 'monthNames: ["'.implode('","', $GLOBALS['month']).'"],';
+					}
+					
+					if (!isset($opts_orig['monthNamesShort'])) {
+						$rep .= 'monthNamesShort: ["'.implode('","', $GLOBALS['month_abbrev']).'"],';
+					}
+					
+					if (!isset($opts_orig['dayNames'])) {
+						$rep .= 'dayNames: ["'.implode('","', $GLOBALS['weekday']).'"],';
+					}
+					
+					if (!isset($opts_orig['dayNamesShort'])) {
+						$rep .= 'dayNamesShort: ["'.implode('","', $GLOBALS['weekday_abbrev']).'"],';
+					}
+					
+					if (!isset($opts_orig['titleFormat'])) {
+						$rep .= 'titleFormat: {'.
+								'month: "'.addslashes($this->convertDateFmt(get_option('fse_fc_tit_month_fmt'))).'",'.
+								'week: "'.addslashes($this->convertDateFmt(get_option('fse_fc_tit_week_fmt'))).'",'.
+								'day: "'.addslashes($this->convertDateFmt(get_option('fse_fc_tit_day_fmt'))).'"'.
+								'},';
+					}
+					if (!isset($opts_orig['columnFormat'])) {
+						$rep .= 'columnFormat: {'.
+								"month: '".addslashes($this->convertDateFmt(get_option('fse_fc_col_month_fmt')))."',".
+								"week: '".addslashes($this->convertDateFmt(get_option('fse_fc_col_week_fmt')))."',".
+								"day: '".addslashes($this->convertDateFmt(get_option('fse_fc_col_day_fmt')))."'".
+								'},';
+					}
+					
+					// Button Texts
+					if (!isset($opts_orig['buttonText'])) {
+						$rep .= 'buttonText: {'.
+							"prev: '".__('&nbsp;&#9668;&nbsp;', self::$plugin_textdom)."',".
+						 	"next: '".__('&nbsp;&#9658;&nbsp;', self::$plugin_textdom)."',".
+							"prevYear: '".__('&nbsp;&lt;&lt;&nbsp;', self::$plugin_textdom)."',".
+							"nextYear: '".__('&nbsp;&gt;&gt;&nbsp;', self::$plugin_textdom)."',".
+							"today: '".__('today', self::$plugin_textdom)."',".
+							"month: '".__('month', self::$plugin_textdom)."',".
+							"week: '".__('week', self::$plugin_textdom)."',".
+							"day: '".__('day', self::$plugin_textdom)."'},";
+					}
+										
+					//Add all original options
+					if (is_array($opts_orig)) {
+						foreach($opts_orig as $key => $val) {						
+							$rep .= $this->filterContentProcessCalOpts($key, $val);
+						}
+					}
+
+					// Link Click
+					if (isset($page_url)) {
+						$rep .= "eventClick: function(calEvent, jsEvent, view) {document.location.href='$page_url'+calEvent.id;},";
+					}
+					
+					$rep .= "events: function(start, end, callback) {
+					    	jQuery.post(
+					    		WPCalendar.ajaxUrl,
+					    		{
+					    			action: 'wpcal-getevents',
+					                start: Math.round(start.getTime() / 1000),
+					                end: Math.round(end.getTime() / 1000)".
+					                (isset($opts['include']) ? ",include:'".$opts['include']."'" : '').
+					                (isset($opts['exclude']) ? ",exclude:'".$opts['exclude']."'" : '').
+					                (isset($opts['categories']) ? ",categories:'".$opts['categories']."'" : '').
+					                (isset($opts['state']) ? ",state:'".$opts['state']."'" : '').
+					                (isset($opts['author']) ? ",author:'".$opts['author']."'" : '').
+					    		"},
+					    		function(events) {
+					    			var evt = eval(events);
+					    			callback(evt);
+					    		}
+					    	);
+					    },";
+					
+					if ($rep[strlen($rep)-1] == ',') {
+						$rep = substr($rep, 0, strlen($rep)-1);	
+					}
+					
+					$rep .= '})});';
+					
+					$rep .= '</script>';
+					break;
 			}
 			$content = preg_replace('/'.preg_quote($m[0]).'/', $rep, $content, 1);
 		}
 		
 		return $content;
+	}
+	
+	function filterContentProcessCalOpts($key, $val) {
+		$ret = $key.': ';
+		if (!is_array($val)) {
+			$ret .= (is_numeric($val) ? '' : '"').$val.(is_numeric($val) ? '' : '"');
+		} else {
+			$ret .= '{';
+			
+			foreach($val as $k => $v) {
+				$ret .= $this->filterContentProcessCalOpts($k, $v);
+			}
+			
+			// Remove comma at the end
+			$ret = substr($ret, 0, strlen($ret)-1);
+			
+			$ret .= '}';
+		}
+		$ret .= ',';
+		return $ret;
 	}
 	
 	/**
@@ -931,13 +1169,19 @@ class fsCalendar {
 				$dn = $e->getStart('d');
 				$mn = $e->getStart('m');
 				$yn = $e->getStart('y');
-				if ($dn != $d || $mn != $m || $yn != $y) {
-					if ($d >= 0) {
+				
+				if (($groupby == 'y' && $yn != $y) ||
+				    ($groupby == 'm' && ($yn != $y || $mn != $m)) ||
+				    ($groupby == 'd' && ($yn != $y || $mn != $m || $dn != $d))) {
+				
+				    //echo $yn.'-'.$y.':'.$mn.'-'.$m.'<br />';
+				    	
+					if ($d != -1) {
 						$ret .= '</ul></li>';
 					}
 					$ret .= '<li class="event_header">'.$e->getStart($groupby_hdr).'<ul class="events">';
 					$d = $dn;
-					$m = $md;
+					$m = $mn;
 					$y = $yn;
 				}
 				$ret .= '<li class="event" id="event-'.$e->eventid.'">';
@@ -1114,16 +1358,15 @@ class fsCalendar {
 		
 		// Get some values from options
 		$number = intval(get_option('fse_number'));
-				
+		
 		foreach($args as $k => $a) {
 			switch($k) {
 				case 'number':
 					$a = intval($a);
-					if (!empty($a))
-						$number = $a;
+					$number = $a;
 				case 'exclude':
 					if (!is_array($a))
-						$a = array();
+						$a = explode(',', $a);
 					foreach($a as $e) {
 						$e = intval($e);
 						if (!empty($e)) {
@@ -1133,7 +1376,7 @@ class fsCalendar {
 					break;
 				case 'include':
 					if (!is_array($a))
-						$a = array();
+						$a = explode(',', $a);
 					foreach($a as $e) {
 						$e = intval($e);
 						if (!empty($e)) {
@@ -1154,7 +1397,7 @@ class fsCalendar {
 					break;
 				case 'categories':
 					if (!is_array($a))
-						$a = array($a);
+						$a = explode(',', $a);
 					foreach($a as $c) {
 						$c = intval($c);
 						if (!empty($c))
@@ -1235,6 +1478,7 @@ class fsCalendar {
 		$filter['datemode'] = $datemode;
 				
 		$evt = $this->getEvents($filter, $sortstring, $number);
+		
 		if ($evt === false) {
 			return false;
 		}
@@ -1373,6 +1617,54 @@ class fsCalendar {
 		dbDelta($sql);
 	}
 
+	/**
+	 * Convert the Format String from php to fullcalender
+	 * @see http://arshaw.com/fullcalendar/docs/utilities/formatDate/
+	 * @param $fmt
+	 */
+	function convertDateFmt($fmt) {
+		$arr_rules = array('a'=>'tt',
+						 'A'=>'TT',
+						 'B'=>'',
+						 'c'=>'u',
+						 'd'=>'dd',
+						 'D'=>'ddd',
+						 'F'=>'MMMM',
+						 'g'=>'h',
+						 'G'=>'H',
+						 'h'=>'hh',
+						 'H'=>'HH',
+						 'i'=>'mm',
+						 'I'=>'',
+						 'j'=>'d',
+						 'l'=>'dddd',
+						 'L'=>'',
+						 'm'=>'MM',
+						 'M'=>'MMM',
+						 'n'=>'M',
+						 'O'=>'',
+						 'r'=>'',
+						 's'=>'ss',
+						 'S'=>'S',
+						 't'=>'',
+						 'T'=>'',
+						 'U'=>'',
+						 'w'=>'',
+						 'W'=>'',
+						 'y'=>'yy',
+						 'Y'=>'yyyy',
+						 'z'=>'',
+						 'Z'=>'');
+		$ret = '';
+		for ($i=0; $i<strlen($fmt); $i++) {
+			if (isset($arr_rules[$fmt[$i]])) {
+				$ret .= $arr_rules[$fmt[$i]];
+			} else {
+				$ret .= $fmt[$i];	
+			}
+		}
+		return $ret;
+	}
 	
 	/**
 	 * Deletes the announcement page and all options
@@ -1385,9 +1677,6 @@ class fsCalendar {
 	}
 }
 
-if (class_exists('fsCalendar')) {
-	$fsCalendar = new fsCalendar();
-}
 class fsEvent {
 	var $eventid = 0;
 	var $subject;
@@ -1685,5 +1974,185 @@ function fse_get_events($args = array()) {
 	global $fsCalendar;
 	
 	return $fsCalendar->getEventsExternal($args);
+}
+
+class WPCalendarGrouped extends WP_Widget {
+    function WPCalendarGrouped() {
+    	$widget_ops = array(
+    		'classname'=>'WPCalendarGrouped', 
+    		'description'=>_('Display Events grouped by day/month/year', fsCalendar::$plugin_textdom)
+    	);
+    	
+    	// Settings
+		$control_ops = array(); 
+		
+		parent::WP_Widget(false, _('WP Calendar (Grouped)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
+    }
+
+    /** @see WP_Widget::widget */
+    function widget($args, $instance) {		
+        extract($args);
+        $title = apply_filters('widget_title', $instance['title']);
+        echo $before_widget;
+        if ($title) {
+			echo $before_title.$title.$after_title;
+        }
+        
+        fse_print_events_list($instance);
+        
+        echo $after_widget;
+    }
+
+    /* Update values */
+    function update($new_instance, $old_instance) {				
+        return $new_instance;
+    }
+
+    /** @see WP_Widget::form */
+	function form($instance) {
+    	$defaults = array(
+    		'title'=>_('Upcoming Events', fsCalendar::$plugin_textdom),
+    		'number'=>get_option('fse_number'), 
+    		'groupby'=>get_option('fse_groupby'),
+    		'groupby_header'=>get_option('fse_groupby_header'),
+    		'template'=>get_option('fse_template_lst'),
+    		'showenddate'=>get_option('fse_show_enddate'),
+    		'include'=>'',
+    		'exclude'=>'',
+    		'author'=>'',
+    		'categories'=>''
+    	);
+    	
+    	// Abmischen der Argumente
+    	$instance = wp_parse_args((array)$instance, $defaults);
+    	
+        $title = esc_attr($instance['title']);
+        $number = intval($instance['number']);
+        $groupby_header = esc_attr($instance['groupby_header']);
+        $template = esc_attr($instance['template']);
+        $include = esc_attr($instance['include']);
+        $exclude = esc_attr($instance['exclude']);
+        $categories = esc_attr($instance['categories']);
+        ?>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><b><?php _e('Title', fsCalendar::$plugin_textdom); ?>:</b></label><br />
+			<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $title; ?>" style="width:100%;" />
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><b><?php _e('Number of events', fsCalendar::$plugin_textdom); ?>:</b></label><br />
+			<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" value="<?php echo $number; ?>" size="3" />
+		</p>
+		
+		<p>
+			<label for="<?php echo $this->get_field_id( 'groupby' ); ?>"><b><?php _e('Group by', fsCalendar::$plugin_textdom); ?>:</b></label><br />
+			<select id="<?php echo $this->get_field_id( 'groupby' ); ?>" name="<?php echo $this->get_field_name( 'groupby' ); ?>">
+				<option value="d"<?php echo ($instance['groupby'] == 'd' ? ' selected="selected"' : ''); ?>><?php _e('Day', fsCalendar::$plugin_textdom); ?></option>
+				<option value="m"<?php echo ($instance['groupby'] == 'm' ? ' selected="selected"' : ''); ?>><?php _e('Month', fsCalendar::$plugin_textdom); ?></option>
+				<option value="y"<?php echo ($instance['groupby'] == 'y' ? ' selected="selected"' : ''); ?>><?php _e('Year', fsCalendar::$plugin_textdom); ?></option>
+			</select>
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'groupby_header' ); ?>"><b><?php _e('Group Header Format', fsCalendar::$plugin_textdom); ?>:</b></label><br />
+			<input id="<?php echo $this->get_field_id( 'groupby_header' ); ?>" name="<?php echo $this->get_field_name( 'groupby_header' ); ?>" value="<?php echo $groupby_header; ?>" size="10" /><br />
+			<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small>
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'template' ); ?>"><b><?php _e('Template', fsCalendar::$plugin_textdom); ?>:</b></label><br />
+			<textarea rows="5" style="width: 100%; font-size: 0.80em;" id="<?php echo $this->get_field_id( 'template' ); ?>" name="<?php echo $this->get_field_name( 'template' ); ?>"><?php echo $template; ?></textarea><br />
+			<small><?php _e('The whole template is automatically surrounded by the &lt;li&gt; tag.', fsCalendar::$plugin_textdom)?>.</small>
+		</p>
+		
+		<p><b>Filters</b> <small><a href=""><?php _e('Show/hide', fsCalendar::$plugin_textdom); ?></a></small></p>
+		<div id="wfilter-">
+		<p>
+			<label for="<?php echo $this->get_field_id( 'include' ); ?>"><?php _e('Event inclusion', fsCalendar::$plugin_textdom); ?>:</label><br />
+			<input id="<?php echo $this->get_field_id( 'include' ); ?>" name="<?php echo $this->get_field_name( 'include' ); ?>" value="<?php echo $include; ?>" style="width: 100%;" /><br />
+			<small><?php _e('A comma separated list of event ids, which should be displayed.', fsCalendar::$plugin_textdom)?></small>
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'exclude' ); ?>"><?php _e('Event exclusion', fsCalendar::$plugin_textdom); ?>:</label><br />
+			<input id="<?php echo $this->get_field_id( 'exclude' ); ?>" name="<?php echo $this->get_field_name( 'exclude' ); ?>" value="<?php echo $exclude; ?>" style="width: 100%;" /><br />
+			<small><?php _e('A comma separated list of event ids, which should <b>not</b> be displayed.', fsCalendar::$plugin_textdom)?></small>
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'categories' ); ?>"><?php _e('Categories', fsCalendar::$plugin_textdom); ?>:</label><br />
+			<input id="<?php echo $this->get_field_id( 'categories' ); ?>" name="<?php echo $this->get_field_name( 'categories' ); ?>" value="<?php echo $categories; ?>" style="width: 100%;" /><br />
+			<small><?php _e('A comma separated list of category ids.', fsCalendar::$plugin_textdom)?></small>
+		</p>
+		</div>
+        <?php 
+    }
+
+}
+
+class WPCalendarSimple extends WP_Widget {
+    function WPCalendarSimple() {
+    	$widget_ops = array(
+    		'classname'=>'WPCalendarSimple', 
+    		'description'=>_('Shows a number of events', fsCalendar::$plugin_textdom)
+    	);
+    	
+    	// Settings
+		$control_ops = array(); 
+		
+		parent::WP_Widget(false, _('WP Calendar (Simple)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
+    }
+
+    /** @see WP_Widget::widget */
+    function widget($args, $instance) {		
+        extract($args);
+        $title = apply_filters('widget_title', $instance['title']);
+        echo $before_widget;
+        if ($title) {
+			echo $before_title.$title.$after_title;
+        }
+        
+        fse_print_events($instance);
+        
+        echo $after_widget;
+    }
+
+    /* Update values */
+    function update($new_instance, $old_instance) {				
+        return $new_instance;
+    }
+
+    /** @see WP_Widget::form */
+	function form($instance) {
+    	$defaults = array(
+    		'title'=>_('Upcoming Events', fsCalendar::$plugin_textdom),
+    		'number'=>get_option('fse_number'), 
+    		'template'=>get_option('fse_template_lst'),
+    		'showenddate'=>get_option('fse_show_enddate')
+    	);
+    	
+    	// Abmischen der Argumente
+    	$instance = wp_parse_args((array)$instance, $defaults);
+    	
+        $title = esc_attr($instance['title']);
+        $number = intval($instance['number']);
+        $template = esc_attr($instance['template']);
+        ?>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title', fsCalendar::$plugin_textdom); ?>:</label><br />
+			<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $title; ?>" style="width:100%;" />
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e('Number of events', fsCalendar::$plugin_textdom); ?>:</label><br />
+			<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" value="<?php echo $number; ?>" size="3" />
+		</p>
+				<p>
+			<label for="<?php echo $this->get_field_id( 'template' ); ?>"><?php _e('Template', fsCalendar::$plugin_textdom); ?>:</label><br />
+			<textarea rows="5" style="width: 100%; font-size: 0.80em;" id="<?php echo $this->get_field_id( 'template' ); ?>" name="<?php echo $this->get_field_name( 'template' ); ?>"><?php echo $template; ?></textarea><br />
+			<small><?php _e('The whole template is automatically surrounded by the &lt;li&gt; tag.', fsCalendar::$plugin_textdom)?>.</small>
+		</p>
+		
+        <?php 
+    }
+
+}
+
+if (class_exists('fsCalendar')) {
+	$fsCalendar = new fsCalendar();
 }
 ?>
