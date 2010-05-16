@@ -14,8 +14,9 @@ To manage the event, the same authority checks as for post are used. The plug-in
 different functions and integrated in any post and page by using different tags.
 
 = Important Note =
-This plugin is still a release candidate. All the functions have been tested and the translation is done by myself. If
-you find any bugs and spelling or grammatical errors, please write a comment on the [plug-in website](http://www.faebusoft.ch/downloads/wp-calendar).
+After 4 release candidates this is the first final version 1.0.0. Many bugs have been fixed during the last 6 months. The final
+Version now has a **graphical calender** and supports **widgets**! If you find any bugs, please leave a comment at the 
+[plug-in website](http://www.faebusoft.ch/downloads/wp-calendar).
 
 = Features =
 * Normal and all-day events
@@ -24,7 +25,7 @@ you find any bugs and spelling or grammatical errors, please write a comment on 
 * Easy to use admin interface (Wordpress style)
 * Event overview including filters and pagination
 * Mass operations on events (delete, set state)
-* Graphical daten chooser
+* Graphical date chooser
 * Graphical calendar for your blog
 * Widgets for your blog
 * Same authority checks as for post and pages
@@ -105,7 +106,8 @@ using tags or functions. Please refer to the usage documentation in the calendar
 
 == Usage ==
 
-Please refer to the usage documentation in the calendar's options page.
+Please refer to the usage documentation in the calendar's options page. Since version this plug-in has built-in widgets
+for easy usage. If these widgets don't fit your needs, you may integration WP Calendar manually by using tags or php functions.
 
 For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebu.ch/integration-von-wp-calendar). This post 
 will be translated in the next few months to english. 
