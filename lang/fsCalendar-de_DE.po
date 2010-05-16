@@ -341,7 +341,7 @@ msgstr "Anzeigen/Ausblenden"
 
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2064
 msgid "Event inclusion"
-msgstr "Eventeinschluss"
+msgstr "Einzuschliessende Events"
 
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2066
 msgid "A comma separated list of event ids, which should be displayed."
@@ -349,7 +349,7 @@ msgstr "Eine kommagetrennte Liste der anzuzeigenden Event Ids"
 
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2069
 msgid "Event exclusion"
-msgstr "Ausschliessen"
+msgstr "Auszuschliessende Events"
 
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2071
 msgid "A comma separated list of event ids, which should <b>not</b> be displayed."

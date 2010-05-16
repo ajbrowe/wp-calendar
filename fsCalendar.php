@@ -5,7 +5,7 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.0
+Version: 1.0.1
 License: GPL
 Last Update: 16.05.2010
 */
@@ -607,7 +607,7 @@ class fsCalendar {
 	function filterContent($content, $evt = NULL) {
 		
 		// Match all tags, but make sure that no escaped {} are selected!
-		preg_match_all('/[^\\\]?(\{event[s]?_(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
+		preg_match_all('/[^\\\]?(\{event[s]?__(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
 						
 		foreach($matches as $k => $m) {
 			$matches[$k][0] = $m[1];
@@ -1980,13 +1980,13 @@ class WPCalendarGrouped extends WP_Widget {
     function WPCalendarGrouped() {
     	$widget_ops = array(
     		'classname'=>'WPCalendarGrouped', 
-    		'description'=>_('Display Events grouped by day/month/year', fsCalendar::$plugin_textdom)
+    		'description'=>__('Display Events grouped by day/month/year', fsCalendar::$plugin_textdom)
     	);
     	
     	// Settings
 		$control_ops = array(); 
 		
-		parent::WP_Widget(false, _('WP Calendar (Grouped)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
+		parent::WP_Widget(false, __('WP Calendar (Grouped)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
     }
 
     /** @see WP_Widget::widget */
@@ -2011,7 +2011,7 @@ class WPCalendarGrouped extends WP_Widget {
     /** @see WP_Widget::form */
 	function form($instance) {
     	$defaults = array(
-    		'title'=>_('Upcoming Events', fsCalendar::$plugin_textdom),
+    		'title'=>__('Upcoming Events', fsCalendar::$plugin_textdom),
     		'number'=>get_option('fse_number'), 
     		'groupby'=>get_option('fse_groupby'),
     		'groupby_header'=>get_option('fse_groupby_header'),
@@ -2089,13 +2089,13 @@ class WPCalendarSimple extends WP_Widget {
     function WPCalendarSimple() {
     	$widget_ops = array(
     		'classname'=>'WPCalendarSimple', 
-    		'description'=>_('Shows a number of events', fsCalendar::$plugin_textdom)
+    		'description'=>__('Shows a number of events', fsCalendar::$plugin_textdom)
     	);
     	
     	// Settings
 		$control_ops = array(); 
 		
-		parent::WP_Widget(false, _('WP Calendar (Simple)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
+		parent::WP_Widget(false, __('WP Calendar (Simple)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
     }
 
     /** @see WP_Widget::widget */
@@ -2120,7 +2120,7 @@ class WPCalendarSimple extends WP_Widget {
     /** @see WP_Widget::form */
 	function form($instance) {
     	$defaults = array(
-    		'title'=>_('Upcoming Events', fsCalendar::$plugin_textdom),
+    		'title'=>__('Upcoming Events', fsCalendar::$plugin_textdom),
     		'number'=>get_option('fse_number'), 
     		'template'=>get_option('fse_template_lst'),
     		'showenddate'=>get_option('fse_show_enddate')
