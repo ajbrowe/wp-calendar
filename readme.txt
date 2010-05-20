@@ -120,6 +120,7 @@ will be translated in the next few months to english.
 * FIXED: Missing translations
 * FIXED: Error in Template Parsing
 * FEATURE: Filter functions in admin interface improved (selections are stored)
+* FEATURE: Sorting functions in admin interface
 * FEATURE: Option to show future post only in admin interface
 
 = 1.0.1 =
