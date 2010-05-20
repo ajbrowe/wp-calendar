@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.1
+Version: 1.0.2
 License: GPL
-Last Update: 16.05.2010
+Last Update: 21.05.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -22,7 +22,7 @@ define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.0.0';
+	static $plugin_vers     = '1.0.1';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -53,10 +53,10 @@ class fsCalendar {
 								 );
 								 
 	// Options for Fullcalendar
-	static $full_calendar_header_opts = array('title', 'prev', 'next', 'prevYear', 
+	/*static $full_calendar_header_opts = array('title', 'prev', 'next', 'prevYear', 
 											  'nextYear', 'today');
 	static $full_calendar_view_opts = array('month', 'basicWeek','basicDay', 'agendaWeek', 'agendaDay');
-	static $full_calendar_weekmode_opts = array('fixed', 'liquid', 'variable');
+	static $full_calendar_weekmode_opts = array('fixed', 'liquid', 'variable');*/
 
 	function fsCalendar() {
 		global $wpdb;
@@ -185,15 +185,33 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookAddAdminMenu() {
-		/*$menutitle = '<img src="'.self::$plugin_img_url.'icon.png" alt=""> '.__('TB Announcement', self::$plugin_textdom);
-		add_submenu_page('options-general.php', __('Thickbox Announcement', self::$plugin_textdom ), $menutitle, 8, self::$plugin_filename, array(&$this, 'createSettingsPage'));*/
-		add_menu_page(__('Calendar', self::$plugin_textdom), __('Calendar', self::$plugin_textdom), 1, self::$plugin_filename, array(&$this, 'createCalendarPage')); // TODO: Replace User Level
-		add_submenu_page(self::$plugin_filename, __('Calendar', self::$plugin_textdom), __('Edit', self::$plugin_textdom), 1, self::$plugin_filename, array(&$this, 'createCalendarPage'));
-		add_submenu_page(self::$plugin_filename, __('Calendar', self::$plugin_textdom), __('Add new', self::$plugin_textdom), 1, self::$plugin_filename.'&action=new', array(&$this, 'createCalendarPage'));
+		add_menu_page(   __('Edit events', self::$plugin_textdom),
+						 __('Calendar', self::$plugin_textdom), 
+						 'edit_posts', 
+						 self::$plugin_filename, 
+						 array(&$this, 'createCalendarPage')); 
+		add_submenu_page(self::$plugin_filename, 
+						 __('Edit events', self::$plugin_textdom), 
+						 __('Edit', self::$plugin_textdom), 
+						 'edit_posts', 
+						 self::$plugin_filename, 
+						 array(&$this, 'createCalendarPage'));
+		add_submenu_page(self::$plugin_filename,
+						 __('Add new event', self::$plugin_textdom), 
+						 __('Add new', self::$plugin_textdom), 
+						 'edit_posts', 
+						 'wp-cal-add', 
+						 array(&$this, 'createCalendarAddPage'));
+		//self::$plugin_filename.'&action=new'
 		
 		// Options
 		$menutitle = '<img src="'.self::$plugin_img_url.'icon.png" alt=""> '.__('Calendar', self::$plugin_textdom);
-		add_submenu_page('options-general.php', __('Calendar', self::$plugin_textdom), $menutitle, 8, self::$plugin_filename.'&action=settings', array(&$this, 'createCalendarPage'));
+		add_submenu_page('options-general.php', 
+						 __('Calendar', self::$plugin_textdom), 
+						 $menutitle, 
+						 'manage_options', 
+						 'wp-cal-settings', 
+						 array(&$this, 'createCalendarSettingsPage'));
 	}
 	
 	/**
@@ -416,38 +434,47 @@ class fsCalendar {
 		exit;
 	}
 	
-	/**
-	 * Creates the requested Calendar page
-	 * @return unknown_type
-	 */
 	function createCalendarPage() {
 		global $wpdb;
 		global $user_ID;
 		
-		$action = $_GET['action'];
-		
-		
-		
-		switch ($action) {
-			case 'new';
-			case 'edit';
-			case 'view';
-				if ($action == 'edit' || $action == 'view') {
-					$evt->eventid = intval($_GET['event']);
-				} else {
-					$evt->eventid = 0;
-				}
-				include('FormEvent.php');
-				break;
-			case 'settings';
-				include('FormOptions.php');
-				break;
-			default:
-				include('FormOverview.php');
-				break;	
+		if (isset($_GET['action'])) {
+			if ($_GET['action'] == 'edit') {
+				$this->createCalendarEditPage();
+				return;			
+			} elseif ($_GET['action'] == 'new') {
+				$this->createCalendarAddPage();
+				return;
+			}
 		}
+		
+		$evt->eventid = 0;
+		include('FormOverview.php');
 	}
 	
+	function createCalendarEditPage() {
+		global $wpdb;
+		global $user_ID;
+		
+		$evt->eventid = intval($_GET['event']);
+		include('FormEvent.php');
+	}
+	
+	function createCalendarAddPage() {
+		global $wpdb;
+		global $user_ID;
+		
+		$evt->eventid = 0;
+		include('FormEvent.php');
+	}
+	
+	function createCalendarSettingsPage() {
+		global $wpdb;
+		global $user_ID;
+		
+		include('FormOverview.php');
+	}
+		
 	/**
 	 * Creates the Postbox for category selection
 	 * @param $selected_cats
@@ -535,7 +562,8 @@ class fsCalendar {
 				<input id="doaction" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', self::$plugin_textdom); ?>" />
 				<?php if ($part == 1) {?>
 					<select name="event_start">
-					<option value=""><?php _e('Show all dates', self::$plugin_textdom); ?></option>
+					<option value="-1"<?php echo ($filter['???'] == -1 ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', self::$plugin_textdom); ?></option>
+					<option value="0"<?php echo ($filter['???'] == 0 ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', self::$plugin_textdom); ?></option>
 					<?php 
 					$min = $wpdb->get_var('SELECT MIN(tsfrom) AS min FROM '.$wpdb->prefix.'fsevents');
 					$max = $wpdb->get_var('SELECT MAX(tsto)   AS max FROM '.$wpdb->prefix.'fsevents');
@@ -548,7 +576,7 @@ class fsCalendar {
 						while($ys <= $ye) {
 							while($ms<=12 && ($ys < $ye || $ms <= $me)) {
 								$time = mktime(0, 0, 0, $ms, 1, $ys);
-								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date('M Y', $time).'</option>';
+								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date_i18n('F Y', $time).'</option>';
 								$ms++;
 							}
 							$ms = 1;
@@ -605,10 +633,10 @@ class fsCalendar {
 	 * @return String Filtered content
 	 */
 	function filterContent($content, $evt = NULL) {
-		
+				
 		// Match all tags, but make sure that no escaped {} are selected!
-		preg_match_all('/[^\\\]?(\{event[s]?__(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
-						
+		preg_match_all('/[^\\\]?(\{event[s]?_(.+?[^\\\])\})/is', $content, $matches, PREG_SET_ORDER);
+		
 		foreach($matches as $k => $m) {
 			$matches[$k][0] = $m[1];
 			$matches[$k][1] = $m[2];

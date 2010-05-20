@@ -4,6 +4,7 @@ if ( !defined('ABSPATH') )
 
 // Base Link
 $bl = 'admin.php?page='.self::$plugin_filename;
+$bl_new = 'admin.php?page=wp-cal-add';
 
 $event_actions = array('delete','publish','draft');
 
@@ -171,13 +172,50 @@ if ($filter_date > 0) {
 	$filter['datefrom'] = mktime(0, 0, 0, $m, 1, $y);
 	$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
 	$link_actions = 'event_start='.$filter_date.'&amp;';
+// Only Future dates
+} elseif ($filter_date == 0) {
+	$filter['datefrom'] = time();
+	//$filter['datemode'] = FSE_DATE_MODE_END;
+	//$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
+	$link_actions = 'event_start='.$filter_date.'&amp;';
+}
+
+$sort = $_GET['event_sort'];
+$sortstring = '';
+if (in_array($sort, array('subject', 'author', 'tsfrom', 'location'))) {
+	$sortstring = $sort;
+	$sortdir = $_GET['event_sortdir'];
+	if (in_array($sortdir, array('ASC', 'DESC'))) {
+		$sortstring .= ' '.$sortdir;
+	} else {
+		$sortdir = 'ASC';
+	}
+} else {
+	$sort = 'tsfrom';
+	$sortdir = 'ASC';
 }
 
 // Create Link for transporting filter actions!
 $bl_filter = $bl.'&amp;'.$link_actions;
 
-// Count Events
+// Count Events (of different kind of states
 $event_count = $this->getEvents($filter, '', 0, 0, true);
+
+$filter_count = $filter;
+
+unset($filter_count['state']);
+$event_count_total = $this->getEvents($filter_count, '', 0, 0, true);
+foreach(self::$valid_states as $k => $l) {
+	$filter_count['state'] = $k;
+	$state_count[$k] = $this->getEvents($filter_count, '', 0, 0, true);
+}
+
+// If for the current state no events are selected, reset to all
+if (isset($filter['state'])) {
+	if (!isset($state_count[$filter['state']]) || $state_count[$filter['state']] <= 0) {
+		unset($filter['state']);
+	}
+}
 
 // Get Events per Page
 $epp = get_option('fse_epp');
@@ -195,23 +233,30 @@ if ($event_count > $epp) {
 	$limit = $start = $page = 0;
 }
 
-$events = $this->getEvents($filter, '', $epp, $start);
+$events = $this->getEvents($filter, $sortstring, $epp, $start);
 ?>
 
 <ul class="subsubsub">
 <?php 
-$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents ');
-echo '<li><a '.(!isset($filter['state']) ? 'class="current"' : '').' href="'.$bl.'">'.__('All', self::$plugin_textdom).'<span class="count"> ('.$count.')</span></a></li>';
+//$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents ');
+echo '<li><a '.(!isset($filter['state']) ? 'class="current"' : '').' href="'.$bl.'">'.__('All', self::$plugin_textdom).'<span class="count"> ('.$event_count_total.')</span></a></li>';
 foreach(self::$valid_states as $k => $l) {
-	$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents '." WHERE state='$k'");
-	if ($count !== false && $count > 0)
-		echo '<li>| <a '.($k == $filter['state'] ? 'class="current"' : '').' href="'.$bl.'&amp;event_status='.$k.'">'.$l.'<span class="count"> ('.$count.')</span></a></li>';
+	//$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents '." WHERE state='$k'");
+	//if ($count !== false && $count > 0)
+	if (isset($state_count[$k]) && $state_count[$k] > 0)
+		echo '<li>| <a '.($k == $filter['state'] ? 'class="current"' : '').' href="javascript: fse_overviewFilter('."'event_status','$k'".');">'.$l.'<span class="count"> ('.$state_count[$k].')</span></a></li>';
 }
 ?>
 </ul>
 
-<form id="post" method="get" action="" name="event">
+<form id="event" method="get" action="" name="event">
+
+<input type="hidden" name="event_status" value="<?php echo (isset($filter['state']) ? $filter['state'] : ''); ?>" />
+<input type="hidden" name="event_sort" value="<?php echo (isset($sort) ? $sort : ''); ?>" />
+<input type="hidden" name="event_sortdir" value="<?php echo (isset($sortdir) ? $sortdir : ''); ?>" />
+
 <input type="hidden" name="page" value="<?php echo self::$plugin_filename; ?>" />
+
 
 <?php $this->printNavigationBar($filter, 1, $page, $epp, $event_count, $bl_filter); ?>
 
@@ -221,11 +266,19 @@ foreach(self::$valid_states as $k => $l) {
 			<th id="cb" class="manage-column column-cb check-column" style="" scope="col">
 				<input type="checkbox" />
 			</th>
-			<th id="subject" class="manage-column" scope="col"><?php _e('Subject', self::$plugin_textdom);?></th>
-			<th id="author" class="manage-column" scope="col"><?php _e('Author', self::$plugin_textdom);?></th>
-			<th id="from" class="manage-column" scope="col"><?php _e('Date', self::$plugin_textdom);?></th>
+			<th id="subject" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('subject');">
+				<?php _e('Subject', self::$plugin_textdom);?></a>
+				<?php if ($sort == 'subject') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+			<th id="author" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('author');">
+				<?php _e('Author', self::$plugin_textdom);?></a>
+				<?php if ($sort == 'author') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+			<th id="from" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('tsfrom');">
+				<?php _e('Date', self::$plugin_textdom);?></a>
+				<?php if ($sort == 'tsfrom') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 			<th id="to" class="manage-column" scope="col"><?php _e('Time', self::$plugin_textdom);?></th>
-			<th id="location" class="manage-column" scope="col"><?php _e('Location', self::$plugin_textdom);?></th>
+			<th id="location" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('location');">
+				<?php _e('Location', self::$plugin_textdom);?></a>
+				<?php if ($sort == 'location') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 			<th id="categories" class="manage-column" scope="col"><?php _e('Categories', self::$plugin_textdom);?></th>
 			<th id="date" class="manage-column" scope="col"><?php _e('State', self::$plugin_textdom);?></th>
 		</tr>
@@ -343,7 +396,7 @@ foreach(self::$valid_states as $k => $l) {
 	</tbody>
 </table>
 <?php $this->printNavigationBar($filter, 2, $page, $epp, $event_count, $bl_filter); ?>
-<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', self::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl; ?>&amp;action=new';" /></p>
+<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', self::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl_new; ?>';" /></p>
 </form>
 <?php
 echo $this->pageEnd();

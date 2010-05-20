@@ -231,3 +231,20 @@ function fse_transformTimeToString(time) {
 	       (time.getMinutes() < 10 ? "0" : "") + time.getMinutes();
 }
 
+function fse_overviewFilter(field, value) {
+	document.forms['event'].elements[field].value = value;
+	document.forms['event'].submit();
+}
+
+function fse_overviewSort(field) {
+	var dir = 'ASC';
+	if (document.forms['event'].elements['event_sort'].value == field) {
+		if (document.forms['event'].elements['event_sortdir'].value == 'ASC') {
+			dir = 'DESC';
+		}
+	}
+	
+	document.forms['event'].elements['event_sort'].value = field;
+	document.forms['event'].elements['event_sortdir'].value = dir;
+	document.forms['event'].submit();
+}

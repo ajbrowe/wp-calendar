@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Calendar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-16 11:45+0100\n"
+"POT-Creation-Date: 2010-05-20 23:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Faebu <faebu@faebu.ch>\n"
 "Language-Team: \n"
@@ -13,96 +13,96 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: H:\\wosportable\\www\\wordpress\\wp-content\\plugins\\fsCalendar\n"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:19
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:20
 #, php-format
 msgid "The event %d does not exist"
 msgstr "Der Event %d existiert nicht"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:61
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:62
 msgid "Some events could not be deleted because of missing permissions"
 msgstr "Einige Events konnte nicht gelöscht werden wegen fehlenden Berechtigungen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:67
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:68
 msgid "Event successfully deleted"
 msgstr "Event wurde gelöscht"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:69
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:70
 msgid "No permission to delete event"
 msgstr "Keine Berechtigungen zum Löschen des Events"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:111
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:112
 msgid "Some events could not be changed because of missing permissions"
 msgstr "Einige Events konnte nicht geändert werden wegen fehlenden Berechtigungen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:119
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:120
 msgid "Edit Events"
 msgstr "Events bearbeiten"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:204
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:242
 msgid "All"
 msgstr "Alle"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:224
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:238
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:270
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:291
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:508
 msgid "Subject"
 msgstr "Titel"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:225
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:239
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:273
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:292
 msgid "Author"
 msgstr "Autor"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:226
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:240
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:276
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:293
 msgid "Date"
 msgstr "Datum"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:227
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:241
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:278
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:294
 msgid "Time"
 msgstr "Zeit"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:228
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:242
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:280
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:295
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:519
 msgid "Location"
 msgstr "Ort"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:229
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:243
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2074
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:282
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:296
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2106
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:500
 msgid "Categories"
 msgstr "Kategorien"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:230
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:244
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:283
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:297
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:379
 msgid "State"
 msgstr "Status"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:251
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:304
 msgid "No events found"
 msgstr "Keine Events vorhanden"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:264
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:279
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:281
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:191
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:317
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:332
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:334
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:195
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:270
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:323
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:152
 msgid "Draft"
 msgstr "Entwurf"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:278
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:331
 msgid "Edit this event"
 msgstr "Event bearbeiten"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:286
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:339
 #, php-format
 msgid ""
 "You are about to delete this event \\'%s\\'\\n"
@@ -111,34 +111,34 @@ msgstr ""
 "Sie sind im Begriff den Event \\'%s\\' zu löschen.\\n"
 "\\'Abbrechen\\' zum Abbrechen, \\'OK\\' zum Löschen."
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:288
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:341
 msgid "Delete this event"
 msgstr "Event löschen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:288
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:290
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:523
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:341
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:343
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:550
 msgid "Delete"
 msgstr "Löschen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:294
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:347
 msgid "View this event"
 msgstr "Event anzeigen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:295
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:348
 msgid "View"
 msgstr "Anzeigen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:317
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:370
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:492
 msgid "All day event"
 msgstr "Ganztägiger Event"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:336
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:389
 msgid "on"
 msgstr "am"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:346
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:399
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:325
 msgid "Add New Event"
 msgstr "Event erstellen"
@@ -148,138 +148,149 @@ msgstr "Event erstellen"
 msgid "Published"
 msgstr "Veröffentlicht"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:190
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:191
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:192
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:195
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:196
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:188
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:194
+msgid "Edit events"
+msgstr "Events bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:189
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:208
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:210
 msgid "Calendar"
 msgstr "Kalender"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:192
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:200
+msgid "Add new event"
+msgstr "Event erstellen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:201
 msgid "Add new"
 msgstr "Erstellen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:296
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:314
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:461
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:488
 msgid "All Categories"
 msgstr "Alle Kategorien"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:462
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:489
 msgid "Most Used"
 msgstr "Häufig genutzte"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:480
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:507
 msgid "+ Add New Category"
 msgstr "+ Neue Kategorie hinzufügen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:482
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:509
 msgid "Add New Category"
 msgstr "Neue Kategorie hinzufügen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:483
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:484
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:510
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:511
 msgid "Parent category"
 msgstr "Oberkategorie"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:522
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:549
 msgid "Choose action"
 msgstr "Aktion wählen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:526
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:553
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:411
 msgid "Publish"
 msgstr "Veröffentlichen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:531
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:558
 msgid "Set to Draft"
 msgstr "Als Entwurft"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:535
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:562
 msgid "Apply"
 msgstr "Übernehmen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:538
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:565
 msgid "Show all dates"
 msgstr "Alle Daten"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:562
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:566
+msgid "Show future dates only"
+msgstr "Nur zukünftige Events anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:590
 msgid "View all categories"
 msgstr "Alle Kategorien"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:571
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:599
 msgid "Filter"
 msgstr "Filter"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:738
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:766
 msgid "Event not found"
 msgstr "Event wurde nicht gefunden"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:985
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1015
 msgid "&nbsp;&#9668;&nbsp;"
 msgstr "&nbsp;&#9668;&nbsp;"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:986
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1016
 msgid "&nbsp;&#9658;&nbsp;"
 msgstr "&nbsp;&#9658;&nbsp;"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:987
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1017
 msgid "&nbsp;&lt;&lt;&nbsp;"
 msgstr "&nbsp;&lt;&lt;&nbsp;"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:988
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1018
 msgid "&nbsp;&gt;&gt;&nbsp;"
 msgstr "&nbsp;&gt;&gt;&nbsp;"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:989
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1019
 msgid "today"
 msgstr "Heute"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:990
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1020
 msgid "month"
 msgstr "Monat"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:991
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1021
 msgid "week"
 msgstr "Woche"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:992
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1022
 msgid "day"
 msgstr "TAg"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1979
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2011
 msgid "Display Events grouped by day/month/year"
 msgstr "Gruppierung nach Tag/Monat/Jahr"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:1985
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2017
 msgid "WP Calendar (Grouped)"
 msgstr "WP Calendar (Gruppiert)"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2010
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2119
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2042
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2151
 msgid "Upcoming Events"
 msgstr "Nächste Anlässe"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2034
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2133
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2066
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2165
 msgid "Title"
 msgstr "Titel"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2038
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2137
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2070
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2169
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:175
 msgid "Number of events"
 msgstr "Maximale Anzahl Events"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2043
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2075
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:190
 msgid "Group by"
 msgstr "Gruppieren nach"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2045
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2077
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:67
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:68
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:69
@@ -288,7 +299,7 @@ msgstr "Gruppieren nach"
 msgid "Day"
 msgstr "Tag"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2046
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2078
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:67
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:68
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:69
@@ -297,7 +308,7 @@ msgstr "Tag"
 msgid "Month"
 msgstr "Monat"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2047
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2079
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:67
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:68
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:69
@@ -306,11 +317,11 @@ msgstr "Monat"
 msgid "Year"
 msgstr "Jahr"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2051
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2083
 msgid "Group Header Format"
 msgstr "Format Gruppierung"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2053
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2085
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:25
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:37
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:204
@@ -323,47 +334,47 @@ msgstr "Format Gruppierung"
 msgid "Please refer to the php <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> function for all valid parameters"
 msgstr "Bitte beachten Sie die PHP Funktion <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> bezüglich den verwendbaren Parametern"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2056
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2141
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2088
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2173
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:185
 msgid "Template"
 msgstr "Vorlage"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2058
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2143
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2090
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2175
 #: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOptions.php:186
 msgid "The whole template is automatically surrounded by the &lt;li&gt; tag."
 msgstr "Die Vorlage wird automatisch in &lt;li&gt; Tags eingeschlossen"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2061
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2093
 msgid "Show/hide"
 msgstr "Anzeigen/Ausblenden"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2064
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2096
 msgid "Event inclusion"
 msgstr "Einzuschliessende Events"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2066
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2098
 msgid "A comma separated list of event ids, which should be displayed."
 msgstr "Eine kommagetrennte Liste der anzuzeigenden Event Ids"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2069
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2101
 msgid "Event exclusion"
 msgstr "Auszuschliessende Events"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2071
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2103
 msgid "A comma separated list of event ids, which should <b>not</b> be displayed."
 msgstr "Eine kommagetrennte List der <b>nicht</b> anzuzeigenden Event Ids"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2076
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2108
 msgid "A comma separated list of category ids."
 msgstr "Eine kommagetrennte Liste der Kategorien Ids"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2088
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2120
 msgid "Shows a number of events"
 msgstr "Maximale Anzahl Events"
 
-#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2094
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:2126
 msgid "WP Calendar (Simple)"
 msgstr "WP Calendar (Einfach)"
 
