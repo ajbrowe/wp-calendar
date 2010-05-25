@@ -266,22 +266,23 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookRegisterScriptsAdmin() {
+		wp_enqueue_script('common');
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('fs-datepicker', self::$plugin_js_url.'ui.datepicker.js');
 		wp_enqueue_script('fs-date', self::$plugin_js_url.'date.js');
 		wp_enqueue_script(self::$plugin_id, self::$plugin_js_url.'helper.js');
-		
-		
-		
-		if (strpos($_SERVER['QUERY_STRING'], self::$plugin_filename) !== false && 
-		   ($_GET['action'] == 'new' ||  $_GET['action'] == 'edit')) {
+				
+		if ((strpos($_SERVER['QUERY_STRING'], self::$plugin_filename) !== false && 
+		   ($_GET['action'] == 'new' ||  $_GET['action'] == 'edit')) ||
+		    $_GET['page'] == 'wp-cal-add') {
 			wp_enqueue_script('post');
 			if (user_can_richedit()) {
 				wp_enqueue_script('editor');
 				wp_enqueue_script('editor-functions');
 				wp_enqueue_script('jquery-ui-tabs');
 				wp_enqueue_script('media-upload');
+				wp_enqueue_script('tiny_mce');
 				
 				add_action('admin_print_footer_scripts', 'wp_tiny_mce', 25 );
 			}

@@ -121,6 +121,7 @@ will be translated in the next few months to english.
 
 = 1.0.3 = 
 * FIXED: Options page not working
+* FIXED: TinyMCE not working when creating a new event
 
 = 1.0.2 =
 * FIXED: Error in user capabilities check
