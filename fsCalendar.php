@@ -441,7 +441,9 @@ class fsCalendar {
 		if (isset($_GET['action'])) {
 			if ($_GET['action'] == 'edit') {
 				$this->createCalendarEditPage();
-				return;			
+				return;
+			} elseif ($_GET['action'] == 'view' ) {
+				
 			} elseif ($_GET['action'] == 'new') {
 				$this->createCalendarAddPage();
 				return;
@@ -472,7 +474,7 @@ class fsCalendar {
 		global $wpdb;
 		global $user_ID;
 		
-		include('FormOverview.php');
+		include('FormOptions.php');
 	}
 		
 	/**

@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -61,6 +61,11 @@ Version now has a **graphical calender** and supports **widgets**! If you find a
 
 == Frequently Asked Questions ==
 
+= How do I integrate events in my blog =
+The easiest way is to use the widgets. If you want to use a graphical calendar you have to use the tag `{event_calendar}`. There are many
+other Tags and PHP functions (theme development) you can use for display information about events in your blog. Please refer to the plug-ins
+options page, which discribes all of it.
+
 = How do I display a single event =
 You can use any event details of one (or more) events in any of your posts and/or pages. All you have to do is to put the designated tags (e.g. {event_subject}) in your
 post's or page's content. To determine the event you can eighter pass the ID by URL using the parameter `event` (e.g. www.yourdomain.com/mypage/?event=238) or you
@@ -113,6 +118,9 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.0.3 = 
+* FIXED: Options page not working
 
 = 1.0.2 =
 * FIXED: Error in user capabilities check
