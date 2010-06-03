@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.0.3 
+Stable tag: 1.0.4 
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -37,7 +37,7 @@ Version now has a **graphical calender** and supports **widgets**! If you find a
 * Multi event output with many options
 * Event grouping in output (per day, month or year)
 * Multi output allows filters on every field
-* Output of all fields (author, publisher, dates, states,…)
+* Output of all fields (author, publisher, dates, states, ...)
 * Internationalization including dates
 
 = Planned =
@@ -114,10 +114,13 @@ using tags or functions. Please refer to the usage documentation in the calendar
 Please refer to the usage documentation in the calendar's options page. Since version this plug-in has built-in widgets
 for easy usage. If these widgets don't fit your needs, you may integration WP Calendar manually by using tags or php functions.
 
-For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebu.ch/integration-von-wp-calendar). This post 
+For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebu.ch/webdev/wp/integration-von-wp-calendar). This post 
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.0.4 =
+* FIXED: Single wrong event url, when allready a question mark (?) in the url 
 
 = 1.0.3 = 
 * FIXED: Options page not working
