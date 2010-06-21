@@ -112,7 +112,7 @@ function fse_transformStringToDate(input, format, sep) {
 					d = parseInt(token[i], 10);
 					break;
 				case "m":
-					m = parseInt(token[i], 10);
+					m = parseInt(token[i], 10) - 1;
 					break;
 				case "y":
 					y = parseInt(token[i], 10);
@@ -173,7 +173,7 @@ function fse_transformStringToDate(input, format, sep) {
 
 function fse_transformDateToString(date, format, sep) {
 	var d = date.getDate();
-	var m = date.getMonth();
+	var m = date.getMonth() + 1;
 	var y = date.getFullYear();
 	
 	// Write back

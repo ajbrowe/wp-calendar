@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.0.4 
+Stable tag: 1.0.5 
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -118,6 +118,10 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.0.5 =
+* FIXED: Wrong date calculation when picking dates
+* FIXED: URL not working in FullCalendar
 
 = 1.0.4 =
 * FIXED: Single wrong event url, when allready a question mark (?) in the url 
