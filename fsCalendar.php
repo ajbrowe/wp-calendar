@@ -5,7 +5,7 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.5
+Version: 1.0.6
 License: GPL
 Last Update: 21.06.2010
 */
@@ -701,7 +701,7 @@ class fsCalendar {
 			
 			// Covert URL Encodings
 			$m[1] = html_entity_decode($m[1]);
-			$m[1] = str_replace(array('&#8221;', '&#8243;'), array('"', '"'), $m[1]);
+			$m[1] = str_replace(array('&#8221;', '&#8243;', '&#8220;'), array('"', '"', '"'), $m[1]);
 			/*$m[1] = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $m[1]);
 			$m[1] = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $m[1]);*/
 						
@@ -731,8 +731,8 @@ class fsCalendar {
 				$token[] = $temp;	
 			}
 			
-			unset($opts); // Reset options
-			unset($opts_orig);
+			$opts = array();
+			$opts_orig = array();
 			if (count($token) > 1) {
 				for($i=1; $i<count($token); $i++) {
 					list($opt_orig, $val) = explode('=', $token[$i]);
@@ -742,7 +742,7 @@ class fsCalendar {
 					$opt = strtolower($opt_orig);
 					
 					// Remove " "
-					preg_match('/^"(.*)"$/', $val, $matches);
+					preg_match('/^"(.*)"$/s', $val, $matches);
 					if (count($matches) > 0) {
 						$val = $matches[1];
 					}
@@ -793,7 +793,10 @@ class fsCalendar {
 					break; 
 				case 'startdate':
 					if (!empty($evt->tsfrom)) {
-						$rep = $evt->getStart($opts['fmt'], 2);
+						if (isset($opts['fmt']))
+							$rep = $evt->getStart($opts['fmt'], 2);
+						else
+							$rep = $evt->getStart('', 2);
 					} else {
 						$rep = '';
 					}
@@ -812,7 +815,10 @@ class fsCalendar {
 							  date('Y', $evt->tsto) == date('Y', $evt->tsfrom) )) {
 							$rep = '';
 						} else {
-							$rep = $evt->getEnd($opts['fmt'], 2);
+							if (isset($opts['fmt']))
+								$rep = $evt->getEnd($opts['fmt'], 2);
+							else
+								$rep = $evt->getEnd('', 2);
 						}
 					} else {
 						$rep = '';	
@@ -821,7 +827,10 @@ class fsCalendar {
 				case 'starttime':
 					if (!empty($evt->tsfrom)) {
 						// Do not display if date AND time is the same
-						$rep = $evt->getStart($opts['fmt'], 3);
+						if (isset($opts['fmt']))
+							$rep = $evt->getStart($opts['fmt'], 3);
+						else
+							$rep = $evt->getStart('', 3);
 					} else {
 						$rep = '';	
 					}
@@ -837,7 +846,10 @@ class fsCalendar {
 						if ($l_sed == false && $evt->tsfrom == $evt->tsto) {
 							$ret = '';
 						} else {
-							$rep = $evt->getEnd($opts['fmt'], 3);
+							if (isset($opts['fmt']))
+								$rep = $evt->getEnd($opts['fmt'], 3);
+							else
+								$rep = $evt->getEnd('', 3);
 						}
 					} else {
 						$rep = '';	
@@ -846,7 +858,7 @@ class fsCalendar {
 				case 'duration':
 					$t = $opts['type'];
 					$a = $opts['suffix'];
-					$e = $opts['empty'];
+					$e = (isset($opts['empty']) ? $opts['empty'] : 0);
 					if (in_array($t, array('d','h','m'))) {
 						if ($evt->allday == 1) {
 							if ($t == 'd')
@@ -1068,7 +1080,7 @@ class fsCalendar {
 					$rep .= '</script>';
 					break;
 			}
-			$content = preg_replace('/'.preg_quote($m[0]).'/', $rep, $content, 1);
+			$content = preg_replace('/'.preg_quote($m[0], '/').'/', str_replace('$','\$',$rep), $content, 1);
 		}
 		
 		return $content;
@@ -1182,15 +1194,21 @@ class fsCalendar {
 		}
 		
 		// Sort must be by date, the user can choos, if asc or desc...
-		unset($filter['orderby']);
+		if (isset($filter['orderby'])) {
+			unset($filter['orderby']);
+		}
 		$filter['orderby'] = array('tsfrom');
 		
-		$dir = $filter['orderdir'];
-		if (isset($dir[0]))
-			$dir = $dir[0];
-		else
-			$dir = 'asc';
-		unset($filter['orderdir']);
+		if (isset($filter['orderdir'])) {
+			$dir = $filter['orderdir'];
+			if (isset($dir[0]))
+				$dir = $dir[0];
+			else
+				$dir = 'asc';
+			unset($filter['orderdir']);
+		} else {
+			$dir = 'asc';	
+		}
 		$filter['orderdir'] = array($dir);
 		
 		$ret = '';
