@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.6
+Version: 1.0.7
 License: GPL
-Last Update: 28.06.2010
+Last Update: 30.06.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -22,7 +22,7 @@ define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.0.3';
+	static $plugin_vers     = '1.0.7';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -165,7 +165,13 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookRegisterStyles() {
-		wp_enqueue_style('fullcalendar', self::$plugin_css_url.'fullcalendar.css');
+		// Check if user has its own CSS file in the theme folder
+		$custcss = get_template_directory().'/fullcalendar.css';
+		if (file_exists($custcss))
+			$css = get_bloginfo('template_url').'/fullcalendar.css';
+		else
+			$css = self::$plugin_css_url.'fullcalendar.css';
+		wp_enqueue_style('fullcalendar', $css);
 	}
 	
 	/**
@@ -247,7 +253,7 @@ class fsCalendar {
 					$menu_tmp = $menu[$i];
 				}
 				
-				// Wenn nächster Index frei ist, dann raus
+				// Wenn nï¿½chster Index frei ist, dann raus
 				if (!isset($menu[$i+1])) {
 					$menu[$i+1] = $menu_tmp;
 					break;
@@ -330,7 +336,8 @@ class fsCalendar {
 		$req = $_SERVER['REQUEST_URI'];
 		
 		
-		if (strpos($req, 'edit-pages.php') === false) {
+		if (strpos($req, 'edit-pages.php') === false &&
+		    strpos($req, 'edit.php?post_type=page') === false) {
 			return $this->hookFilterContent($title);
 		} else {
 			// Get Page Id from settings and mark it

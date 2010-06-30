@@ -2,8 +2,8 @@
 Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
-Tested up to: 2.9.2
-Stable tag: 1.0.6 
+Tested up to: 3.0
+Stable tag: 1.0.7 
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -12,11 +12,6 @@ WP Calendar is an easy-to-use calendar plug-in to manage all your events with ma
 usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
 To manage the event, the same authority checks as for post are used. The plug-in can be integrated in any theme by using 
 different functions and integrated in any post and page by using different tags.
-
-= Important Note =
-After 4 release candidates this is the first final version 1.0.0. Many bugs have been fixed during the last 6 months. The final
-Version now has a **graphical calender** and supports **widgets**! If you find any bugs, please leave a comment at the 
-[plug-in website](http://www.faebusoft.ch/downloads/wp-calendar).
 
 = Features =
 * Normal and all-day events
@@ -102,6 +97,10 @@ You must pass the ID of this refered event by the tag `{event_id; id=x}` before 
 Check your setting. You can predefine, if you want an end date always to be displayed, or only if it differs from the start date. You can also pass the parameter `alwaysshowenddate` when 
 using tags or functions. Please refer to the usage documentation in the calendar options.
 
+= I want to customize the style of the calendar =
+You can find the Stylesheet fullcalendar.css in the plugin directory, which is loaded by default. Just copy this file in your 
+theme's directory (not in a subdirectory of it). It will be loaded instead of the plugin's stylesheet.
+
 == Screenshots ==
 
 1. Blog integration
@@ -118,6 +117,10 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.0.7 =
+* FIXED: Page is not highlighted in admin page overview when using WP 3.x
+* FEATURE: Use of own calendar css, when placing it in your current theme directory using the filename fullcalendar.css
 
 = 1.0.6 =
 * FIXED: Parsing Error, when using closing HTML-Tags in Inline-Templates
