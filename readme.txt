@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.0.7 
+Stable tag: 1.1.0
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -117,6 +117,11 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.1.0 =
+* FIXED: Removed duplicate option `Events per Page`
+* FIXED: Settings page now using WP Settings API
+* FEATURE: Settings page completely reworked
 
 = 1.0.7 =
 * FIXED: Page is not highlighted in admin page overview when using WP 3.x

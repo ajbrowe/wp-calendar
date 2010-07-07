@@ -3,10 +3,12 @@ if ( !defined('ABSPATH') )
 	die('-1');
 
 // Base Link
-$bl = 'admin.php?page='.self::$plugin_filename;
+$bl = 'admin.php?page='.fsCalendar::$plugin_filename;
 $bl_new = 'admin.php?page=wp-cal-add';
 
 $event_actions = array('delete','publish','draft');
+
+$fatal = $errors = $success = array();
 
 // If any action is defined, get id and validate
 if (isset($_GET['action'])) {
@@ -17,7 +19,7 @@ if (isset($_GET['action'])) {
 			$e = new fsEvent(intval($_GET['event']));
 			
 			if (empty($e->eventid)) {
-				$errors[] = sprintf(__('The event %d does not exist', self::$plugin_textdom), $e->eventid);
+				$errors[] = sprintf(__('The event %d does not exist', fsCalendar::$plugin_textdom), $e->eventid);
 			}
 		}
 	}
@@ -55,19 +57,19 @@ if (isset($_GET['action'])) {
 						}
 					}
 					if (!empty($del_s) && empty($del_e)) {
-						$success[] = __ngettext('Event successfully deleted', 'Events successfully deleted', $del_s, self::$plugin_textdom);
+						$success[] = __ngettext('Event successfully deleted', 'Events successfully deleted', $del_s, fsCalendar::$plugin_textdom);
 					} elseif (empty($del_s) && !empty($del_e)) {
-						$errors[] = __ngettext('No permission to delete event', 'No permission to delete events', $del_e, self::$plugin_textdom);
+						$errors[] = __ngettext('No permission to delete event', 'No permission to delete events', $del_e, fsCalendar::$plugin_textdom);
 					} elseif (!empty($del_s) && !empty($del_e)) {
-						$errors[] = __('Some events could not be deleted because of missing permissions', self::$plugin_textdom);
+						$errors[] = __('Some events could not be deleted because of missing permissions', fsCalendar::$plugin_textdom);
 					}
 				} else {
 					if ($e->userCanDeleteEvent()) {
 						$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents '.' WHERE eventid='.$e->eventid;
 						$wpdb->query($sql);
-						$success[] = __('Event successfully deleted', self::$plugin_textdom);
+						$success[] = __('Event successfully deleted', fsCalendar::$plugin_textdom);
 					} else {
-						$errors[] = __('No permission to delete event', self::$plugin_textdom);
+						$errors[] = __('No permission to delete event', fsCalendar::$plugin_textdom);
 					}
 				}
 				break;
@@ -105,11 +107,11 @@ if (isset($_GET['action'])) {
 						}
 					}
 					if (!empty($c_s) && empty($c_e)) {
-						$success[] = __ngettext('Event successfully changed', 'Events successfully changed', $c_s, self::$plugin_textdom);
+						$success[] = __ngettext('Event successfully changed', 'Events successfully changed', $c_s, fsCalendar::$plugin_textdom);
 					} elseif (empty($c_s) && !empty($c_e)) {
-						$errors[] = __ngettext('No permission to change event', 'No permission to change events', $c_e, self::$plugin_textdom);
+						$errors[] = __ngettext('No permission to change event', 'No permission to change events', $c_e, fsCalendar::$plugin_textdom);
 					} elseif (!empty($c_s) && !empty($c_e)) {
-						$errors[] = __('Some events could not be changed because of missing permissions', self::$plugin_textdom);
+						$errors[] = __('Some events could not be changed because of missing permissions', fsCalendar::$plugin_textdom);
 					}
 				} 
 				break;
@@ -117,7 +119,7 @@ if (isset($_GET['action'])) {
 	}
 }
 
-echo $this->pageStart(__('Edit Events', self::$plugin_textdom), '', 'icon-edit');
+echo $this->pageStart(__('Edit Events', fsCalendar::$plugin_textdom), '', 'icon-edit');
 
 // Bei Fatal Errors gleich wieder raus!
 if (count($fatal) > 0) {
@@ -146,26 +148,26 @@ if (count($success) > 0) {
 
 $filter = array();
 
-$filter_stat = $_GET['event_status'];
-if (isset(self::$valid_states[$filter_stat])) {
+$filter_stat = (isset($_GET['event_status']) ? $_GET['event_status'] : '');
+if (isset(fsCalendar::$valid_states[$filter_stat])) {
 	$filter['state'] = $filter_stat;
 	$link_actions = 'event_status='.$filter['state'].'&amp;';
 }
 
-$filter_author = intval($_GET['event_author']);
+$filter_author = (isset($_GET['event_author']) ? intval($_GET['event_author']) : 0);
 $user = new WP_User($filter_author);
 if (!empty($user->data->ID)) {
 	$filter['author'] = $filter_author;
 	$link_actions = 'event_author='.$filter['author'].'&amp;';
 }
 
-$filter_category = intval($_GET['event_category']);
+$filter_category = (isset($_GET['event_category']) ? intval($_GET['event_category']) : 0);
 if (!empty($filter_category)) {
 	$filter['categories'] = array($filter_category);
 	$link_actions = 'event_category='.$filter_category.'&amp;';
 }
 	
-$filter_date = intval($_GET['event_start']);
+$filter_date = (isset($_GET['event_start']) ? intval($_GET['event_start']) : 0);
 if ($filter_date > 0) {
 	$m = date('m', $filter_date);
 	$y = date('Y', $filter_date);
@@ -180,7 +182,7 @@ if ($filter_date > 0) {
 	$link_actions = 'event_start='.$filter_date.'&amp;';
 }
 
-$sort = $_GET['event_sort'];
+$sort = (isset($_GET['event_sort']) ? $_GET['event_sort'] : '');
 $sortstring = '';
 if (in_array($sort, array('subject', 'author', 'tsfrom', 'location'))) {
 	$sortstring = $sort;
@@ -199,15 +201,15 @@ if (in_array($sort, array('subject', 'author', 'tsfrom', 'location'))) {
 $bl_filter = $bl.'&amp;'.$link_actions;
 
 // Count Events (of different kind of states
-$event_count = $this->getEvents($filter, '', 0, 0, true);
+$event_count = $fsCalendar->getEvents($filter, '', 0, 0, true);
 
 $filter_count = $filter;
 
 unset($filter_count['state']);
-$event_count_total = $this->getEvents($filter_count, '', 0, 0, true);
-foreach(self::$valid_states as $k => $l) {
+$event_count_total = $fsCalendar->getEvents($filter_count, '', 0, 0, true);
+foreach(fsCalendar::$valid_states as $k => $l) {
 	$filter_count['state'] = $k;
-	$state_count[$k] = $this->getEvents($filter_count, '', 0, 0, true);
+	$state_count[$k] = $fsCalendar->getEvents($filter_count, '', 0, 0, true);
 }
 
 // If for the current state no events are selected, reset to all
@@ -233,14 +235,14 @@ if ($event_count > $epp) {
 	$limit = $start = $page = 0;
 }
 
-$events = $this->getEvents($filter, $sortstring, $epp, $start);
+$events = $fsCalendar->getEvents($filter, $sortstring, $epp, $start);
 ?>
 
 <ul class="subsubsub">
 <?php 
 //$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents ');
-echo '<li><a '.(!isset($filter['state']) ? 'class="current"' : '').' href="'.$bl.'">'.__('All', self::$plugin_textdom).'<span class="count"> ('.$event_count_total.')</span></a></li>';
-foreach(self::$valid_states as $k => $l) {
+echo '<li><a '.(!isset($filter['state']) ? 'class="current"' : '').' href="'.$bl.'">'.__('All', fsCalendar::$plugin_textdom).'<span class="count"> ('.$event_count_total.')</span></a></li>';
+foreach(fsCalendar::$valid_states as $k => $l) {
 	//$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents '." WHERE state='$k'");
 	//if ($count !== false && $count > 0)
 	if (isset($state_count[$k]) && $state_count[$k] > 0)
@@ -255,7 +257,7 @@ foreach(self::$valid_states as $k => $l) {
 <input type="hidden" name="event_sort" value="<?php echo (isset($sort) ? $sort : ''); ?>" />
 <input type="hidden" name="event_sortdir" value="<?php echo (isset($sortdir) ? $sortdir : ''); ?>" />
 
-<input type="hidden" name="page" value="<?php echo self::$plugin_filename; ?>" />
+<input type="hidden" name="page" value="<?php echo fsCalendar::$plugin_filename; ?>" />
 
 
 <?php $this->printNavigationBar($filter, 1, $page, $epp, $event_count, $bl_filter); ?>
@@ -267,20 +269,20 @@ foreach(self::$valid_states as $k => $l) {
 				<input type="checkbox" />
 			</th>
 			<th id="subject" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('subject');">
-				<?php _e('Subject', self::$plugin_textdom);?></a>
-				<?php if ($sort == 'subject') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+				<?php _e('Subject', fsCalendar::$plugin_textdom);?></a>
+				<?php if ($sort == 'subject') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 			<th id="author" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('author');">
-				<?php _e('Author', self::$plugin_textdom);?></a>
-				<?php if ($sort == 'author') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+				<?php _e('Author', fsCalendar::$plugin_textdom);?></a>
+				<?php if ($sort == 'author') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 			<th id="from" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('tsfrom');">
-				<?php _e('Date', self::$plugin_textdom);?></a>
-				<?php if ($sort == 'tsfrom') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
-			<th id="to" class="manage-column" scope="col"><?php _e('Time', self::$plugin_textdom);?></th>
+				<?php _e('Date', fsCalendar::$plugin_textdom);?></a>
+				<?php if ($sort == 'tsfrom') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+			<th id="to" class="manage-column" scope="col"><?php _e('Time', fsCalendar::$plugin_textdom);?></th>
 			<th id="location" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('location');">
-				<?php _e('Location', self::$plugin_textdom);?></a>
-				<?php if ($sort == 'location') { echo '<img src="'.self::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
-			<th id="categories" class="manage-column" scope="col"><?php _e('Categories', self::$plugin_textdom);?></th>
-			<th id="date" class="manage-column" scope="col"><?php _e('State', self::$plugin_textdom);?></th>
+				<?php _e('Location', fsCalendar::$plugin_textdom);?></a>
+				<?php if ($sort == 'location') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+			<th id="categories" class="manage-column" scope="col"><?php _e('Categories', fsCalendar::$plugin_textdom);?></th>
+			<th id="date" class="manage-column" scope="col"><?php _e('State', fsCalendar::$plugin_textdom);?></th>
 		</tr>
 	</thead>
 	<tfoot>
@@ -288,20 +290,20 @@ foreach(self::$valid_states as $k => $l) {
 			<th class="manage-column column-cb check-column" scope="col">
 				<input type="checkbox" />
 			</th>
-			<th class="manage-column" scope="col"><?php _e('Subject', self::$plugin_textdom);?></th>
-			<th class="manage-column" scope="col"><?php _e('Author', self::$plugin_textdom);?></th>
-			<th class="manage-column" scope="col"><?php _e('Date', self::$plugin_textdom);?></th>
-			<th class="manage-column" scope="col"><?php _e('Time', self::$plugin_textdom);?></th>
-			<th class="manage-column" scope="col"><?php _e('Location', self::$plugin_textdom);?></th>
-			<th class="manage-column" scope="col"><?php _e('Categories', self::$plugin_textdom);?></th>
-			<th class="manage-column" scope="col"><?php _e('State', self::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('Subject', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('Author', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('Date', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('Time', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('Location', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('Categories', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column" scope="col"><?php _e('State', fsCalendar::$plugin_textdom);?></th>
 		</tr>
 	</tfoot>
 	<tbody>
 		<?php
 		if (!is_array($events) || count($events) == 0) {
 			?>
-			<tr><td colspan="8"><?php _e('No events found', self::$plugin_textdom); ?></td></tr>
+			<tr><td colspan="8"><?php _e('No events found', fsCalendar::$plugin_textdom); ?></td></tr>
 			<?php 
 		} else { 
 			foreach($events as $e) { 
@@ -314,13 +316,13 @@ foreach(self::$valid_states as $k => $l) {
 				<td>
 					<strong>
 					<a class="row-title" 
-						title="<?php _e('Edit', self::$plugin_textdom); ?> “<?php echo esc_attr($e->subject); ?>”" 
+						title="<?php _e('Edit', fsCalendar::$plugin_textdom); ?> “<?php echo esc_attr($e->subject); ?>”" 
 						href="<?php echo $bl; ?>&amp;action=<?php echo ($e->userCanEditEvent() == true ? 'edit' : 'view'); ?>&amp;event=<?php echo esc_attr($e->eventid); ?>">
 					<?php echo esc_attr($e->subject); ?></a>
 					<?php 
 					switch($e->state) {
 						case 'draft':
-							echo ' - '.__('Draft', self::$plugin_textdom);
+							echo ' - '.__('Draft', fsCalendar::$plugin_textdom);
 							break;	
 					}
 					?>
@@ -328,24 +330,24 @@ foreach(self::$valid_states as $k => $l) {
 					<div class="row-actions">
 					<span class="edit">
 						<?php if ($e->userCanEditEvent()) { ?>
-						<a title="<?php _e('Edit this event', self::$plugin_textdom); ?>" 
-							href="<?php echo $bl; ?>&amp;action=edit&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('Edit', self::$plugin_textdom);?></a> |
+						<a title="<?php _e('Edit this event', fsCalendar::$plugin_textdom); ?>" 
+							href="<?php echo $bl; ?>&amp;action=edit&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('Edit', fsCalendar::$plugin_textdom);?></a> |
 						<?php } else { ?>
-							<?php _e('Edit', self::$plugin_textdom);?> | 
+							<?php _e('Edit', fsCalendar::$plugin_textdom);?> | 
 						<?php } ?> 
 					</span>
 					<span class="delete">
 						<?php if ($e->userCanDeleteEvent()) { ?>
-						<a class="submitdelete" onclick="if ( confirm('<?php printf(__("You are about to delete this event \\'%s\\'\\n \\'Cancel\\' to stop, \\'OK\\' to delete.", self::$plugin_textdom), esc_attr($e->subject)); ?>') ) { return true;}return false;"
+						<a class="submitdelete" onclick="if ( confirm('<?php printf(__("You are about to delete this event \\'%s\\'\\n \\'Cancel\\' to stop, \\'OK\\' to delete.", fsCalendar::$plugin_textdom), esc_attr($e->subject)); ?>') ) { return true;}return false;"
 							href="<?php echo $bl; ?>&amp;action=delete&event=<?php echo esc_attr($e->eventid); ?>" 
-							title="<?php _e('Delete this event', self::$plugin_textdom); ?>"><?php _e('Delete', self::$plugin_textdom);?></a> | 
+							title="<?php _e('Delete this event', fsCalendar::$plugin_textdom); ?>"><?php _e('Delete', fsCalendar::$plugin_textdom);?></a> | 
 						<?php } else { ?>
-							<?php _e('Delete', self::$plugin_textdom);?> | 
+							<?php _e('Delete', fsCalendar::$plugin_textdom);?> | 
 						<?php } ?>
 					</span>
 					<span class="view">
-						<a title="<?php _e('View this event', self::$plugin_textdom); ?>" 
-							href="<?php echo $bl; ?>&amp;action=view&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('View', self::$plugin_textdom);?></a>
+						<a title="<?php _e('View this event', fsCalendar::$plugin_textdom); ?>" 
+							href="<?php echo $bl; ?>&amp;action=view&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('View', fsCalendar::$plugin_textdom);?></a>
 					</span>
 					</div>
 				</td>
@@ -367,7 +369,7 @@ foreach(self::$valid_states as $k => $l) {
 				<td>
 					<?php 
 					if ($e->allday == true) {
-						_e('All day event', self::$plugin_textdom);
+						_e('All day event', fsCalendar::$plugin_textdom);
 					} else {
 						echo $e->getStart('', 3).'<br />'.$e->getEnd('', 3);
 					}
@@ -386,7 +388,7 @@ foreach(self::$valid_states as $k => $l) {
 					
 				}
 				?></td>
-				<td><?php echo esc_attr(self::$valid_states[$e->state]); ?> <?php _e('on', self::$plugin_textdom) ?><br />
+				<td><?php echo esc_attr(fsCalendar::$valid_states[$e->state]); ?> <?php _e('on', fsCalendar::$plugin_textdom) ?><br />
 				<?php echo date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
 			</tr>
 			<?php
@@ -396,7 +398,7 @@ foreach(self::$valid_states as $k => $l) {
 	</tbody>
 </table>
 <?php $this->printNavigationBar($filter, 2, $page, $epp, $event_count, $bl_filter); ?>
-<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', self::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl_new; ?>';" /></p>
+<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', fsCalendar::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl_new; ?>';" /></p>
 </form>
 <?php
 echo $this->pageEnd();

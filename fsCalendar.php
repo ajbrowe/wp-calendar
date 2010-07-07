@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.0.7
+Version: 1.1.0
 License: GPL
-Last Update: 30.06.2010
+Last Update: 07.07.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -19,10 +19,16 @@ define('FSE_GROUPBY_DAY', 'd'); // Event grouping by day
 define('FSE_GROUPBY_MONTH', 'm'); // Event grouping by month
 define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 
+require_once('fsCalendarSettings.php');
+require_once('fsCalendarAdmin.php');
+require_once('fsCalendarEvent.php');
+require_once('fsCalendarWidgets.php');
+require_once('fsCalendarFunctions.php');
+
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.0.7';
+	static $plugin_vers     = '1.1.0';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -51,6 +57,8 @@ class fsCalendar {
 								 'publishdate',
 								 'state'
 								 );
+
+	var $admin;
 								 
 	// Options for Fullcalendar
 	/*static $full_calendar_header_opts = array('title', 'prev', 'next', 'prevYear', 
@@ -80,7 +88,6 @@ class fsCalendar {
 									'fse_show_enddate' => 0,
 									'fse_groupby' => 'm',
 									'fse_groupby_header' => 'M Y',
-									'fse_epp' => 15,
 									'fse_page_create_notice' => 0,
 									'fse_adm_gc_enabled' => 1,
 									'fse_adm_gc_mode' => 0,
@@ -109,40 +116,25 @@ class fsCalendar {
 		add_action('init',                 array(&$this, 'hookInit'));
 		add_action('init',                 array(&$this, 'hookRegisterScripts'));
 		add_action('init',                 array(&$this, 'hookRegisterStyles'));
+		add_action('widgets_init', 		   array(&$this, 'hookRegisterWidgets'));
 		
 		add_action( 'wp_ajax_nopriv_wpcal-getevents', 
 										   array(&$this, 'hookAjaxGetEvents'));
 		add_action( 'wp_ajax_wpcal-getevents', 
 										   array(&$this, 'hookAjaxGetEvents'));
 		
-		
-		add_action('widgets_init', 		   array(&$this, 'hookRegisterWidgets'));
-		
-		// Admin Hooks
-		add_action('admin_menu',           array(&$this, 'hookAddAdminMenu'), 98);
-		add_action('admin_menu',           array(&$this, 'hookOrderAdminMenu'), 99);
-		add_action('admin_init',           array(&$this, 'hookRegisterScriptsAdmin'));
-		add_action('admin_init',           array(&$this, 'hookRegisterStylesAdmin'));
-		
-		
-		
-		add_filter('plugin_action_links',  array(&$this, 'hookAddPlugInSettingsLink'), 10, 2 );
 		add_filter('the_title',            array(&$this, 'hookFilterTitle'), 1, 2);
 		add_filter('wp_title',             array(&$this, 'hookFilterPageTitle'));
 		add_filter('the_content',          array(&$this, 'hookFilterContent'));
 		add_filter('get_pages',            array(&$this, 'hookHidePageFromSelection'));
-
-		// Add some Filter 
-		/*if (get_magic_quotes_gpc() == false) {
-			foreach(self::$plugin_options as $k => $v) {
-				if (!is_int($v)) {
-					add_filter('option_'.$k, 'stripslashes');
-				}
-			}
-		}*/
 		
 		register_activation_hook(__FILE__, array(&$this, 'hookActivate'));
 		register_uninstall_hook(__FILE__,  array(&$this, 'hookUninstall'));
+		
+		// Init Admin
+		if (is_admin()) {
+			$this->admin = new fsCalendarAdmin();
+		}
 	}
 
 	/**
@@ -155,23 +147,20 @@ class fsCalendar {
 									   'publish'=>__('Published', self::$plugin_textdom));
 	}
 	
-	function hookRegisterWidgets() {
-		register_widget('WPCalendarGrouped');
-		register_widget('WPCalendarSimple');
-	}
-	
 	/**
 	 * Register Styles to Load
 	 * @return void
 	 */
 	function hookRegisterStyles() {
-		// Check if user has its own CSS file in the theme folder
-		$custcss = get_template_directory().'/fullcalendar.css';
-		if (file_exists($custcss))
-			$css = get_bloginfo('template_url').'/fullcalendar.css';
-		else
-			$css = self::$plugin_css_url.'fullcalendar.css';
-		wp_enqueue_style('fullcalendar', $css);
+		if (!is_admin()) {
+			// Check if user has its own CSS file in the theme folder
+			$custcss = get_template_directory().'/fullcalendar.css';
+			if (file_exists($custcss))
+				$css = get_bloginfo('template_url').'/fullcalendar.css';
+			else
+				$css = self::$plugin_css_url.'fullcalendar.css';
+			wp_enqueue_style('fullcalendar', $css);
+		}
 	}
 	
 	/**
@@ -179,152 +168,25 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookRegisterScripts() {
-		wp_enqueue_script('jquery');
-		wp_enqueue_script('jquery-ui-core');
-		wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.js');
-		//wp_enqueue_script('fullcalendar-min', self::$plugin_js_url.'fullcalendar.min.js');
-		
-		// Pass Ajax Url to Javascript Paraemter
-		wp_localize_script('fullcalendar', 'WPCalendar', array('ajaxUrl'=>admin_url('admin-ajax.php')));
-	}
-	
-	/**
-	 * Creates a menu entry in the settings menu
-	 * @return void
-	 */
-	function hookAddAdminMenu() {
-		add_menu_page(   __('Edit events', self::$plugin_textdom),
-						 __('Calendar', self::$plugin_textdom), 
-						 'edit_posts', 
-						 self::$plugin_filename, 
-						 array(&$this, 'createCalendarPage')); 
-		add_submenu_page(self::$plugin_filename, 
-						 __('Edit events', self::$plugin_textdom), 
-						 __('Edit', self::$plugin_textdom), 
-						 'edit_posts', 
-						 self::$plugin_filename, 
-						 array(&$this, 'createCalendarPage'));
-		add_submenu_page(self::$plugin_filename,
-						 __('Add new event', self::$plugin_textdom), 
-						 __('Add new', self::$plugin_textdom), 
-						 'edit_posts', 
-						 'wp-cal-add', 
-						 array(&$this, 'createCalendarAddPage'));
-		//self::$plugin_filename.'&action=new'
-		
-		// Options
-		$menutitle = '<img src="'.self::$plugin_img_url.'icon.png" alt=""> '.__('Calendar', self::$plugin_textdom);
-		add_submenu_page('options-general.php', 
-						 __('Calendar', self::$plugin_textdom), 
-						 $menutitle, 
-						 'manage_options', 
-						 'wp-cal-settings', 
-						 array(&$this, 'createCalendarSettingsPage'));
-	}
-	
-	/**
-	 * Changes the position of the created menu
-	 * @return void
-	 */
-	function hookOrderAdminMenu() {
-		global $menu;
-
-		foreach($menu as $k => $m) {
-			if ($m['2'] == self::$plugin_filename) {
-				$mym = $m;
-				unset($menu[$k]);
-			} elseif ($m[2] == 'edit-comments.php') {
-				$myi = $k;
-			}
-		}
-		
-		if (!isset($mym) || !isset($myi))
-			return;
-			
-		$new_index = $myi + 1;
-
-		
-		// Make sure, no menu is overriden..
-		if (isset($menu[$new_index])) {
-			$corr = $new_index;
-			for ($i=$new_index; true; $i+=5) {
-				
-				if (!isset($menu_tmp)) {
-					$menu_tmp = $menu[$i];
-				}
-				
-				// Wenn n�chster Index frei ist, dann raus
-				if (!isset($menu[$i+1])) {
-					$menu[$i+1] = $menu_tmp;
-					break;
-				} else {
-					$menu_tmp2 = $menu[$i+1];
-					$menu[$i+1] = $menu_tmp;
-					
-					$menu_tmp = $menu_tmp2;
-				}
-			}
-		}
-		
-		$menu[$new_index] = $mym;
-	}
-
-	/**
-	 * Loads all necesarry scripts for the settings page
-	 * @return void
-	 */
-	function hookRegisterScriptsAdmin() {
-		wp_enqueue_script('common');
-		wp_enqueue_script('jquery');
-		wp_enqueue_script('jquery-ui-core');
-		wp_enqueue_script('fs-datepicker', self::$plugin_js_url.'ui.datepicker.js');
-		wp_enqueue_script('fs-date', self::$plugin_js_url.'date.js');
-		wp_enqueue_script(self::$plugin_id, self::$plugin_js_url.'helper.js');
-				
-		if ((strpos($_SERVER['QUERY_STRING'], self::$plugin_filename) !== false && 
-		   ($_GET['action'] == 'new' ||  $_GET['action'] == 'edit')) ||
-		    $_GET['page'] == 'wp-cal-add') {
-			wp_enqueue_script('post');
-			if (user_can_richedit()) {
-				wp_enqueue_script('editor');
-				wp_enqueue_script('editor-functions');
-				wp_enqueue_script('jquery-ui-tabs');
-				wp_enqueue_script('media-upload');
-				wp_enqueue_script('tiny_mce');
-				
-				add_action('admin_print_footer_scripts', 'wp_tiny_mce', 25 );
-			}
+		if (!is_admin()) {
+			wp_enqueue_script('jquery');
+			wp_enqueue_script('jquery-ui-core');
+			wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.js');
+			//Pass Ajax Url to Javascript Paraemter
+			wp_localize_script('fullcalendar', 'WPCalendar', array('ajaxUrl'=>admin_url('admin-ajax.php')));
 		}
 	}
-
+	
+	
 	/**
-	 * Loads all necessary stylesheets for the admin interface
+	 * Register Widgets
 	 * @return void
 	 */
-	function hookRegisterStylesAdmin() {
-		wp_enqueue_style('dashboard');
-		wp_enqueue_style('thickbox');
-		wp_enqueue_style('fs-styles-dp', self::$plugin_css_url.'jquery-ui-1.7.2.custom.css');
-		wp_enqueue_style('fs-styles', self::$plugin_css_url.'default.css');
-		wp_enqueue_style('wp-calendar', self::$plugin_css_url.'wpcalendar.css');
+	function hookRegisterWidgets() {
+		register_widget('WPCalendarGrouped');
+		register_widget('WPCalendarSimple');
+	}
 		
-		/*if (strpos($_SERVER['QUERY_STRING'], self::$plugin_filename) !== false && 
-		   ($_GET['action'] == 'new' || $_GET['action'] == 'edit')) {
-			wp_enqueue_style('post');
-		}*/
-	}
-	
-	/**
-	 * Adds a "Settings" link for this plug-in in the plug-in overview
-	 * @return void
-	 */
-	function hookAddPlugInSettingsLink($links, $file) {
-		if ($file == self::$plugin_filename) {
-			array_unshift($links, '<a href="options-general.php?page='.$file.'&amp;action=settings">'.__('Settings', self::$plugin_textdom).'</a>');
-		}
-		return $links;
-	}
-	
 	/**
 	 * Replaces any {event*} tags in the title
 	 * @param $title
@@ -377,9 +239,8 @@ class fsCalendar {
 	function hookHidePageFromSelection($pages) {
 		
 		// Never hide in admin interface
-		$req = $_SERVER['REQUEST_URI'];
-		if (strpos($req,'wp-admin/') !== false) {
-			return $pages;	
+		if (is_admin()) {
+			return $pages;
 		}
 		
 		$pagehide = intval(get_option('fse_page_hide'));
@@ -430,8 +291,8 @@ class fsCalendar {
 			$e['id'] = $evt->eventid;
 			$e['title'] = $evt->subject;
 			$e['allDay'] = ($evt->allday == 1 ? true : false);
-			$e['start'] = $evt->tsfrom;
-			$e['end'] = $evt->tsto;
+			$e['start'] = $evt->tsfrom; //date_i18n('c', $evt->tsfrom);
+			$e['end'] = $evt->tsto; //date_i18n('c', $evt->tsto);
 			$e['editable'] = false;
 			$events_out[] = $e;
 		}
@@ -442,200 +303,6 @@ class fsCalendar {
 		echo $response;
 		
 		exit;
-	}
-	
-	function createCalendarPage() {
-		global $wpdb;
-		global $user_ID;
-		
-		if (isset($_GET['action'])) {
-			if ($_GET['action'] == 'edit') {
-				$this->createCalendarEditPage();
-				return;
-			} elseif ($_GET['action'] == 'view' ) {
-				
-			} elseif ($_GET['action'] == 'new') {
-				$this->createCalendarAddPage();
-				return;
-			}
-		}
-		
-		$evt->eventid = 0;
-		include('FormOverview.php');
-	}
-	
-	function createCalendarEditPage() {
-		global $wpdb;
-		global $user_ID;
-		
-		$evt->eventid = intval($_GET['event']);
-		include('FormEvent.php');
-	}
-	
-	function createCalendarAddPage() {
-		global $wpdb;
-		global $user_ID;
-		
-		$evt->eventid = 0;
-		include('FormEvent.php');
-	}
-	
-	function createCalendarSettingsPage() {
-		global $wpdb;
-		global $user_ID;
-		
-		include('FormOptions.php');
-	}
-		
-	/**
-	 * Creates the Postbox for category selection
-	 * @param $selected_cats
-	 * @param $view
-	 * @return unknown_type
-	 */	
-	function postBoxCategories($selected_cats, $view = false) {
-	
-		if ($view == false) {
-			echo '<ul id="category-tabs">
-				<li class="tabs"><a href="#categories-all" tabindex="3">'.__( 'All Categories' ).'</a></li>
-				<li class="hide-if-no-js"><a href="#categories-pop" tabindex="3">'.__( 'Most Used' ).'</a></li>
-			</ul>
-			
-			<div id="categories-pop" class="tabs-panel" style="display: none;">
-				<ul id="categorychecklist-pop" class="categorychecklist form-no-clear" >';
-			$popular_ids = wp_popular_terms_checklist('category');
-				echo '</ul>
-			</div>
-			
-			<div id="categories-all" class="tabs-panel">
-				<ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
-				// Call it without any post id, but with selected categories instead!
-				wp_category_checklist(0, false, $selected_cats, $popular_ids);
-				echo '</ul>
-			</div>';
-			
-			if ( current_user_can('manage_categories') ) {
-				echo '<div id="category-adder" class="wp-hidden-children">
-					<h4><a id="category-add-toggle" href="#category-add" class="hide-if-no-js" tabindex="3">'.__( '+ Add New Category' ).'</a></h4>
-					<p id="category-add" class="wp-hidden-child">
-					<label class="screen-reader-text" for="newcat">'.__( 'Add New Category' ).'</label><input type="text" name="newcat" id="newcat" class="form-required form-input-tip" value="'.esc_attr( 'New category name' ).'" tabindex="3" aria-required="true"/>
-					<label class="screen-reader-text" for="newcat_parent">'.__('Parent category').':</label>';
-				wp_dropdown_categories( array( 'hide_empty' => 0, 'name' => 'newcat_parent', 'orderby' => 'name', 'hierarchical' => 1, 'show_option_none' => __('Parent category'), 'tab_index' => 3 ) );
-					echo '<input type="button" id="category-add-sumbit" class="add:categorychecklist:category-add button" value="'.esc_attr( 'Add' ).'" tabindex="3" />';
-				wp_nonce_field( 'add-category', '_ajax_nonce', false );
-					echo '<span id="category-ajax-response"></span></p>
-				</div>';
-			}
-		} else {
-			$cats = get_categories(array('hide_empty'=>false));
-			foreach($cats as $c) {
-				$ca[$c->cat_ID] = $c->name;
-			}
-			$first = true;
-			foreach($selected_cats as $c) {
-				if ($first == true)
-					$first = false;
-				else
-					echo ', ';
-				echo $ca[$c];
-			}
-		}
-	}
-	
-	/**
-	 * Creates the filter and pagination bar in the overview
-	 * @param $filter
-	 * @param $part
-	 * @param $page
-	 * @param $epp
-	 * @param $count
-	 * @param $bl
-	 * @return unknown_type
-	 */
-	function printNavigationBar($filter = array(), $part = 1, $page = 1, $epp = 0, $count = 0, $bl = '') {
-		global $wpdb;
-		?>
-		<div class="tablenav">
-			<div class="alignleft actions">
-				<select name="action<?php echo ($part == 2 ? '2' : ''); ?>">
-					<option selected="selected" value=""><?php _e('Choose action', self::$plugin_textdom); ?></option>
-					<option value="delete"><?php _e('Delete', self::$plugin_textdom); ?></option>
-					<?php 
-					if ($this->userCanPublishEvents()) {
-						echo '<option value="publish">'.__('Publish', self::$plugin_textdom).'</option>';
-					}
-					?>
-					<?php 
-					if ($this->userCanEditEvents()) {
-						echo '<option value="draft">'.__('Set to Draft', self::$plugin_textdom).'</option>';
-					}
-					?>
-				</select>
-				<input id="doaction" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', self::$plugin_textdom); ?>" />
-				<?php if ($part == 1) {?>
-					<select name="event_start">
-					<option value="-1"<?php echo ($filter['???'] == -1 ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', self::$plugin_textdom); ?></option>
-					<option value="0"<?php echo ($filter['???'] == 0 ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', self::$plugin_textdom); ?></option>
-					<?php 
-					$min = $wpdb->get_var('SELECT MIN(tsfrom) AS min FROM '.$wpdb->prefix.'fsevents');
-					$max = $wpdb->get_var('SELECT MAX(tsto)   AS max FROM '.$wpdb->prefix.'fsevents');
-					if ($min != NULL && $max != NULL) {
-						$ms = date('m', $min);
-						$ys = date('Y', $min);
-						$me = date('m', $max);
-						$ye = date('Y', $max);
-						
-						while($ys <= $ye) {
-							while($ms<=12 && ($ys < $ye || $ms <= $me)) {
-								$time = mktime(0, 0, 0, $ms, 1, $ys);
-								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date_i18n('F Y', $time).'</option>';
-								$ms++;
-							}
-							$ms = 1;
-							$ys++;
-						}
-					}
-					?>
-					</select>
-					
-					<?php 
-					$dropdown_options = array('show_option_all' => __('View all categories'), 
-											  'hide_empty' => 0, 
-											  'hierarchical' => 1, 
-											  'show_count' => 0, 
-											  'name' => 'event_category', 
-											  'orderby' => 'name', 
-											  'selected' => $filter['categories'][0]);
-					wp_dropdown_categories($dropdown_options);
-					?>
-					<input id="event-query-submit" class="button-secondary" type="submit" value="<?php _e('Filter', self::$plugin_textdom);?>" />
-				<?php } ?>
-			</div>
-		<?php
-		
-		if ($count > $epp) {
-			$evon = ($page - 1) * $epp + 1;
-			$ebis = $page * $epp;
-			$pages = ceil($count/$epp);
-		?>
-			<div class="tablenav-pages">		
-			<span class="displaying-num"><?php printf('Showing %d-%d of %d', $evon, $ebis, $count); ?></span>
-				<?php 
-				if ($page > 1) 
-					echo '<a class="prev page-numbers" href="'.$bl.'paged=1">&laquo;</a>'; 
-				for($i=1; $i<=$pages; $i++) {
-					if ($i == $page)
-						echo '<span class="page-numbers current">'.$i.'</span>';
-					else
-						echo '<a class="page-numbers" href="'.$bl.'paged='.$i.'">'.$i.'</a>';
-				} 
-				if ($page < $pages)
-					echo '<a class="next page-numbers" href="'.$bl.'paged='.$pages.'">&raquo;</a>';
-				?>
-			</div>
-		<?php } ?>
-		</div>
-		<?php 
 	}
 	
 	/**
@@ -1572,71 +1239,6 @@ class fsCalendar {
 	}
 	
 	/**
-	 * Returns the page start html code
-	 * @param $title Postbox Title
-	 * @return String Page start html
-	 */
-	function pageStart($title, $message = '', $icon = '') {
-		if (empty($icon)) {
-			$icon = 'icon-options-general';	
-		}
-		$ret =  '<div class="wrap">
-				<div id="'.$icon.'" class="icon32"><br /></div>
-				<div id="otc"><h2>'.$title.'</h2>';
-		if (!empty($message)) 
-			$ret .= '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
-		$ret .= '</div>';
-		return $ret;
-	}
-	
-	/**
-	 * Returns the page end html code
-	 * @return String Page end html
-	 */
-	function pageEnd() {
-		return '</div>';
-	}
-	
-	/**
-	 * Returns the code for a widget container
-	 * @param $width Width of Container (percent)
-	 * @return String Container start html
-	 */
-	function pagePostContainerStart($width) {
-		return '<div class="postbox-container" style="width:'.$width.'%;">
-					<div class="metabox-holder">	
-						<div class="meta-box-sortables">';
-	}
-	
-	/**
-	 * Returns the code for the end of a widget container
-	 * @return String Container end html
-	 */
-	function pagePostContainerEnd() {
-		return '</div></div></div>';
-	}
-	
-	/**
-	 * Returns the code for the start of a postbox
-	 * @param $id Unique Id
-	 * @param $title Title of pagebox
-	 * @return String Postbox start html
-	 */
-	function pagePostBoxStart($id, $title) {
-		return '<div id="'.$id.'" class="postbox">
-			<h3 class="hndle"><span>'.$title.'</span></h3>
-			<div class="inside">';
-	}
-	
-	/**
-	 * Returns the code for the end of a postbox
-	 * @return String Postbox end html
-	 */
-	function pagePostBoxEnd() {
-		return '</div></div>';
-	}
-	
-	/**
 	 * Adds all necessary options and creates the necessary tables
 	 */
 	function hookActivate() {
@@ -1733,481 +1335,6 @@ class fsCalendar {
 			remove_option($k);
 		}
 	}
-}
-
-class fsEvent {
-	var $eventid = 0;
-	var $subject;
-	var $location; 
-	var $description;
-	var $tsfrom;
-	var $tsto;
-	var $allday;
-	var $author;
-	var $createdate;
-	var $publishauthor;
-	var $publishdate;
-	var $categories = array();
-	var $state;
-	
-	// For Admin only
-	var $date_admin_from;
-	var $date_admin_to;
-	var $time_admin_from;
-	var $tim_admin_to;
-	
-	// Formated values
-	var $author_t;
-	var $publishauthor_t;
-	var $categories_t = array();
-	
-	// Options
-	var $date_format;
-	var $time_format;
-	var $date_time_format;
-	var $date_admin_format;
-	var $time_admin_format;
-	
-	function fsEvent($eventid, $state = '', $admin_fields = true) {
-		global $wpdb;
-		
-		$this->loadOptions($admin_fields);
-			
-		$this->eventid = intval($eventid);
-		
-		if (empty($this->eventid)) {
-			return;
-		}
-		
-		if (!empty($state))
-			$sql = $wpdb->prepare('SELECT * FROM '.$wpdb->prefix.'fsevents '.' WHERE eventid='.$this->eventid.' AND state=%s', $state);
-		else
-			$sql = 'SELECT * FROM '.$wpdb->prefix.'fsevents '.' WHERE eventid='.$this->eventid;
-		
-		$ret = $wpdb->get_row($sql, OBJECT);
-		
-		if ($ret == NULL) {
-			$evt->eventid = 0;
-			return;
-		}
-		
-		$this->subject = $ret->subject;
-		$this->location = $ret->location;
-		$this->description = $ret->description;
-		$this->tsfrom = $ret->tsfrom;
-		$this->tsto = $ret->tsto;
-		$this->allday = $ret->allday;
-		$this->author = $ret->author;
-		$this->publishauthor = $ret->publishauthor;
-		$this->createdate = $ret->createdate;
-		$this->publishdate = $ret->publishdate;
-		$this->state = $ret->state;
-		
-		$this->categories = $wpdb->get_col('SELECT catid FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid);
-		
-		foreach($this as $k => $v) {
-			if (is_string($v)) {
-				$this->{$k} = stripslashes($v);
-			}
-		}
-		
-		if (is_array($this->categories)) {
-			
-			// Get Cats description and move id to key
-			$cats = get_categories(array('hide_empty'=>false));
-			foreach($cats as $c) {
-				$ca[$c->cat_ID] = $c->name;	
-			}
-			unset($cats);
-			foreach($this->categories as $c) {
-				if (isset($ca[$c])) {
-					$this->categories_t[$c] = $ca[$c];
-				}
-			}
-		} else {
-			$this->categories = array();
-			$this->categories_t = array();
-		}
-		
-		// Get Usernames
-		$u = new WP_User($this->author);
-		if (isset($u->display_name))
-			$this->author_t = $u->display_name;
-		unset($u);
-		
-		if (!empty($this->publishauthor)) {
-			$u = new WP_User($this->publishauthor);
-			if (isset($u->display_name))
-				$this->publishauthor_t = $u->display_name;
-			unset($u);
-		}
-		
-		if ($admin_fields) {
-			$this->date_admin_from = date_i18n($this->date_admin_format, $this->tsfrom);
-			$this->date_admin_to   = date_i18n($this->date_admin_format, $this->tsto);
-			$this->time_admin_from = date_i18n($this->time_admin_format, $this->tsfrom);
-			$this->time_admin_to   = date_i18n($this->time_admin_format, $this->tsto);
-		}
-	}	
-
-	function loadOptions($admin_fields = true) {
-		// Load options
-		if (get_option('fse_df_wp') == 1)
-			$this->date_format = get_option('date_format');
-		else
-			$this->date_format = get_option('fse_df');
-		
-		if (get_option('fse_tf_wp') == 1)
-			$this->time_format = get_option('time_format');
-		else
-			$this->time_format = get_option('fse_tf');
-		
-		$this->date_time_format = $this->date_format.' '.$this->time_format;
-		
-		// Format dates for admin
-		if ($admin_fields == true) {
-			$fmt = get_option('fse_df_admin');
-			$sep = get_option('fse_df_admin_sep');
-			$admfmt = '';
-			for ($i=0; $i<strlen($fmt); $i++) {
-				if ($i > 0)
-					$admfmt .= $sep;
-				$admfmt .= $fmt[$i];
-			}
-			
-			$this->date_admin_format = $admfmt;
-			$this->time_admin_format = 'H:i';
-		}
-	}
-	
-	/**
-	 * Returns the formatted start date/time string
-	 * @param $fmt Format (See PHP function date())
-	 * @param $mode Mode (1=Date+Time, 2=Date only, 3=Time only)
-	 * @return String Formatted date string
-	 */
-	function getStart($fmt = '', $mode = 1) {
-		if (empty($this->tsfrom))
-			return '';
-			
-		if (empty($fmt)) {
-			switch($mode) {
-				case 1:
-					$fmt = $this->date_format.' '.$this->time_format;
-					break;
-				case 2:
-					$fmt = $this->date_format;
-					break;
-				case 3:
-					$fmt = $this->time_format;
-					break;
-			}
-		}
-		
-		return date_i18n($fmt, $this->tsfrom);
-	}
-	
-	/**
-	 * Returns the formatted end date/time string
-	 * @param $fmt Format (See PHP function date())
-	 * @param $mode Mode (1=Date+Time, 2=Date only, 3=Time only)
-	 * @return String Formatted date string
-	 */
-	function getEnd($fmt = '', $mode = 1) {
-		if (empty($this->tsto))
-			return '';
-			
-		if (empty($fmt)) {
-			switch($mode) {
-				case 1:
-					$fmt = $this->date_format.' '.$this->time_format;
-					break;
-				case 2:
-					$fmt = $this->date_format;
-					break;
-				case 3:
-					$fmt = $this->time_format;
-					break;
-			}
-		}
-		
-		return date_i18n($fmt, $this->tsto);
-	}
-	
-	function getDescription() {
-		return apply_filters('the_content', $this->description);
-	}
-	
-	function userCanPublishEvent() {
-		
-		if (empty($this->eventid))
-			return true;
-		
-		$ret = $this->userCanEditEvent($e);
-		if ($ret == false)
-			return false;
-		else
-			return current_user_can(2);	
-	}
-	
-	function userCanViewEvent() {
-		return current_user_can(0);
-	}
-	
-	/**
-	 * Check if the user can edit an event
-	 * If the user is contributor (level=1+): Only own events in draft state
-	 * If the user is author (level=2+): Only own events
-	 * If the user is editor+ (level=7+)
-	 * @param $e Event object
-	 * @return True, if use can edit an event
-	 */
-	function userCanEditEvent() {
-		global $user_ID;
-		
-		if (empty($this->eventid))
-			return true;
-		
-		if ($this->author != $user_ID) {
-			return current_user_can(7);	
-		// Edit of published only by editor!
-		} elseif ($this->state == 'publish') {
-			return current_user_can(7);
-		} else {
-			return current_user_can(1);	
-		}
-	}
-	
-	/**
-	 * Check if the user can delete an event
-	 * If the user is contributor (level=1+): Only own events in draft state
-	 * If the user is author (level=2+): Only own events
-	 * If the user is editor+ (level=7+)
-	 * @param $e Event object
-	 * @return True, if use can delete an event
-	 */
-	function userCanDeleteEvent() {
-		global $user_ID;
-		
-		if (empty($this->eventid))
-			return true;
-		
-		if ($this->author != $user_ID) {
-			return current_user_can(7);	
-		} elseif ($this->state == 'publish') {
-			return current_user_can(2);
-		} else {
-			return current_user_can(1);	
-		}
-	}
-	
-}
-
-/**
- * Returns a single events as an object
- * @param $eventid Event Id
- * @return Object of fsEvent
- */
-function fse_get_event($eventid) {
-	$e = new fsEvent($eventid, '', false);
-	if ($e->eventid == 0)
-		return false;
-	else
-		return $e;
-}
-
-function fse_print_events($args) {
-	global $fsCalendar;
-	
-	return $fsCalendar->printEvents($args);
-}
-
-function fse_print_events_list($args) {
-	global $fsCalendar;
-	
-	return $fsCalendar->printEventsList($args);
-}
-
-function fse_get_events($args = array()) {
-	global $fsCalendar;
-	
-	return $fsCalendar->getEventsExternal($args);
-}
-
-class WPCalendarGrouped extends WP_Widget {
-    function WPCalendarGrouped() {
-    	$widget_ops = array(
-    		'classname'=>'WPCalendarGrouped', 
-    		'description'=>__('Display Events grouped by day/month/year', fsCalendar::$plugin_textdom)
-    	);
-    	
-    	// Settings
-		$control_ops = array(); 
-		
-		parent::WP_Widget(false, __('WP Calendar (Grouped)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
-    }
-
-    /** @see WP_Widget::widget */
-    function widget($args, $instance) {		
-        extract($args);
-        $title = apply_filters('widget_title', $instance['title']);
-        echo $before_widget;
-        if ($title) {
-			echo $before_title.$title.$after_title;
-        }
-        
-        fse_print_events_list($instance);
-        
-        echo $after_widget;
-    }
-
-    /* Update values */
-    function update($new_instance, $old_instance) {				
-        return $new_instance;
-    }
-
-    /** @see WP_Widget::form */
-	function form($instance) {
-    	$defaults = array(
-    		'title'=>__('Upcoming Events', fsCalendar::$plugin_textdom),
-    		'number'=>get_option('fse_number'), 
-    		'groupby'=>get_option('fse_groupby'),
-    		'groupby_header'=>get_option('fse_groupby_header'),
-    		'template'=>get_option('fse_template_lst'),
-    		'showenddate'=>get_option('fse_show_enddate'),
-    		'include'=>'',
-    		'exclude'=>'',
-    		'author'=>'',
-    		'categories'=>''
-    	);
-    	
-    	// Abmischen der Argumente
-    	$instance = wp_parse_args((array)$instance, $defaults);
-    	
-        $title = esc_attr($instance['title']);
-        $number = intval($instance['number']);
-        $groupby_header = esc_attr($instance['groupby_header']);
-        $template = esc_attr($instance['template']);
-        $include = esc_attr($instance['include']);
-        $exclude = esc_attr($instance['exclude']);
-        $categories = esc_attr($instance['categories']);
-        ?>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><b><?php _e('Title', fsCalendar::$plugin_textdom); ?>:</b></label><br />
-			<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $title; ?>" style="width:100%;" />
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><b><?php _e('Number of events', fsCalendar::$plugin_textdom); ?>:</b></label><br />
-			<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" value="<?php echo $number; ?>" size="3" />
-		</p>
-		
-		<p>
-			<label for="<?php echo $this->get_field_id( 'groupby' ); ?>"><b><?php _e('Group by', fsCalendar::$plugin_textdom); ?>:</b></label><br />
-			<select id="<?php echo $this->get_field_id( 'groupby' ); ?>" name="<?php echo $this->get_field_name( 'groupby' ); ?>">
-				<option value="d"<?php echo ($instance['groupby'] == 'd' ? ' selected="selected"' : ''); ?>><?php _e('Day', fsCalendar::$plugin_textdom); ?></option>
-				<option value="m"<?php echo ($instance['groupby'] == 'm' ? ' selected="selected"' : ''); ?>><?php _e('Month', fsCalendar::$plugin_textdom); ?></option>
-				<option value="y"<?php echo ($instance['groupby'] == 'y' ? ' selected="selected"' : ''); ?>><?php _e('Year', fsCalendar::$plugin_textdom); ?></option>
-			</select>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'groupby_header' ); ?>"><b><?php _e('Group Header Format', fsCalendar::$plugin_textdom); ?>:</b></label><br />
-			<input id="<?php echo $this->get_field_id( 'groupby_header' ); ?>" name="<?php echo $this->get_field_name( 'groupby_header' ); ?>" value="<?php echo $groupby_header; ?>" size="10" /><br />
-			<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'template' ); ?>"><b><?php _e('Template', fsCalendar::$plugin_textdom); ?>:</b></label><br />
-			<textarea rows="5" style="width: 100%; font-size: 0.80em;" id="<?php echo $this->get_field_id( 'template' ); ?>" name="<?php echo $this->get_field_name( 'template' ); ?>"><?php echo $template; ?></textarea><br />
-			<small><?php _e('The whole template is automatically surrounded by the &lt;li&gt; tag.', fsCalendar::$plugin_textdom)?>.</small>
-		</p>
-		
-		<p><b>Filters</b> <small><a href=""><?php _e('Show/hide', fsCalendar::$plugin_textdom); ?></a></small></p>
-		<div id="wfilter-">
-		<p>
-			<label for="<?php echo $this->get_field_id( 'include' ); ?>"><?php _e('Event inclusion', fsCalendar::$plugin_textdom); ?>:</label><br />
-			<input id="<?php echo $this->get_field_id( 'include' ); ?>" name="<?php echo $this->get_field_name( 'include' ); ?>" value="<?php echo $include; ?>" style="width: 100%;" /><br />
-			<small><?php _e('A comma separated list of event ids, which should be displayed.', fsCalendar::$plugin_textdom)?></small>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'exclude' ); ?>"><?php _e('Event exclusion', fsCalendar::$plugin_textdom); ?>:</label><br />
-			<input id="<?php echo $this->get_field_id( 'exclude' ); ?>" name="<?php echo $this->get_field_name( 'exclude' ); ?>" value="<?php echo $exclude; ?>" style="width: 100%;" /><br />
-			<small><?php _e('A comma separated list of event ids, which should <b>not</b> be displayed.', fsCalendar::$plugin_textdom)?></small>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'categories' ); ?>"><?php _e('Categories', fsCalendar::$plugin_textdom); ?>:</label><br />
-			<input id="<?php echo $this->get_field_id( 'categories' ); ?>" name="<?php echo $this->get_field_name( 'categories' ); ?>" value="<?php echo $categories; ?>" style="width: 100%;" /><br />
-			<small><?php _e('A comma separated list of category ids.', fsCalendar::$plugin_textdom)?></small>
-		</p>
-		</div>
-        <?php 
-    }
-
-}
-
-class WPCalendarSimple extends WP_Widget {
-    function WPCalendarSimple() {
-    	$widget_ops = array(
-    		'classname'=>'WPCalendarSimple', 
-    		'description'=>__('Shows a number of events', fsCalendar::$plugin_textdom)
-    	);
-    	
-    	// Settings
-		$control_ops = array(); 
-		
-		parent::WP_Widget(false, __('WP Calendar (Simple)', fsCalendar::$plugin_textdom), $widget_ops, $control_ops);
-    }
-
-    /** @see WP_Widget::widget */
-    function widget($args, $instance) {		
-        extract($args);
-        $title = apply_filters('widget_title', $instance['title']);
-        echo $before_widget;
-        if ($title) {
-			echo $before_title.$title.$after_title;
-        }
-        
-        fse_print_events($instance);
-        
-        echo $after_widget;
-    }
-
-    /* Update values */
-    function update($new_instance, $old_instance) {				
-        return $new_instance;
-    }
-
-    /** @see WP_Widget::form */
-	function form($instance) {
-    	$defaults = array(
-    		'title'=>__('Upcoming Events', fsCalendar::$plugin_textdom),
-    		'number'=>get_option('fse_number'), 
-    		'template'=>get_option('fse_template_lst'),
-    		'showenddate'=>get_option('fse_show_enddate')
-    	);
-    	
-    	// Abmischen der Argumente
-    	$instance = wp_parse_args((array)$instance, $defaults);
-    	
-        $title = esc_attr($instance['title']);
-        $number = intval($instance['number']);
-        $template = esc_attr($instance['template']);
-        ?>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title', fsCalendar::$plugin_textdom); ?>:</label><br />
-			<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $title; ?>" style="width:100%;" />
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e('Number of events', fsCalendar::$plugin_textdom); ?>:</label><br />
-			<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" value="<?php echo $number; ?>" size="3" />
-		</p>
-				<p>
-			<label for="<?php echo $this->get_field_id( 'template' ); ?>"><?php _e('Template', fsCalendar::$plugin_textdom); ?>:</label><br />
-			<textarea rows="5" style="width: 100%; font-size: 0.80em;" id="<?php echo $this->get_field_id( 'template' ); ?>" name="<?php echo $this->get_field_name( 'template' ); ?>"><?php echo $template; ?></textarea><br />
-			<small><?php _e('The whole template is automatically surrounded by the &lt;li&gt; tag.', fsCalendar::$plugin_textdom)?>.</small>
-		</p>
-		
-        <?php 
-    }
-
 }
 
 if (class_exists('fsCalendar')) {

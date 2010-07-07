@@ -148,6 +148,19 @@ if (!current_user_can('manage_options'))
 		</table>
 	<?php echo $this->pagePostBoxEnd(); ?>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<?php echo $this->pagePostBoxStart('fse_display', __('Display', self::$plugin_textdom)); ?>
 		<table class="fs-table">
 		<tr><th colspan="2">
