@@ -248,7 +248,7 @@ class fsCalendarAdmin {
 	 * @param $bl
 	 * @return unknown_type
 	 */
-	function printNavigationBar($filter = array(), $part = 1, $page = 1, $epp = 0, $count = 0, $bl = '') {
+	function printNavigationBar($filter = array(), $part = 1, $page = 1, $epp = 20, $count = 0, $bl = '') {
 		global $wpdb;
 		global $fsCalendar;
 		?>

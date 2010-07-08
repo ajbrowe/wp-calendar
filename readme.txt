@@ -118,6 +118,10 @@ will be translated in the next few months to english.
 
 == Changelog ==
 
+= 1.1.1 =
+* FIXED: New events cannot be saved
+* FIXED: Possible division by zero error in event overview 
+
 = 1.1.0 =
 * FIXED: Removed duplicate option `Events per Page`
 * FIXED: Settings page now using WP Settings API

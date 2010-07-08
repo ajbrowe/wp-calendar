@@ -220,7 +220,7 @@ if (isset($filter['state'])) {
 }
 
 // Get Events per Page
-$epp = get_option('fse_epp');
+$epp = 20;
 
 if ($event_count > $epp) {
 	if (isset($_GET['paged'])) {

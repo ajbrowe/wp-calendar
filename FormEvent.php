@@ -48,7 +48,7 @@ $action = $_GET['action'];
 if ($action == 'new') {
 	if ($evt->eventid > 0) {		$action = 'edit';
 	} else {
-		if (!$this->userCanAddEvents()) {
+		if (!$fsCalendar->userCanAddEvents()) {
 			$fatal[] = __('No permission to create event', fsCalendar::$plugin_textdom);
 		}
 	}
@@ -58,7 +58,7 @@ if ($action == 'edit') {
 		$fatal[] = __('Event does not exist');
 	} else {
 		if (!$evt->userCanEditEvent()) {
-			if ($this->userCanViewEvents())
+			if ($fsCalendar->userCanViewEvents())
 				$action = 'view';
 			else
 				$fatal[] = __('No permission to edit event', fsCalendar::$plugin_textdom);
@@ -156,7 +156,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 						$errors[] = __('No permission to edit event', fsCalendar::$plugin_textdom);
 					}
 				} else {
-					if ($this->userCanAddEvents()) {
+					if ($fsCalendar->userCanAddEvents()) {
 						$time = time();
 						$sql = $wpdb->prepare("INSERT INTO ".$wpdb->prefix.'fsevents '."
 							(subject, tsfrom, tsto, allday, description, location, author, createdate, state)
