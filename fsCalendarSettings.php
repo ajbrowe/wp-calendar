@@ -77,6 +77,10 @@ class fsCalendarSettings {
 							   __('Show end date', fsCalendar::$plugin_textdom), 
 							   array(&$this, 'hookSettingOption_fse_show_enddate'), 
 							   'fse_global', 'fse_global');
+			add_settings_field('fse_allday_hide_time', 
+							   __('Show', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_allday_hide_time'), 
+							   'fse_global', 'fse_global');
 		}
 		
 					
@@ -358,6 +362,15 @@ class fsCalendarSettings {
 		<option value="0"<?php echo (get_option('fse_show_enddate') == 0 ? ' selected="selected"' : ''); ?>><?php _e('Only show end date, if different from start date', fsCalendar::$plugin_textdom)?></option>
 		</select>
 		<?php
+	}
+	
+	function hookSettingOption_fse_allday_hide_time() {
+		?>
+		<select name="fse_allday_hide_time">
+		<option value="1"<?php echo (get_option('fse_allday_hide_time') == 1 ? ' selected="selected"' : ''); ?>><?php _e('Hide time when all-day event', fsCalendar::$plugin_textdom)?></option>
+		<option value="0"<?php echo (get_option('fse_allday_hide_time') == 0 ? ' selected="selected"' : ''); ?>><?php _e('Always show time', fsCalendar::$plugin_textdom)?></option>
+		</select>
+		<?php		
 	}
 	
 	function hookSettingOption_fse_page() {
@@ -661,9 +674,10 @@ fse_print_events(
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_enddate; fmt=x; alwaysshowenddate=y}</code></th><td colspan="2"><?php _e("The event's end date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_starttime; fmt=x}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
+		<tr><th><code>{event_starttime; fmt=x; hideifallday=y}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> (using 0 or 1) if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
+		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y, ; hideifallday=z}</code></th><td colspan="2"><?php _e("The event's end time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?><br />
+		<tr><th><code>{event_allday; text=x}</code></th><td colspan="2"><?php _e("Use this tag to print out the parameter <code>text</code> if it is an allday event.", fsCalendar::$plugin_textdom); ?></td></tr>
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_duration; type=x; suffix=y; empty=z}</code></th><td colspan="2"><?php _e("The event's duration; Pass on of the values <code>d</code>, <code>h</code>, <code>m</code> to the argument 
 			<code>type</code> to get the days, hours and minutes. You can add a suffix to the output by passing the argument <code>suffix</code>. By default empty values are not printed out, by setting the argument <code>empty</code> to 1 you can change that behaviour.", fsCalendar::$plugin_textdom); ?><br />

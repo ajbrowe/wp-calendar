@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -121,6 +121,8 @@ will be translated in the next few months to english.
 = 1.1.1 =
 * FIXED: New events cannot be saved
 * FIXED: Possible division by zero error in event overview 
+* FEATURE: New option to hide time, if allday event. Also available as Parameter `hideifallday` for the tags `{event_starttime}` and `{event_endtime}`.
+* FEATURE: New shorttag to print a text if it is a all-day event (Usage: `{event_allday; text="(All-day Event)"}`)
 
 = 1.1.0 =
 * FIXED: Removed duplicate option `Events per Page`

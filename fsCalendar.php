@@ -7,7 +7,7 @@ Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
 Version: 1.1.1
 License: GPL
-Last Update: 08.07.2010
+Last Update: 09.07.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -100,7 +100,8 @@ class fsCalendar {
 									'fse_fc_col_month_fmt'=>'l',
 									'fse_fc_col_day_fmt'=>'l m/j',
 									'fse_load_jquery'=>1,
-									'fse_load_jqueryui'=>1
+									'fse_load_jqueryui'=>1,
+									'fse_allday_hide_time'=>1
 								);
 		self::$plugin_filename = plugin_basename( __FILE__ );
 		self::$plugin_dir      = dirname(self::$plugin_filename);
@@ -339,6 +340,7 @@ class fsCalendar {
 		}
 
 		$showenddate = get_option('fse_show_enddate') == 1 ? true : false;
+		$hideifallday = get_option('fse_allday_hide_time') == 1 ? true : false;
 		
 		if (!empty($evt)) {
 		// We just create an event object, if it does no exist, all var are empty!
@@ -500,25 +502,40 @@ class fsCalendar {
 					break;
 				case 'starttime':
 					if (!empty($evt->tsfrom)) {
-						// Do not display if date AND time is the same
-						if (isset($opts['fmt']))
-							$rep = $evt->getStart($opts['fmt'], 3);
+						if (isset($opts['hideifallday']))
+							$l_hide = ($opts['hideifallday'] == 1 ? true : false);
 						else
-							$rep = $evt->getStart('', 3);
+							$l_hide = $hideifallday;
+						
+						if ($evt->allday == true && $l_hide == true) {
+							$rep = '';
+						} else {
+							// Do not display if date AND time is the same
+							if (isset($opts['fmt']))
+								$rep = $evt->getStart($opts['fmt'], 3);
+							else
+								$rep = $evt->getStart('', 3);
+						}
 					} else {
 						$rep = '';	
 					}
 					break;
 				case 'endtime':
 					if (!empty($evt->tsto)) {
+						if (isset($opts['hideifallday']))
+							$l_hide = ($opts['hideifallday'] == 1 ? true : false);
+						else
+							$l_hide = $hideifallday;
+						
 						// Do not display if date AND time is the same
 						if (isset($opts['alwaysshowenddate']))
 							$l_sed = ($opts['alwaysshowenddate'] == 1 ? true : false);
 						else
 							$l_sed = $showenddate;
 							
-						if ($l_sed == false && $evt->tsfrom == $evt->tsto) {
-							$ret = '';
+						if (($evt->allday == true && $l_hide == true) || 
+							($l_sed == false && $evt->tsfrom == $evt->tsto)) {
+							$rep = '';
 						} else {
 							if (isset($opts['fmt']))
 								$rep = $evt->getEnd($opts['fmt'], 3);
@@ -558,6 +575,13 @@ class fsCalendar {
 						}
 					} else {
 						$rep = '';	
+					}
+					break;
+				case 'allday':
+					if ($evt->allday == true && isset($opts['text'])) {
+						$rep = $opts['text'];
+					} else {
+						$rep = '';
 					}
 					break;
 				case 'publishdate':
