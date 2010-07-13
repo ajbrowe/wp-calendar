@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -12,6 +12,8 @@ WP Calendar is an easy-to-use calendar plug-in to manage all your events with ma
 usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
 To manage the event, the same authority checks as for post are used. The plug-in can be integrated in any theme by using 
 different functions and integrated in any post and page by using different tags.
+
+= This plug-in requires PHP 5, if you wanna use the graphical calendar! =
 
 = Features =
 * Normal and all-day events
@@ -117,6 +119,9 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.1.2 =
+* FIXED: Graphical calendar using wrong timezone
 
 = 1.1.1 =
 * FIXED: New events cannot be saved
