@@ -1020,10 +1020,13 @@ class fsCalendar {
 			if (!isset($filter['dateto']))
 				$filter['dateto'] = mktime(23, 59, 59, 12, 31, 2037);
 		
+			// Allday events to-stamp is at the beginning of the day!
+			$date_to_allday = mktime(0, 0, 0, date('m', $filter['datefrom']), date('d', $filter['datefrom']), date('y', $filter['datefrom']));
+				
 			// Events must always start before the end and 
 			// must end after start
 			$where .= ' (e.tsfrom <= '.$filter['dateto'].') AND '.
-					  ' (e.tsto >= '.$filter['datefrom'].') '; 
+					  ' ((e.tsto >= '.$filter['datefrom'].') OR (e.tsto >= '.$date_to_allday.' AND allday = 1))'; 
 				
 			// 
 			if ($filter['datemode'] == FSE_DATE_MODE_START) {
@@ -1070,6 +1073,8 @@ class fsCalendar {
 				$sql .= ' LIMIT '.intval($start).', '.intval($limit);	
 			}
 		}
+		
+		echo $sql;
 		
 		$res = $wpdb->get_col($sql);
 		

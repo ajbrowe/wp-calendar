@@ -123,6 +123,10 @@ will be translated in the next few months to english.
 
 == Changelog ==
 
+= 1.1.4 = 
+* FIXED: Allday events are not displayed on the date they end
+* FIXED: Removed unnecessary quotes in a href title of the events everview page
+
 = 1.1.3 =
 * FEATURE: Calendar entries are now created using category classes for custom styles (for more information see the FAQ page)
 * FIXED: Not possible to create events in january

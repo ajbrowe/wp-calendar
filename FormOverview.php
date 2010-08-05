@@ -316,7 +316,7 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 				<td>
 					<strong>
 					<a class="row-title" 
-						title="<?php _e('Edit', fsCalendar::$plugin_textdom); ?> “<?php echo esc_attr($e->subject); ?>”" 
+						title="<?php _e('Edit', fsCalendar::$plugin_textdom); ?> <?php echo esc_attr($e->subject); ?>" 
 						href="<?php echo $bl; ?>&amp;action=<?php echo ($e->userCanEditEvent() == true ? 'edit' : 'view'); ?>&amp;event=<?php echo esc_attr($e->eventid); ?>">
 					<?php echo esc_attr($e->subject); ?></a>
 					<?php 
