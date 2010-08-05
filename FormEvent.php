@@ -9,6 +9,9 @@ $add_hour = 1;
 $df = get_option('fse_df_admin');
 $ds = get_option('fse_df_admin_sep');
 
+$gc_enabled = get_option('fse_adm_gc_enabled');
+$gc_mode = get_option('fse_adm_gc_mode');
+
 // Get Post Data
 if (isset($_POST['eventid'])) {
 	// Get all post data
@@ -438,7 +441,8 @@ if (count($success) > 0) {
 						    		this.value = ''; 
 						    		alert('Bitte geben Sie ein korrektes Datum ein.') 
 						    		}; fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"  
-						    	onfocus="this.select();"   
+						    	onfocus="this.select();" 
+						    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_from').datepicker('hide')\"" : '' ); ?>
 						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
 						    <input type="text"
 						    	id="time_from"
@@ -467,6 +471,7 @@ if (count($success) > 0) {
 						    		alert('Bitte geben Sie ein korrektes Datum ein.') 
 						    		};fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"
 						    	onfocus="this.select();"   
+						    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_to').datepicker('hide')\"" : '' ); ?>
 						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
 						    <input type="text"
 						    	id="time_to"
@@ -553,22 +558,21 @@ $f = str_replace('Y', 'yy', $f);
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	<?php if (get_option('fse_adm_gc_enabled') == 1) { 
-		$mode = get_option('fse_adm_gc_mode');
+	<?php if ($gc_enabled == 1) { 
 		?>
 		jQuery('#fse_datepicker_from').datepicker(
 				{dateFormat: '<?php echo $f; ?>'
 					<?php echo (get_option('fse_adm_gc_show_week') == 1 ? ',showWeek: true' : '');?>
 					<?php echo (get_option('fse_adm_gc_show_sel') == 1 ? ',changeMonth: true, changeYear: true' : '');?>
-					, showOn: <?php echo ($mode == 0 ? "'focus'" : ($mode == 1 ? "'button'" : "'both'")); ?>
-					<?php echo (($mode == 1 || $mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
+					, showOn: <?php echo ($gc_mode == 0 ? "'focus'" : ($gc_mode == 1 ? "'button'" : "'both'")); ?>
+					<?php echo (($gc_mode == 1 || $gc_mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
 					});
 		jQuery('#fse_datepicker_to').datepicker(
 				{dateFormat: '<?php echo $f; ?>'
 					<?php echo (get_option('fse_adm_gc_show_week') == 1 ? ',showWeek: true' : '');?>
 					<?php echo (get_option('fse_adm_gc_show_sel') == 1 ? ',changeMonth: true, changeYear: true' : '');?>
-					, showOn: <?php echo ($mode == 0 ? "'focus'" : ($mode == 1 ? "'button'" : "'both'")); ?>
-					<?php echo (($mode == 1 || $mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
+					, showOn: <?php echo ($gc_mode == 0 ? "'focus'" : ($gc_mode == 1 ? "'button'" : "'both'")); ?>
+					<?php echo (($gc_mode == 1 || $gc_mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
 					});
 	<?php } ?>
 	fse_toogleAllday(document.forms["event"].allday);

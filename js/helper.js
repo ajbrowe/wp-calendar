@@ -139,7 +139,7 @@ function fse_transformStringToDate(input, format, sep) {
 						d = parseInt(val, 10);
 						break;
 					case "m":
-						m = parseInt(val, 10);
+						m = parseInt(val, 10) - 1;
 						break;
 					case "y":
 						y = parseInt(val, 10);
@@ -160,7 +160,7 @@ function fse_transformStringToDate(input, format, sep) {
 	
 	if (d<1 || d>31)
 		return false;
-	if (m<1 || m>12)
+	if (m<0 || m>11)
 		return false;
 	if (y < 1900 || y > 2099)
 		return false;

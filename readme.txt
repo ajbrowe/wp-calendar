@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -12,8 +12,6 @@ WP Calendar is an easy-to-use calendar plug-in to manage all your events with ma
 usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
 To manage the event, the same authority checks as for post are used. The plug-in can be integrated in any theme by using 
 different functions and integrated in any post and page by using different tags.
-
-= This plug-in requires PHP 5, if you wanna use the graphical calendar! =
 
 = Features =
 * Normal and all-day events
@@ -63,6 +61,14 @@ The easiest way is to use the widgets. If you want to use a graphical calendar y
 other Tags and PHP functions (theme development) you can use for display information about events in your blog. Please refer to the plug-ins
 options page, which discribes all of it.
 
+= How can i use custom colors in my graphical calendar =
+All calendar entries are created using a class foreach assigned category (e.g. `category-3` for category 3). Override the the default colors using:
+div .fc-event.category-3,
+div .fc-event.category-3 a {
+	background-color: red;
+	border-color: red;
+}
+
 = How do I display a single event =
 You can use any event details of one (or more) events in any of your posts and/or pages. All you have to do is to put the designated tags (e.g. {event_subject}) in your
 post's or page's content. To determine the event you can eighter pass the ID by URL using the parameter `event` (e.g. www.yourdomain.com/mypage/?event=238) or you
@@ -89,8 +95,6 @@ The methods `getStart` and `getEnd` accept two parameters. With the first one yo
 will be used. But there is also a second parameter, which accept one of the following integer values: 1=date+time, 2=date only, 3=time only. If you just want to 
 have the time returned, but using the standard output format, call the function as follows: `echo $evt->getStart('', 3);`
 
-= When i use the function `fse_get_event` the ouptut of its attribute has wrong characters =
-
 = Can I refer to other events in an event's description =
 Yes you can. The description of the content is filtered by the content filter `the_content`. You can use the same tags as for posts and pages (e.g. {event_subject}). 
 You must pass the ID of this refered event by the tag `{event_id; id=x}` before using any other tags.
@@ -106,9 +110,8 @@ theme's directory (not in a subdirectory of it). It will be loaded instead of th
 == Screenshots ==
 
 1. Blog integration
-2. The options panel
-3. Events overview
-4. Single Event 
+2. Events overview
+3. Single Event 
 
 == Usage ==
 
@@ -119,6 +122,11 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.1.3 =
+* FEATURE: Calendar entries are now created using category classes for custom styles (for more information see the FAQ page)
+* FIXED: Not possible to create events in january
+* FIXED: Graphical date choose breaks manual date input
 
 = 1.1.2 =
 * FIXED: Graphical calendar using wrong timezone
