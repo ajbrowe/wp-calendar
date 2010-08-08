@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -122,6 +122,9 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.1.5 =
+* FIXED: SQL Statements are printed out in widgets
 
 = 1.1.4 = 
 * FIXED: Allday events are not displayed on the date they end
