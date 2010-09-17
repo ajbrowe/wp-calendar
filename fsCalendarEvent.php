@@ -116,12 +116,12 @@ class fsEvent {
 
 	function loadOptions($admin_fields = true) {
 		// Load options
-		if (get_option('fse_df_wp') == 1)
+		if (get_option('fse_df_wp') == true)
 			$this->date_format = get_option('date_format');
 		else
 			$this->date_format = get_option('fse_df');
 		
-		if (get_option('fse_tf_wp') == 1)
+		if (get_option('fse_tf_wp') == true)
 			$this->time_format = get_option('time_format');
 		else
 			$this->time_format = get_option('fse_tf');

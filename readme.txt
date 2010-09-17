@@ -1,9 +1,9 @@
 === WP Calendar ===
 Contributors: faebu
 Tags: calendar, events
-Requires at least: 2.8
-Tested up to: 3.0
-Stable tag: 1.1.5
+Requires at least: 3.0
+Tested up to: 3.1
+Stable tag: 1.2.0
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -14,6 +14,7 @@ To manage the event, the same authority checks as for post are used. The plug-in
 different functions and integrated in any post and page by using different tags.
 
 = Features =
+* 
 * Normal and all-day events
 * Event categorization (using WP categories)
 * Event states (draft, published)
@@ -122,6 +123,16 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.2.0 =
+* FEATURE: List of events (flat and grouped) now support pagination
+* FEATURE: New options to disable the jquery and jquery-ui library, if there are conflicts with other plugins (which do not use the WP built-in functions for library loading!)
+* FIXED: Widget "Simple" has now the same filter options as the "Grouped" widget 
+* FIXED: The parameter Include in the WP Calendar (Grouped) widget destroys the widget. It seems that i have used a reserved name for this parameter.
+* FIXED: If the number of events are limited, the events with the id of this value is excluded (thx to Brecsi)
+* FIXED: Boolean option handling optimized (See usage documentation)
+* FIXED: Show/Hide link in Widget not working
+* FIXED: Some errors in the documentation
 
 = 1.1.5 =
 * FIXED: SQL Statements are printed out in widgets

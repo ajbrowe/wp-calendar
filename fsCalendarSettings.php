@@ -53,7 +53,7 @@ class fsCalendarSettings {
 		// We do not need sections. We need different pages!
 		add_settings_section('fse_global', 
 							 '', 
-							 array($this, 'hookSettingVoid'), 
+							 array($this, 'hookSettingHeader_Global1'), 
 							 'fse_global');
 		{
 			// add_settings_field($id, $title, $callback, $pagename, $section);
@@ -78,7 +78,7 @@ class fsCalendarSettings {
 							   array(&$this, 'hookSettingOption_fse_show_enddate'), 
 							   'fse_global', 'fse_global');
 			add_settings_field('fse_allday_hide_time', 
-							   __('Show', fsCalendar::$plugin_textdom), 
+							   __('Show time for all-day events', fsCalendar::$plugin_textdom), 
 							   array(&$this, 'hookSettingOption_fse_allday_hide_time'), 
 							   'fse_global', 'fse_global');
 		}
@@ -95,7 +95,7 @@ class fsCalendarSettings {
 							   'fse_global', 'fse_global2');
 							   
 			add_settings_field('fse_template_lst', 
-							   __('Template for Listoutput', fsCalendar::$plugin_textdom).'<br /><small>'.__('The whole template is automatically surrounded by the &lt;li&gt; tag.', fsCalendar::$plugin_textdom).'</small>', 
+							   __('Template for Listoutput', fsCalendar::$plugin_textdom).'<br /><small>'.__('The whole template is automatically surrounded by the &lt;li&gt; tag when a grouped list of events is created.', fsCalendar::$plugin_textdom).'</small>', 
 							   array(&$this, 'hookSettingOption_fse_template_lst'), 
 							   'fse_global', 'fse_global2');
 		}
@@ -113,6 +113,52 @@ class fsCalendarSettings {
 							   __('Header Format', fsCalendar::$plugin_textdom), 
 							   array(&$this, 'hookSettingOption_fse_groupby_header'), 
 							   'fse_global', 'fse_global3');
+		}
+		
+		add_settings_section('fse_global4', 
+							 '',  
+							 array(&$this, 'hookSettingHeader_Global4'), 
+							 'fse_global');
+		{
+			add_settings_field('fse_load_jquery', 
+							   __('Loading of jQuery library', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_load_jquery'), 
+							   'fse_global', 'fse_global4');
+			add_settings_field('fse_load_jqueryui', 
+							   __('Loading of jQuery UI library', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_load_jqueryui'), 
+							   'fse_global', 'fse_global4');
+		}
+		
+		add_settings_section('fse_pagination', 
+							 '',  
+							 array(&$this, 'hookSettingVoid'), 
+							 'fse_pagination');
+		{
+			add_settings_field('fse_pagination', 
+							   __('Enable pagination by default', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_pagination'), 
+							   'fse_pagination', 'fse_pagination');
+			add_settings_field('fse_pagination_prev_text', 
+							   __('Text for prev link', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_pagination_prev_text'), 
+							   'fse_pagination', 'fse_pagination');
+			add_settings_field('fse_pagination_next_text', 
+							   __('Text for next link', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_pagination_next_text'), 
+							   'fse_pagination', 'fse_pagination');
+			add_settings_field('fse_pagination_usedots', 
+							   __('Appearance', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_pagination_usedots'), 
+							   'fse_pagination', 'fse_pagination');
+			add_settings_field('fse_pagination_end_size', 
+							   __('Number of pages at the beginning/end', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_pagination_end_size'), 
+							   'fse_pagination', 'fse_pagination');
+			add_settings_field('fse_pagination_mid_size', 
+							   __('Number of pages before/after current page', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_pagination_mid_size'), 
+							   'fse_pagination', 'fse_pagination');
 		}
 		
 		add_settings_section('fse_admin', 
@@ -219,9 +265,10 @@ class fsCalendarSettings {
 		<div id="fs_tabs">
 			<ul>
 				<li><a href="#fs_tab1"><?php _e('Global Setting', fsCalendar::$plugin_textdom); ?></a></li>
-				<li><a href="#fs_tab2"><?php _e('Event Page', fsCalendar::$plugin_textdom); ?></a></li>
-				<li><a href="#fs_tab3"><?php _e('Graphical calendar (FullCalendar)', fsCalendar::$plugin_textdom); ?></a></li>
-				<li><a href="#fs_tab4"><?php _e('Admin settings', fsCalendar::$plugin_textdom); ?></a></li>
+				<li><a href="#fs_tab2"><?php _e('Pagination', fsCalendar::$plugin_textdom); ?></a></li>
+				<li><a href="#fs_tab3"><?php _e('Event Page', fsCalendar::$plugin_textdom); ?></a></li>
+				<li><a href="#fs_tab4"><?php _e('Graphical calendar (FullCalendar)', fsCalendar::$plugin_textdom); ?></a></li>
+				<li><a href="#fs_tab5"><?php _e('Admin settings', fsCalendar::$plugin_textdom); ?></a></li>
 				<li><a href="#fs_tab9"><?php _e('Usage', fsCalendar::$plugin_textdom); ?></a></li>
 				<li><a href="#fs_tab10"><?php _e('About', fsCalendar::$plugin_textdom); ?></a></li>
 			</ul>
@@ -229,12 +276,15 @@ class fsCalendarSettings {
 				<?php do_settings_sections('fse_global'); ?>
 			</div>
 			<div id="fs_tab2">
-				<?php do_settings_sections('fse_sp'); ?>
+				<?php do_settings_sections('fse_pagination'); ?>
 			</div>
 			<div id="fs_tab3">
-				<?php do_settings_sections('fse_fc'); ?>
+				<?php do_settings_sections('fse_sp'); ?>
 			</div>
 			<div id="fs_tab4">
+				<?php do_settings_sections('fse_fc'); ?>
+			</div>
+			<div id="fs_tab5">
 				<?php do_settings_sections('fse_admin'); ?>
 			</div>
 			<div id="fs_tab9">
@@ -260,11 +310,22 @@ class fsCalendarSettings {
 
 		<?php
 	}
-	
 	function hookSettingHeader_SinglePage() {
 		?>
 		<p><?php _e('You can define a page for displaying a single event. This page will always be link to, when using a function of this plug-in to show an overview of events (list, graphical calendar,...). If you do not define a page for displaying a single event, make sure you change the template defined below, since it uses the paramter <code>{event_url}</code>, which is not available, if no single view page is defined.', fsCalendar::$plugin_textdom); ?></p>
 		<p><?php _e('Because this page normally should not be displayed in any page listing, you can hide it and it will disapear from any lists in your blog, provided that your theme and plug-ins use standard wordpress functions and are not reading directly from the database. By ticking the flag <i>Mark page</i> the selected page will be <span id="page_is_cal"><span>highlighted</span></span> in the page overview.', fsCalendar::$plugin_textdom); ?></p>
+		<?php
+	}
+	function hookSettingHeader_Global1() {
+		?>
+		<p>
+		<strong>
+		<?php _e('Please notice, that the most of these settings are just defaults for your widgets, for the usage in post and pages using tags (e.g. <code>{events_list}</code>) and for the integration in your theme '.
+			'using WP Calendar functions', fsCalendar::$plugin_textdom); ?>.
+		<?php _e('When using widgets some of them can be overriden, when using tags or built-in function <u>all</u> these settings can be overriden. For more information please have '.
+			'a look a the <a href="#fs_tab9">usage documentation</a>', fsCalendar::$plugin_textdom); ?>.
+		</strong>
+		</p>
 		<?php
 	}
 	function hookSettingHeader_Global2() {
@@ -278,7 +339,19 @@ class fsCalendarSettings {
 		?>
 		<p>
 		<?php _e('If you are displaying your events using a list (e.g. the Grouped Calendar Widget), the events can be grouped by a date entity, which you can define below.', fsCalendar::$plugin_textdom); ?>
-		<?php _e('Please refer to the php  <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all the output format options.', fsCalendar::$plugin_textdom); ?></p>
+		<?php _e('Please refer to the php  <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all the output format options.', fsCalendar::$plugin_textdom); ?>
+		</p>
+		<?php	
+	}
+	function hookSettingHeader_Global4() {
+		?>
+		<p>
+		<?php _e('WP Calendar needs the jQuery and the jQuery UI library to work properly. These libraries are loaded '.
+				 'using the recommended WP function which make sure that all libraries are loaded once only.', fsCalendar::$plugin_textdom); ?>
+		<?php _e('Since some plugins do not use these function, there may be compatibility issues preventing WP calendar to work as expected. '.
+				 'If the required libraries are loaded by another plug-in you can disable the loading by WP calendar.', fsCalendar::$plugin_textdom); ?>
+		<?php _e('If you are using other plugins which load these libraries <b>using the WP functions</b>, these settings have not effect!', fsCalendar::$plugin_textdom); ?>
+		</p>
 		<?php	
 	}
 	function hookSettingHeader_Fc() {
@@ -344,6 +417,24 @@ class fsCalendarSettings {
 		<?php 
 	}
 	
+	function hookSettingOption_fse_load_jquery() {
+		?>
+		<select name="fse_load_jquery">
+		<option value="1"<?php echo (get_option('fse_load_jquery') == true ? ' selected="selected"' : ''); ?>><?php _e('Enabled', fsCalendar::$plugin_textdom); ?></option>
+		<option value="0"<?php echo (get_option('fse_load_jquery') == false ? ' selected="selected"' : ''); ?>><?php _e('Disabled', fsCalendar::$plugin_textdom); ?></option>
+		</select>
+		<?php
+	}
+	
+	function hookSettingOption_fse_load_jqueryui() {
+		?>
+		<select name="fse_load_jqueryui">
+		<option value="1"<?php echo (get_option('fse_load_jqueryui') == true ? ' selected="selected"' : ''); ?>><?php _e('Enabled', fsCalendar::$plugin_textdom); ?></option>
+		<option value="0"<?php echo (get_option('fse_load_jqueryui') == false ? ' selected="selected"' : ''); ?>><?php _e('Disabled', fsCalendar::$plugin_textdom); ?></option>
+		</select>
+		<?php
+	}
+	
 	function hookSettingOption_fse_template_lst() {
 		?>
 		<textarea rows="5" cols="80" name="fse_template_lst" /><?php echo htmlentities(get_option('fse_template_lst')); ?></textarea>
@@ -358,8 +449,8 @@ class fsCalendarSettings {
 	function hookSettingOption_fse_show_enddate() {
 		?>
 		<select name="fse_show_enddate">
-		<option value="1"<?php echo (get_option('fse_show_enddate') == 1 ? ' selected="selected"' : ''); ?>><?php _e('Always show end date', fsCalendar::$plugin_textdom)?></option>
-		<option value="0"<?php echo (get_option('fse_show_enddate') == 0 ? ' selected="selected"' : ''); ?>><?php _e('Only show end date, if different from start date', fsCalendar::$plugin_textdom)?></option>
+		<option value="1"<?php echo (get_option('fse_show_enddate') == true ? ' selected="selected"' : ''); ?>><?php _e('Always show end date', fsCalendar::$plugin_textdom)?></option>
+		<option value="0"<?php echo (get_option('fse_show_enddate') == false ? ' selected="selected"' : ''); ?>><?php _e('Only show end date, if different from start date', fsCalendar::$plugin_textdom)?></option>
 		</select>
 		<?php
 	}
@@ -367,8 +458,8 @@ class fsCalendarSettings {
 	function hookSettingOption_fse_allday_hide_time() {
 		?>
 		<select name="fse_allday_hide_time">
-		<option value="1"<?php echo (get_option('fse_allday_hide_time') == 1 ? ' selected="selected"' : ''); ?>><?php _e('Hide time when all-day event', fsCalendar::$plugin_textdom)?></option>
-		<option value="0"<?php echo (get_option('fse_allday_hide_time') == 0 ? ' selected="selected"' : ''); ?>><?php _e('Always show time', fsCalendar::$plugin_textdom)?></option>
+		<option value="1"<?php echo (get_option('fse_allday_hide_time') == true ? ' selected="selected"' : ''); ?>><?php _e('Hide time when all-day event', fsCalendar::$plugin_textdom)?></option>
+		<option value="0"<?php echo (get_option('fse_allday_hide_time') == false ? ' selected="selected"' : ''); ?>><?php _e('Always show time', fsCalendar::$plugin_textdom)?></option>
 		</select>
 		<?php		
 	}
@@ -385,8 +476,8 @@ class fsCalendarSettings {
 		}
 		?>
 		</select><br />
-		<input type="checkbox" value="1" name="fse_page_mark" id="fse_page_mark" <?php echo (get_option('fse_page_mark') == 1 ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_mark"><?php _e('Mark page in page overvie', fsCalendar::$plugin_textdom); ?></label><br />
-		<input type="checkbox" value="1" name="fse_page_hide" id="fse_page_hide" <?php echo (get_option('fse_page_hide') == 1 ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_hide"><?php _e('Set page as hidden', fsCalendar::$plugin_textdom); ?></label>
+		<input type="checkbox" value="1" name="fse_page_mark" id="fse_page_mark" <?php echo (get_option('fse_page_mark') == true ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_mark"><?php _e('Mark page in page overvie', fsCalendar::$plugin_textdom); ?></label><br />
+		<input type="checkbox" value="1" name="fse_page_hide" id="fse_page_hide" <?php echo (get_option('fse_page_hide') == true ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_hide"><?php _e('Set page as hidden', fsCalendar::$plugin_textdom); ?></label>
 		<?php
 	}
 	
@@ -408,7 +499,7 @@ class fsCalendarSettings {
 			   id="fse_df_wp"
 			   onClick="fse_toogleInputByCheckbox(this, 'fse_df', false);"
 			   size="10" 
-			   <?php echo (get_option('fse_df_wp') == 1 ? 'checked="checked"' : '' ); ?>/> 
+			   <?php echo (get_option('fse_df_wp') == true ? 'checked="checked"' : '' ); ?>/> 
 		<label for="fse_df_wp"><?php _e('Use WP settings', fsCalendar::$plugin_textdom)?></label><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small>
 		<?php
@@ -423,7 +514,7 @@ class fsCalendarSettings {
 			   id="fse_tf_wp"
 			   size="10"
 			   onClick="fse_toogleInputByCheckbox(this, 'fse_tf', false);"  
-			   <?php echo (get_option('fse_df_wp') == 1 ? 'checked="checked"' : '' ); ?>/> 
+			   <?php echo (get_option('fse_df_wp') == true ? 'checked="checked"' : '' ); ?>/> 
 		<label for="fse_tf_wp"><?php _e('Use WP settings', fsCalendar::$plugin_textdom)?></label><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small>
 		<?php
@@ -451,7 +542,7 @@ class fsCalendarSettings {
 			   value="1"
 			   id="fse_ws_wp"
 			   onClick="fse_toogleInputByCheckbox(this, 'fse_ws', false);"  
-			   <?php echo (get_option('fse_ws_wp') == 1 ? 'checked="checked"' : '' ); ?>/> 
+			   <?php echo (get_option('fse_ws_wp') == true ? 'checked="checked"' : '' ); ?>/> 
 		<label for="fse_ws_wp"><?php _e('Use WP settings', fsCalendar::$plugin_textdom)?></label>
 		<?php	
 	}
@@ -553,6 +644,48 @@ class fsCalendarSettings {
 		<?php
 	}
 	
+	function hookSettingOption_fse_pagination() {
+		?>
+		<select name="fse_pagination">
+		<option value="1"<?php echo (get_option('fse_pagination') == true ? ' selected="selected"' : ''); ?>><?php _e('Enabled', fsCalendar::$plugin_textdom); ?></option>
+		<option value="0"<?php echo (get_option('fse_pagination') == false ? ' selected="selected"' : ''); ?>><?php _e('Disabled', fsCalendar::$plugin_textdom); ?></option>
+		</select>
+		<?php
+	}
+	
+	function hookSettingOption_fse_pagination_prev_text() {
+		?>
+		<input type="text" value="<?php echo (get_option('fse_pagination_prev_text')); ?>" size="15" name="fse_pagination_prev_text" />
+		<?php 	
+	}
+	
+	function hookSettingOption_fse_pagination_next_text() {
+		?>
+		<input type="text" value="<?php echo (get_option('fse_pagination_next_text')); ?>" size="15" name="fse_pagination_next_text" />
+		<?php 	
+	}
+	
+	function hookSettingOption_fse_pagination_end_size() {
+		?>
+		<input type="text" value="<?php echo intval(get_option('fse_pagination_end_size')); ?>" size="3" name="fse_pagination_end_size" />
+		<?php 	
+	}
+	
+	function hookSettingOption_fse_pagination_mid_size() {
+		?>
+		<input type="text" value="<?php echo intval(get_option('fse_pagination_mid_size')); ?>" size="3" name="fse_pagination_mid_size" />
+		<?php 	
+	}
+	
+	function hookSettingOption_fse_pagination_usedots() {
+		?>
+		<select name="fse_pagination_usedots">
+		<option value="1"<?php echo (get_option('fse_pagination_usedots') == true ? ' selected="selected"' : ''); ?>><?php _e('Use dots (...)', fsCalendar::$plugin_textdom); ?></option>
+		<option value="0"<?php echo (get_option('fse_pagination_usedots') == false ? ' selected="selected"' : ''); ?>><?php _e('Show all pages', fsCalendar::$plugin_textdom); ?></option>
+		</select>
+		<?php
+	}
+	
 	function hookSettingsUsage() {
 		?>
 		<table class="form-table">
@@ -613,7 +746,9 @@ fse_print_events(
   )
 );
 		</pre>
-		<p><?php _e("The allowed paramters are described below. Some parameters are not supported by all functions, since they won't make any sense", fsCalendar::$plugin_textdom); ?>.</p>
+		<p><?php _e("The allowed paramters are described below. Some parameters are not supported by all functions, since they won't make any sense", fsCalendar::$plugin_textdom); ?>. 
+		<b><?php _e("Notice that every parameter, which expects a boolean value, must by supplied by 1 (true) or 0 (false).", fsCalendar::$plugin_textdom); ?>.</b>
+		</p>
 		</th></tr>
 		<tr><th colspan="3"><strong><?php _e('Output control', fsCalendar::$plugin_textdom); ?></strong></th></tr>
 		<tr><th><?php _e('Parameter', fsCalendar::$plugin_textdom); ?></th><td><?php _e('Default', fsCalendar::$plugin_textdom); ?></td><td><?php _e('Description', fsCalendar::$plugin_textdom); ?></td></tr>
@@ -624,6 +759,23 @@ fse_print_events(
 		<tr><th><code>before</code></th><td>''</td><td><?php _e('Additional HTML code to print before', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>after</code></th><td>''</td><td><?php _e('Additional HTML code to print after', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>alwaysshowenddate</code></th><td><?php _e('Calendar Options', fsCalendar::$plugin_textdom); ?></td><td><?php _e('If set to false, the enddate is left empty, if it is not differing from the start date', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		
+		<tr><th colspan="3"><strong><?php _e('Pagination', fsCalendar::$plugin_textdom); ?></strong><br /><p>
+		<?php _e('The pagination is only used in a list (grouped or ungrouped) of events. If all events can be displayed on one page the pagination bar will not appear', fsCalendar::$plugin_textdom); ?>.
+		</p></th></tr>
+		<tr><th><code>pagination</code></th><td>Calendar options</td>
+			<td><?php _e('Set to true to enable pagination for a list of events, exceeding the maxium of events to show (parameter <code>number</code>', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>pagination_prev_link</code></th><td>Calendar options</td>
+			<td><?php _e('Text to use for moving to the previous page. Leave empty to supress link', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>pagination_next_link</code></th><td>Calendar options</td>
+			<td><?php _e('Text to use for moving to the next page. Leave empty to supress link', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>pagination_use_dots</code></th><td>Calendar options</td>
+			<td><?php _e('If true, the list of pages uses dots (...). For more information see parameter <code>pagination_end_size</code>', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>pagination_end_size</code></th><td>Calendar options</td>
+			<td><?php _e('The number of pages to show at the beginning and at the end of the page list, if the option <code>pagination_use_dots</code> is enabled', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>pagination_mid_size</code></th><td>Calendar options</td>
+			<td><?php _e('The number of pages to show before and after the current page, if the option <code>pagination_use_dots</code> is enabled', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		
 		<tr><th colspan="3"><strong><a name="filters"></a><?php _e('Standard filtering', fsCalendar::$plugin_textdom); ?></strong></th></tr>
 		<tr><th><code>include</code></th><td>-</td><td><?php _e('An array of event IDs to explicitly include. In combinaion with other filter the results always is an intersection', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>exclude</code></th><td>-</td><td><?php _e('An array of event IDs to explicitly exclude', fsCalendar::$plugin_textdom); ?>.</td></tr>

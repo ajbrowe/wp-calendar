@@ -106,7 +106,7 @@ class fsCalendarAdmin {
 			if (user_can_richedit()) {
 				wp_enqueue_script('editor');
 				wp_enqueue_script('editor-functions');
-				wp_enqueue_script('jquery-ui-tabs');
+				add_thickbox();
 				wp_enqueue_script('media-upload');
 				wp_enqueue_script('tiny_mce');
 				
@@ -271,8 +271,8 @@ class fsCalendarAdmin {
 				<input id="doaction" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
 				<?php if ($part == 1) {?>
 					<select name="event_start">
-					<option value="-1"<?php echo ($filter['???'] == -1 ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
-					<option value="0"<?php echo ($filter['???'] == 0 ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
+					<option value="-1"<?php echo ($filter['datefrom'] == -1 ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
+					<option value="0"<?php echo ($filter['datefrom'] == 0 ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
 					<?php 
 					$min = $wpdb->get_var('SELECT MIN(tsfrom) AS min FROM '.$wpdb->prefix.'fsevents');
 					$max = $wpdb->get_var('SELECT MAX(tsto)   AS max FROM '.$wpdb->prefix.'fsevents');

@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.1.5
+Version: 1.2.0
 License: GPL
-Last Update: 08.08.2010
+Last Update: 15.09.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -28,7 +28,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.1.2';
+	static $plugin_vers     = '1.2.0';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -101,8 +101,15 @@ class fsCalendar {
 									'fse_fc_col_day_fmt'=>'l m/j',
 									'fse_load_jquery'=>1,
 									'fse_load_jqueryui'=>1,
-									'fse_allday_hide_time'=>1
+									'fse_allday_hide_time'=>1,
+									'fse_pagination'=>0,
+									'fse_pagination_usedots'=>1,
+									'fse_pagination_prev_text'=>'&laquo;',
+									'fse_pagination_next_text'=>'&raquo;',
+									'fse_pagination_end_size'=>3,
+									'fse_pagination_mid_size'=>3
 								);
+								
 		self::$plugin_filename = plugin_basename( __FILE__ );
 		self::$plugin_dir      = dirname(self::$plugin_filename);
 		self::$plugin_url      = trailingslashit(WP_PLUGIN_URL).self::$plugin_dir.'/';
@@ -170,8 +177,10 @@ class fsCalendar {
 	 */
 	function hookRegisterScripts() {
 		if (!is_admin()) {
-			wp_enqueue_script('jquery');
-			wp_enqueue_script('jquery-ui-core');
+			if (get_option('fse_load_jquery') == true)
+				wp_enqueue_script('jquery');
+			if (get_option('fse_load_jqueryui') == true)
+				wp_enqueue_script('jquery-ui-core');
 			wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.js');
 			//Pass Ajax Url to Javascript Paraemter
 			wp_localize_script('fullcalendar', 'WPCalendar', array('ajaxUrl'=>admin_url('admin-ajax.php')));
@@ -292,7 +301,7 @@ class fsCalendar {
 			unset($e);
 			$e['id'] = $evt->eventid;
 			$e['title'] = $evt->subject;
-			$e['allDay'] = ($evt->allday == 1 ? true : false);
+			$e['allDay'] = ($evt->allday == true ? true : false);
 			$e['start'] = date('c', $evt->tsfrom);
 			$e['end'] = date('c', $evt->tsto);
 			$e['editable'] = false;
@@ -349,8 +358,8 @@ class fsCalendar {
 			}
 		}
 
-		$showenddate = get_option('fse_show_enddate') == 1 ? true : false;
-		$hideifallday = get_option('fse_allday_hide_time') == 1 ? true : false;
+		$showenddate = get_option('fse_show_enddate') == true ? true : false;
+		$hideifallday = get_option('fse_allday_hide_time') == true ? true : false;
 		
 		if (!empty($evt)) {
 		// We just create an event object, if it does no exist, all var are empty!
@@ -368,7 +377,7 @@ class fsCalendar {
 		$diff  = $end - $start;
 		
 		
-		if ($evt->allday == 1) {
+		if ($evt->allday == true) {
 			$dur_days = floor($diff / 1440)+1; // Add 1 day
 		} else {
 			$dur_days = floor($diff / 1440);
@@ -490,7 +499,7 @@ class fsCalendar {
 				case 'enddate':
 					if (!empty($evt->tsto)) {
 						if (isset($opts['alwaysshowenddate']))
-							$l_sed = ($opts['alwaysshowenddate'] == 1 ? true : false);
+							$l_sed = ($opts['alwaysshowenddate'] == true ? true : false);
 						else
 							$l_sed = $showenddate;
 						
@@ -513,7 +522,7 @@ class fsCalendar {
 				case 'starttime':
 					if (!empty($evt->tsfrom)) {
 						if (isset($opts['hideifallday']))
-							$l_hide = ($opts['hideifallday'] == 1 ? true : false);
+							$l_hide = ($opts['hideifallday'] == true ? true : false);
 						else
 							$l_hide = $hideifallday;
 						
@@ -533,13 +542,13 @@ class fsCalendar {
 				case 'endtime':
 					if (!empty($evt->tsto)) {
 						if (isset($opts['hideifallday']))
-							$l_hide = ($opts['hideifallday'] == 1 ? true : false);
+							$l_hide = ($opts['hideifallday'] == true ? true : false);
 						else
 							$l_hide = $hideifallday;
 						
 						// Do not display if date AND time is the same
 						if (isset($opts['alwaysshowenddate']))
-							$l_sed = ($opts['alwaysshowenddate'] == 1 ? true : false);
+							$l_sed = ($opts['alwaysshowenddate'] == true ? true : false);
 						else
 							$l_sed = $showenddate;
 							
@@ -561,7 +570,7 @@ class fsCalendar {
 					$a = $opts['suffix'];
 					$e = (isset($opts['empty']) ? $opts['empty'] : 0);
 					if (in_array($t, array('d','h','m'))) {
-						if ($evt->allday == 1) {
+						if ($evt->allday == true) {
 							if ($t == 'd')
 								$rep = $dur_days.$a; // Always one, so no empty check
 							else
@@ -688,7 +697,7 @@ class fsCalendar {
 					
 					// First day of week
 					if (!isset($opts_orig['firstDay'])) {
-						if (get_option('fse_ws_wp') == 1) {
+						if (get_option('fse_ws_wp') == true) {
 							$weekstart = get_option('start_of_week');
 						} else {
 							$weekstart = get_option('fse_ws');	
@@ -826,11 +835,17 @@ class fsCalendar {
 		$template = get_option('fse_template');
 		$showend  = get_option('fse_show_enddate');
 		
+		if (isset($_GET['wpcal-page'])) {
+			$args['page'] = intval($_GET['wpcal-page']);
+		} else {
+			$args['page'] = 1;
+		}
+		$pagination = get_option('fse_pagination');
+		
 		foreach($args as $k => $a) {
 			switch($k) {
 				case 'echo':
-					if (is_bool($a))
-						$echo = $a;
+					$echo = ($a == true ? true : false);
 					break;
 				case 'before':
 					$before = $a;
@@ -842,8 +857,10 @@ class fsCalendar {
 					$template = $a;
 					break;
 				case 'alwaysshowenddate':
-					if (is_bool($a))
-						$showend = $a;
+					$showend = ($a == true ? true : false);
+					break;
+				case 'pagination':
+					$pagination = ($a == true ? true : false); // Allow type cast using == instead of ===$
 					break;
 			}
 		}
@@ -851,11 +868,26 @@ class fsCalendar {
 		$ret = '';
 		$evt = $this->getEventsExternal($args);
 		
+		if ($pagination) {
+			$args['count'] = true;
+			$count = $this->getEventsExternal($args);
+			
+			// If no pagination is needed, disabled it
+			if (count($evt) == $count) {
+				$pagination = false;
+			}
+		}
+		
 		foreach($evt as $e) {
 			$ret .= $this->filterContent($template, $e);
 		}
 		
-		$ret = $before.$ret.$after;
+		$pagstr = '';
+		if ($pagination) {
+			$pagstr = $this->getEventsPagination($count, $args);
+		}
+		
+		$ret = $pagstr.$before.$ret.$after.$pagstr;
 		
 		if ($echo == true)
 			echo $ret;
@@ -875,6 +907,14 @@ class fsCalendar {
 		$template = get_option('fse_template_lst');
 		$groupby = get_option('fse_groupby');
 		$groupby_hdr = get_option('fse_groupby_header');
+		
+		$pagination = get_option('fse_pagination');
+		
+		if (isset($_GET['wpcal-page'])) {
+			$args['page'] = intval($_GET['wpcal-page']);
+		} else {
+			$args['page'] = 1;
+		}
 		
 		foreach($args as $k => $a) {
 			switch($k) {
@@ -898,6 +938,10 @@ class fsCalendar {
 				case 'groupby_header':
 					$groupby_hdr = $a;
 					break;
+				case 'pagination':
+					$pagination = ($a == true ? true : false); // Allow type cast using == instead of ===$
+					break;
+					
 			}
 		}
 		
@@ -920,7 +964,19 @@ class fsCalendar {
 		$filter['orderdir'] = array($dir);
 		
 		$ret = '';
+		
 		$evt = $this->getEventsExternal($args);
+		
+		
+		if ($pagination) {
+			$args['count'] = true;
+			$count = $this->getEventsExternal($args);
+			
+			// If no pagination is needed, disabled it
+			if (count($evt) == $count) {
+				$pagination = false;
+			}
+		}
 		
 		if ($evt !== false) {
 			$d = $m = $y = -1;
@@ -952,7 +1008,12 @@ class fsCalendar {
 			}
 		}
 		
-		$ret = $before.'<ul class="groups">'.$ret.'</ul>'.$after;
+		$pagstr = '';
+		if ($pagination) {
+			$pagstr = $this->getEventsPagination($count, $args);
+		}
+		
+		$ret = $pagstr.$before.'<ul class="groups">'.$ret.'</ul>'.$after.$pagstr;
 		
 		if ($echo == true)
 			echo $ret;
@@ -1117,6 +1178,9 @@ class fsCalendar {
 		//$datefrom = mktime(0,0,0, date('m', $d), date('d', $d), date('Y', $d));
 		$datefrom = mktime();
 		$categories = $orderby = $orderdir = $include = $exclude = array();
+		$start = 0;
+		$count = false;
+		$page = 0;
 		
 		// Get some values from options
 		$number = intval(get_option('fse_number'));
@@ -1125,7 +1189,13 @@ class fsCalendar {
 			switch($k) {
 				case 'number':
 					$a = intval($a);
-					$number = $a;
+					if ($a > 0) {
+						$number = $a;
+					}
+					break;
+				case 'start':
+					$start = intval($a);
+					break;
 				case 'exclude':
 					if (!is_array($a))
 						$a = explode(',', $a);
@@ -1196,7 +1266,18 @@ class fsCalendar {
 						$a = array($a);
 					$orderdir = $a;
 					break;
+				case 'count':
+					$count = true;
+					break;
+				case 'page':
+					$page = intval($a);
+					break;
 			}
+		}
+		
+		// Calculate values for page
+		if ($page > 0) {
+			$start = ($page - 1) * $number;
 		}
 		
 		$sortstring = '';
@@ -1238,8 +1319,13 @@ class fsCalendar {
 		if (is_bool($allday) == true) // Type!
 			$filter['allday'] = $allday;
 		$filter['datemode'] = $datemode;
-				
-		$evt = $this->getEvents($filter, $sortstring, $number);
+		
+		if ($count == true) {
+			return $this->getEvents($filter, $sortstring, 0, 0, true);
+		} else {
+			$evt = $this->getEvents($filter, $sortstring, $number, $start);
+		}
+			
 		
 		if ($evt === false) {
 			return false;
@@ -1253,6 +1339,80 @@ class fsCalendar {
 		}
 		
 		return $ret;
+	}
+	
+	/**
+	 * Return the HTML pagination String using the WP function paginate_links()
+	 * @param $count Number of events
+	 * @param $args  Argument (including page and pagination tags)
+	 * @return The pagination HTML String
+	 */
+	function getEventsPagination($count, $args) {
+		$wp_args = array();
+		
+		$wp_args['base'] = preg_replace( '/(\?.*)?$/', '', $_SERVER["REQUEST_URI"] ).'%_%';
+		$wp_args['format'] = '?wpcal-page=%#%';
+		
+		// Preserver other GET values
+		foreach($_GET as $k => $v) {
+			if (strtolower($k) != 'wpcal-page') {
+				if (isset($wp_args['add_args']))
+					$wp_args['add_args'] = array();
+				$wp_args['add_args'][$k] = $v;
+			}
+		}
+		
+		$epp = 0;
+		if (isset($args['number'])) {
+			$epp = intval($args['number']);
+		}
+		if (empty($epp)) {
+			$epp = intval(get_option('fse_number'));
+		}
+		
+		if (isset($args['pagination_prev_text'])) {
+			$wp_args['prev_text'] = $args['pagination_prev_text'];
+		} else {
+			$wp_args['prev_text'] = get_option('fse_pagination_prev_text');
+		}
+		
+		if (isset($args['pagination_next_text'])) {
+			$wp_args['next_text'] = $args['pagination_next_text'];
+		} else {
+			$wp_args['next_text'] = get_option('fse_pagination_next_text');
+		}
+		
+		if (isset($args['pagination_end_size'])) {
+			$wp_args['end_size'] = $args['pagination_end_size'];
+		} else {
+			$wp_args['end_size'] = get_option('fse_pagination_end_size');
+		}
+		
+		if (isset($args['pagination_mid_size'])) {
+			$wp_args['mid_size'] = $args['pagination_mid_size'];
+		} else {
+			$wp_args['mid_size'] = get_option('fse_pagination_mid_size');
+		}
+		
+		if (isset($args['pagination_use_dots'])) {
+			$wp_args['show_all'] = ($args['pagination_use_dots'] == true ? false : true);
+		} else {
+			$wp_args['show_all'] = get_option('fse_pagination_usedots') == true ? false : true;
+		}
+		
+		$wp_args['prev_next'] = (!empty($wp_args['prev_text']) || !empty($wp_args['next_text']));
+		
+		// Calculate number of pages
+		$wp_args['total'] = ceil($count / $epp);
+		
+		if ($args['page'] < 1)
+			$wp_args['current'] = 1;
+		elseif ($args['page'] > $wp_args['total'])
+			$wp_args['current'] = $wp_args['total'];
+		else
+			$wp_args['current'] = $args['page'];
+		
+		return paginate_links($wp_args);
 	}
 	
 	function userCanAddEvents() {
