@@ -277,15 +277,15 @@ class fsCalendarAdmin {
 					$min = $wpdb->get_var('SELECT MIN(tsfrom) AS min FROM '.$wpdb->prefix.'fsevents');
 					$max = $wpdb->get_var('SELECT MAX(tsto)   AS max FROM '.$wpdb->prefix.'fsevents');
 					if ($min != NULL && $max != NULL) {
-						$ms = date('m', $min);
-						$ys = date('Y', $min);
-						$me = date('m', $max);
-						$ye = date('Y', $max);
+						$ms = fsCalendar::date('m', $min);
+						$ys = fsCalendar::date('Y', $min);
+						$me = fsCalendar::date('m', $max);
+						$ye = fsCalendar::date('Y', $max);
 						
 						while($ys <= $ye) {
 							while($ms<=12 && ($ys < $ye || $ms <= $me)) {
 								$time = mktime(0, 0, 0, $ms, 1, $ys);
-								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date_i18n('F Y', $time).'</option>';
+								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.fsCalendar::date_i18n('F Y', $time).'</option>';
 								$ms++;
 							}
 							$ms = 1;

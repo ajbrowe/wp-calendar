@@ -169,8 +169,8 @@ if (!empty($filter_category)) {
 	
 $filter_date = (isset($_GET['event_start']) ? intval($_GET['event_start']) : 0);
 if ($filter_date > 0) {
-	$m = date('m', $filter_date);
-	$y = date('Y', $filter_date);
+	$m = fsCalendar::date('m', $filter_date);
+	$y = fsCalendar::date('Y', $filter_date);
 	$filter['datefrom'] = mktime(0, 0, 0, $m, 1, $y);
 	$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
 	$link_actions = 'event_start='.$filter_date.'&amp;';
@@ -345,10 +345,10 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 							<?php _e('Delete', fsCalendar::$plugin_textdom);?> | 
 						<?php } ?>
 					</span>
-					<span class="view">
+					<!--<span class="view">
 						<a title="<?php _e('View this event', fsCalendar::$plugin_textdom); ?>" 
 							href="<?php echo $bl; ?>&amp;action=view&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('View', fsCalendar::$plugin_textdom);?></a>
-					</span>
+					</span>//-->
 					</div>
 				</td>
 				<td>
@@ -389,7 +389,7 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 				}
 				?></td>
 				<td><?php echo esc_attr(fsCalendar::$valid_states[$e->state]); ?> <?php _e('on', fsCalendar::$plugin_textdom) ?><br />
-				<?php echo date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
+				<?php echo fsCalendar::date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
 			</tr>
 			<?php
 			}

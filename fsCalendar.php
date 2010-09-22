@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.2.0
+Version: 1.2.1
 License: GPL
-Last Update: 15.09.2010
+Last Update: 22.09.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -28,7 +28,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.2.0';
+	static $plugin_vers     = '1.2.1';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -41,7 +41,7 @@ class fsCalendar {
 	static $plugin_textdom  = '';
 	
 	static $valid_states;
-	
+	static $gmt_offset      = -1;
 	
 	static $valid_fields = array('eventid', 
 						 		 'subject', 
@@ -107,7 +107,8 @@ class fsCalendar {
 									'fse_pagination_prev_text'=>'&laquo;',
 									'fse_pagination_next_text'=>'&raquo;',
 									'fse_pagination_end_size'=>3,
-									'fse_pagination_mid_size'=>3
+									'fse_pagination_mid_size'=>3,
+									'fse_gmt_hack'=>0
 								);
 								
 		self::$plugin_filename = plugin_basename( __FILE__ );
@@ -181,7 +182,7 @@ class fsCalendar {
 				wp_enqueue_script('jquery');
 			if (get_option('fse_load_jqueryui') == true)
 				wp_enqueue_script('jquery-ui-core');
-			wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.js');
+			wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.min.js');
 			//Pass Ajax Url to Javascript Paraemter
 			wp_localize_script('fullcalendar', 'WPCalendar', array('ajaxUrl'=>admin_url('admin-ajax.php')));
 		}
@@ -281,7 +282,7 @@ class fsCalendar {
 		$args['datefrom'] = $start;
 		$args['dateto']   = $end;
 		$args['datemode'] = FSE_DATE_MODE_ALL;
-		$args['number']   = 0;
+		$args['number']   = 0; // Do not limit!
 		
 		if (isset($_POST['state']))
 			$args['state'] = $_POST['state'];
@@ -302,8 +303,8 @@ class fsCalendar {
 			$e['id'] = $evt->eventid;
 			$e['title'] = $evt->subject;
 			$e['allDay'] = ($evt->allday == true ? true : false);
-			$e['start'] = date('c', $evt->tsfrom);
-			$e['end'] = date('c', $evt->tsto);
+			$e['start'] = fsCalendar::date('c', $evt->tsfrom);
+			$e['end'] = fsCalendar::date('c', $evt->tsto);
 			$e['editable'] = false;
 			
 			$classes = array();
@@ -505,9 +506,9 @@ class fsCalendar {
 						
 						// Do not display if date AND time is the same
 						if ($l_sed == false && 
-							( date('d', $evt->tsto) == date('d', $evt->tsfrom) &&
-							  date('m', $evt->tsto) == date('m', $evt->tsfrom) &&
-							  date('Y', $evt->tsto) == date('Y', $evt->tsfrom) )) {
+							( fsCalendar::date('d', $evt->tsto) == fsCalendar::date('d', $evt->tsfrom) &&
+							  fsCalendar::date('m', $evt->tsto) == fsCalendar::date('m', $evt->tsfrom) &&
+							  fsCalendar::date('Y', $evt->tsto) == fsCalendar::date('Y', $evt->tsfrom) )) {
 							$rep = '';
 						} else {
 							if (isset($opts['fmt']))
@@ -606,9 +607,9 @@ class fsCalendar {
 				case 'publishdate':
 					if (!empty($evt->publishdate)) {
 						if (isset($opts['fmt']))
-							$rep = date_i18n($opts['fmt'], $evt->publishdate);
+							$rep = fsCalendar::date_i18n($opts['fmt'], $evt->publishdate);
 						else
-							$rep = date_i18n('d.m.Y', $evt->publishdate);
+							$rep = fsCalendar::date_i18n('d.m.Y', $evt->publishdate);
 					} else {
 						$rep = '';	
 					}
@@ -616,9 +617,9 @@ class fsCalendar {
 				case 'publishtime':
 					if (!empty($evt->publishdate)) {
 						if (isset($opts['fmt']))
-							$rep = date_i18n($opts['fmt'], $evt->publishdate);
+							$rep = fsCalendar::date_i18n($opts['fmt'], $evt->publishdate);
 						else
-							$rep = date_i18n('H:i', $evt->publishdate);
+							$rep = fsCalendar::date_i18n('H:i', $evt->publishdate);
 					} else {
 						$rep = '';	
 					}
@@ -1050,11 +1051,11 @@ class fsCalendar {
 		if (isset($filter['allday']) && $filter['allday'] == true) {
 			if (isset($filter['datefrom'])) {
 				$df = $filter['datefrom'];
-				$filter['datefrom'] = mktime(0,0,0,date('m', $df), date('d', $df), date('Y', $df));
+				$filter['datefrom'] = mktime(0,0,0,fsCalendar::date('m', $df), fsCalendar::date('d', $df), fsCalendar::date('Y', $df));
 			}
 			if (isset($filter['dateto'])) {
 				$df = $filter['dateto'];
-				$filter['dateto'] = mktime(0,0,0,date('m', $df), date('d', $df)+1, date('Y', $df)) - 1;
+				$filter['dateto'] = mktime(0,0,0,fsCalendar::date('m', $df), fsCalendar::date('d', $df)+1, fsCalendar::date('Y', $df)) - 1;
 			} 
 		}
 		
@@ -1082,7 +1083,7 @@ class fsCalendar {
 				$filter['dateto'] = mktime(23, 59, 59, 12, 31, 2037);
 		
 			// Allday events to-stamp is at the beginning of the day!
-			$date_to_allday = mktime(0, 0, 0, date('m', $filter['datefrom']), date('d', $filter['datefrom']), date('y', $filter['datefrom']));
+			$date_to_allday = mktime(0, 0, 0, fsCalendar::date('m', $filter['datefrom']), fsCalendar::date('d', $filter['datefrom']), fsCalendar::date('y', $filter['datefrom']));
 				
 			// Events must always start before the end and 
 			// must end after start
@@ -1175,7 +1176,7 @@ class fsCalendar {
 		$datemode = FSE_DATE_MODE_ALL;
 		$state = 'publish';
 		//$d = time();
-		//$datefrom = mktime(0,0,0, date('m', $d), date('d', $d), date('Y', $d));
+		//$datefrom = mktime(0,0,0, fsCalendar::date('m', $d), fsCalendar::date('d', $d), fsCalendar::date('Y', $d));
 		$datefrom = mktime();
 		$categories = $orderby = $orderdir = $include = $exclude = array();
 		$start = 0;
@@ -1189,7 +1190,7 @@ class fsCalendar {
 			switch($k) {
 				case 'number':
 					$a = intval($a);
-					if ($a > 0) {
+					if ($a >= 0) {
 						$number = $a;
 					}
 					break;
@@ -1531,6 +1532,32 @@ class fsCalendar {
 		foreach(self::$plugin_options as $k => $v) {
 			remove_option($k);
 		}
+	}
+	
+	static function date($fmt, $ts) {
+		// First check, if hack is on and get offset
+		if (fsCalendar::$gmt_offset == -1) {
+			if (get_option('fse_gmt_hack') == true) {
+				fsCalendar::$gmt_offset = intval(get_option('gmt_offset')) * 3600;
+			} else {
+				fsCalendar::$gmt_offset = 0;
+			}
+		}
+		
+		return date($fmt, $ts + fsCalendar::$gmt_offset);
+	}
+	
+	static function date_i18n($fmt, $ts) {
+		// First check, if hack is on and get offset
+		if (fsCalendar::$gmt_offset == -1) {
+			if (get_option('fse_gmt_hack') == true) {
+				fsCalendar::$gmt_offset = intval(get_option('gmt_offset')) * 3600;
+			} else {
+				fsCalendar::$gmt_offset = 0;
+			}
+		}
+		
+		return date_i18n($fmt, $ts + fsCalendar::$gmt_offset);
 	}
 }
 

@@ -273,11 +273,11 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 		if ($evt->eventid == 0) {
 			// Calculate date and time
 			$current = time();
-			$day = date('d', $current);
-			$mon = date('m', $current);
-			$yea = date('Y', $current);
-			$std = date('H', $current);
-			$min = date('i', $current);
+			$day = fsCalendar::date('d', $current);
+			$mon = fsCalendar::date('m', $current);
+			$yea = fsCalendar::date('Y', $current);
+			$std = fsCalendar::date('H', $current);
+			$min = fsCalendar::date('i', $current);
 			
 			// No changes
 			if ($min > 0) {
@@ -287,8 +287,8 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 				}
 				$current = mktime($std, $min, 0, $mon, $day, $yea);
 			}
-			$evt->date_admin_from = date_i18n($evt->date_admin_format, $current);
-			$evt->time_admin_from = date_i18n($evt->time_admin_format, $current);
+			$evt->date_admin_from = fsCalendar::date_i18n($evt->date_admin_format, $current);
+			$evt->time_admin_from = fsCalendar::date_i18n($evt->time_admin_format, $current);
 			
 			// End date/time
 			$min += $add_min;
@@ -298,8 +298,8 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 			}
 			$std += $add_hour;
 			$future = mktime($std, $min, 0, $mon, $day, $yea);
-			$evt->date_admin_to = date_i18n($evt->date_admin_format, $future);
-			$evt->time_admin_to = date_i18n($evt->time_admin_format, $future);
+			$evt->date_admin_to = fsCalendar::date_i18n($evt->date_admin_format, $future);
+			$evt->time_admin_to = fsCalendar::date_i18n($evt->time_admin_format, $future);
 			$evt->allday    = false;
 			
 			
@@ -389,13 +389,13 @@ if (count($success) > 0) {
 						<?php _e('Created by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : esc_attr($evt->author_t)); ?></span>
 					</div>
 					<div class="misc-pub-section">
-						<?php _e('Created', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
+						<?php _e('Created', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
 					</div>
 					<div class="misc-pub-section">
 						<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
 					</div>
 					<div class="misc-pub-section">
-						<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
+						<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
 					</div>
 				</div>
 				<div class="clear"/></div>
@@ -644,14 +644,14 @@ function fse_ValidateDate($date, $fmt, $ret_sep = false) {
 	// Validate date by creating it. If the day changes, the date is
 	// invalid
 	$ts = mktime(0,0,0,$month, $day, $year);
-	if (intval(date('d', $ts)) <> $day) {
+	if (intval(fsCalendar::date('d', $ts)) <> $day) {
 		return false;
 	}
 	
 	if ($ret_sep == true) {
 		return array('d'=>$day, 'm'=>$month, 'y'=>$year);
 	} else {
-		return date_i18n($fmt, $ts);
+		return fsCalendar::date_i18n($fmt, $ts);
 	}
 }
 

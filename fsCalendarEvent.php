@@ -107,10 +107,10 @@ class fsEvent {
 		}
 		
 		if ($admin_fields) {
-			$this->date_admin_from = date_i18n($this->date_admin_format, $this->tsfrom);
-			$this->date_admin_to   = date_i18n($this->date_admin_format, $this->tsto);
-			$this->time_admin_from = date_i18n($this->time_admin_format, $this->tsfrom);
-			$this->time_admin_to   = date_i18n($this->time_admin_format, $this->tsto);
+			$this->date_admin_from = fsCalendar::date_i18n($this->date_admin_format, $this->tsfrom);
+			$this->date_admin_to   = fsCalendar::date_i18n($this->date_admin_format, $this->tsto);
+			$this->time_admin_from = fsCalendar::date_i18n($this->time_admin_format, $this->tsfrom);
+			$this->time_admin_to   = fsCalendar::date_i18n($this->time_admin_format, $this->tsto);
 		}
 	}	
 
@@ -168,7 +168,7 @@ class fsEvent {
 			}
 		}
 		
-		return date_i18n($fmt, $this->tsfrom);
+		return fsCalendar::date_i18n($fmt, $this->tsfrom);
 	}
 	
 	/**
@@ -195,7 +195,7 @@ class fsEvent {
 			}
 		}
 		
-		return date_i18n($fmt, $this->tsto);
+		return fsCalendar::date_i18n($fmt, $this->tsto);
 	}
 	
 	function getDescription() {

@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -14,7 +14,6 @@ To manage the event, the same authority checks as for post are used. The plug-in
 different functions and integrated in any post and page by using different tags.
 
 = Features =
-* 
 * Normal and all-day events
 * Event categorization (using WP categories)
 * Event states (draft, published)
@@ -23,6 +22,7 @@ different functions and integrated in any post and page by using different tags.
 * Mass operations on events (delete, set state)
 * Graphical date chooser
 * Graphical calendar for your blog
+* Pagination
 * Widgets for your blog
 * Same authority checks as for post and pages
 * Date format configuration
@@ -57,6 +57,9 @@ different functions and integrated in any post and page by using different tags.
 
 == Frequently Asked Questions ==
 
+= Parse error: syntax error, unexpected T_STATIC, expecting T_OLD_FUNCTION... =
+This plugin requires PHP 5!
+
 = How do I integrate events in my blog =
 The easiest way is to use the widgets. If you want to use a graphical calendar you have to use the tag `{event_calendar}`. There are many
 other Tags and PHP functions (theme development) you can use for display information about events in your blog. Please refer to the plug-ins
@@ -69,6 +72,9 @@ div .fc-event.category-3 a {
 	background-color: red;
 	border-color: red;
 }
+
+= When i click on an event in the graphical calendar nothing happens =
+Make sure you set up the page for the single event view. If this is not set up, nothing will happen when clicking on an event.
 
 = How do I display a single event =
 You can use any event details of one (or more) events in any of your posts and/or pages. All you have to do is to put the designated tags (e.g. {event_subject}) in your
@@ -123,6 +129,12 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.2.1 = 
+* FIXED: Graphical calendar show only a limited number of events
+* FIXED: GMT Offset Hack, if problems with time zone
+* FIXED: Load fullcalendar.min.js instead of fullcalendar.js
+* FIXED: Removed `View` link in events overview 'cause it has no function (yet)
 
 = 1.2.0 =
 * FEATURE: List of events (flat and grouped) now support pagination
