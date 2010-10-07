@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -129,6 +129,13 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.2.2 = 
+* FEATURE: New Action `Duplicate` to copy an event
+* FEATURE: New Action `View` for displaying an event in the admin interface or if a user hasn't the right to edit
+* FIXED: Added a missing permission check
+* FIXED: Date filter in admin overview not working properly
+* CHANGE: Event overview default sort is by date but descending
 
 = 1.2.1 = 
 * FIXED: Graphical calendar show only a limited number of events

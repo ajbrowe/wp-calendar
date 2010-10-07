@@ -100,7 +100,7 @@ class fsCalendarAdmin {
 		wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
 				
 		if ((strpos($_SERVER['QUERY_STRING'], fsCalendar::$plugin_filename) !== false && 
-		   (isset($_GET['action']) && ($_GET['action'] == 'new' ||  $_GET['action'] == 'edit'))) ||
+		   (isset($_GET['action']) && ($_GET['action'] == 'new' || $_GET['action'] == 'edit') || $_GET['action'] == 'copy')) ||
 		   (isset($_GET['page']) && $_GET['page'] == 'wp-cal-add')) {
 			wp_enqueue_script('post');
 			if (user_can_richedit()) {
@@ -108,6 +108,7 @@ class fsCalendarAdmin {
 				wp_enqueue_script('editor-functions');
 				add_thickbox();
 				wp_enqueue_script('media-upload');
+				wp_enqueue_script('post');
 				wp_enqueue_script('tiny_mce');
 				
 				add_action('admin_print_footer_scripts', 'wp_tiny_mce', 25 );
@@ -154,8 +155,9 @@ class fsCalendarAdmin {
 				$this->createCalendarEditPage();
 				return;
 			} elseif ($_GET['action'] == 'view' ) {
-				
-			} elseif ($_GET['action'] == 'new') {
+				$this->createCalendarEditPage();
+				return;
+			} elseif ($_GET['action'] == 'new' || $_GET['action'] == 'copy') {
 				$this->createCalendarAddPage();
 				return;
 			}
@@ -228,13 +230,11 @@ class fsCalendarAdmin {
 				$ca[$c->cat_ID] = $c->name;
 			}
 			$first = true;
+			echo '<ul>';
 			foreach($selected_cats as $c) {
-				if ($first == true)
-					$first = false;
-				else
-					echo ', ';
-				echo $ca[$c];
+				echo '<li>'.$ca[$c].'</li>';
 			}
+			echo '</ul>';
 		}
 	}
 	
@@ -271,8 +271,8 @@ class fsCalendarAdmin {
 				<input id="doaction" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
 				<?php if ($part == 1) {?>
 					<select name="event_start">
-					<option value="-1"<?php echo ($filter['datefrom'] == -1 ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
-					<option value="0"<?php echo ($filter['datefrom'] == 0 ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
+					<option value="-1"<?php echo (!isset($filter['datefrom']) ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
+					<option value="0"<?php echo (isset($filter['datefrom']) && !isset($filter['dateto']) ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
 					<?php 
 					$min = $wpdb->get_var('SELECT MIN(tsfrom) AS min FROM '.$wpdb->prefix.'fsevents');
 					$max = $wpdb->get_var('SELECT MAX(tsto)   AS max FROM '.$wpdb->prefix.'fsevents');

@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.2.1
+Version: 1.2.2
 License: GPL
-Last Update: 22.09.2010
+Last Update: 07.10.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval

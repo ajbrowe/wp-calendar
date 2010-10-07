@@ -167,7 +167,7 @@ if (!empty($filter_category)) {
 	$link_actions = 'event_category='.$filter_category.'&amp;';
 }
 	
-$filter_date = (isset($_GET['event_start']) ? intval($_GET['event_start']) : 0);
+$filter_date = (isset($_GET['event_start']) ? intval($_GET['event_start']) : 0); // 0 -> Future dates only!
 if ($filter_date > 0) {
 	$m = fsCalendar::date('m', $filter_date);
 	$y = fsCalendar::date('Y', $filter_date);
@@ -179,6 +179,9 @@ if ($filter_date > 0) {
 	$filter['datefrom'] = time();
 	//$filter['datemode'] = FSE_DATE_MODE_END;
 	//$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
+	$link_actions = 'event_start='.$filter_date.'&amp;';
+} elseif ($filter_date == -1) {
+	// No time filter
 	$link_actions = 'event_start='.$filter_date.'&amp;';
 }
 
@@ -194,7 +197,9 @@ if (in_array($sort, array('subject', 'author', 'tsfrom', 'location'))) {
 	}
 } else {
 	$sort = 'tsfrom';
-	$sortdir = 'ASC';
+	$sortdir = 'DESC';
+	
+	$sortstring = 'tsfrom DESC';
 }
 
 // Create Link for transporting filter actions!
@@ -336,19 +341,27 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 							<?php _e('Edit', fsCalendar::$plugin_textdom);?> | 
 						<?php } ?> 
 					</span>
+					<span class="duplicate">
+						<?php if ($fsCalendar->userCanAddEvents()) { ?>
+						<a title="<?php _e('Duplicate this event', fsCalendar::$plugin_textdom); ?>" 
+							href="<?php echo $bl; ?>&amp;action=copy&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('Duplicate', fsCalendar::$plugin_textdom);?></a> |
+						<?php } else { ?>
+							<?php _e('Duplicate', fsCalendar::$plugin_textdom);?> | 
+						<?php } ?> 
+					</span>
 					<span class="delete">
 						<?php if ($e->userCanDeleteEvent()) { ?>
 						<a class="submitdelete" onclick="if ( confirm('<?php printf(__("You are about to delete this event \\'%s\\'\\n \\'Cancel\\' to stop, \\'OK\\' to delete.", fsCalendar::$plugin_textdom), esc_attr($e->subject)); ?>') ) { return true;}return false;"
 							href="<?php echo $bl; ?>&amp;action=delete&event=<?php echo esc_attr($e->eventid); ?>" 
-							title="<?php _e('Delete this event', fsCalendar::$plugin_textdom); ?>"><?php _e('Delete', fsCalendar::$plugin_textdom);?></a> | 
+							title="<?php _e('Delete this event', fsCalendar::$plugin_textdom); ?>"><?php _e('Delete', fsCalendar::$plugin_textdom);?></a> |
 						<?php } else { ?>
-							<?php _e('Delete', fsCalendar::$plugin_textdom);?> | 
+							<?php _e('Delete', fsCalendar::$plugin_textdom);?> |
 						<?php } ?>
 					</span>
-					<!--<span class="view">
+					<span class="view">
 						<a title="<?php _e('View this event', fsCalendar::$plugin_textdom); ?>" 
 							href="<?php echo $bl; ?>&amp;action=view&amp;event=<?php echo esc_attr($e->eventid); ?>"><?php _e('View', fsCalendar::$plugin_textdom);?></a>
-					</span>//-->
+					</span>
 					</div>
 				</td>
 				<td>
@@ -398,7 +411,9 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 	</tbody>
 </table>
 <?php $this->printNavigationBar($filter, 2, $page, $epp, $event_count, $bl_filter); ?>
-<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', fsCalendar::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl_new; ?>';" /></p>
+<?php if ($fsCalendar->userCanAddEvents()) { ?>
+	<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', fsCalendar::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl_new; ?>';" /></p>
+<?php } ?>
 </form>
 <?php
 echo $this->pageEnd();

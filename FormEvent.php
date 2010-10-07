@@ -12,8 +12,10 @@ $ds = get_option('fse_df_admin_sep');
 $gc_enabled = get_option('fse_adm_gc_enabled');
 $gc_mode = get_option('fse_adm_gc_mode');
 
+$action = $_GET['action'];
+
 // Get Post Data
-if (isset($_POST['eventid'])) {
+if (isset($_POST['eventid']) && $action != 'view') {
 	// Get all post data
 	$evt->eventid     = intval($_POST['eventid']);
 	
@@ -47,9 +49,16 @@ if (isset($_POST['eventid'])) {
 	
 }
 
-$action = $_GET['action'];
+$copy = false;
+if ($action == 'copy') {
+	// Behave like a new one
+	unset($evt->eventid);
+	$action = 'new';
+	$copy = true;
+}
 if ($action == 'new') {
-	if ($evt->eventid > 0) {		$action = 'edit';
+	if ($evt->eventid > 0) {
+		$action = 'edit';
 	} else {
 		if (!$fsCalendar->userCanAddEvents()) {
 			$fatal[] = __('No permission to create event', fsCalendar::$plugin_textdom);
@@ -79,14 +88,14 @@ if ($action == 'view') {
 }
 
 // Verify Nonce
-if (isset($_POST['eventid'])) {
+if (isset($_POST['eventid']) && $action != 'view') {
 	$nonce = $_POST['_fseevent'];
 	if (!wp_verify_nonce($nonce, 'event'))
 		$fatal[] = __('Security check failed', fsCalendar::$plugin_textdom); 
 }
 
 if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
-	if (isset($_POST['eventid'])) {
+	if (isset($_POST['eventid']) && $action != 'view') {
 		//print_r($evt);
 		
 		// Save post
@@ -270,7 +279,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 			}
 		}
 	} else {
-		if ($evt->eventid == 0) {
+		if ($evt->eventid == 0 && !$copy) {
 			// Calculate date and time
 			$current = time();
 			$day = fsCalendar::date('d', $current);
@@ -307,6 +316,16 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 			$evt->description = '';
 			$evt->categories = array();
 			$evt->state = 'draft';
+		} elseif ($copy) {
+			// Reset some date whe copy
+			$evt->state = 'draft';
+			unset($evt->createdate);
+			unset($evt->author);
+			unset($evt->publishauthor);
+			unset($evt->publishdate);
+			unset($evt->author_t);
+			unset($evt->publishauthor_t);
+			
 		}
 		
 		// Referer holen
@@ -325,7 +344,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 	
 } // End Fatal Error Skip
 
-echo $this->pageStart(($evt->eventid == 0 ? __('Add New Event', fsCalendar::$plugin_textdom) : __('Edit Event', fsCalendar::$plugin_textdom)), '', 'icon-edit');
+echo $this->pageStart(($evt->eventid == 0 ? __('Add New Event', fsCalendar::$plugin_textdom) : ($action == 'view' ? __('View Event', fsCalendar::$plugin_textdom) : __('Edit Event', fsCalendar::$plugin_textdom))), '', 'icon-edit');
 
 // Bei Fatal Errors gleich wieder raus!
 if (count($fatal) > 0) {
@@ -381,7 +400,7 @@ if (count($success) > 0) {
 					<div class="misc-pub-section">
 						<?php _e('State', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display">
 						<?php echo fsCalendar::$valid_states[$evt->state]; ?></span>
-						<?php if ($evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
+						<?php if ($action != 'view' && $evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
 						<a class="hide-if-no-js" href="" onClick="document.forms['event'].jsaction.value='draft'; document.forms['event'].submit(); return false;"><?php _e('Change to Draft', fsCalendar::$plugin_textdom)?></a>
 						<?php } ?>
 					</div>
@@ -401,13 +420,12 @@ if (count($success) > 0) {
 				<div class="clear"/></div>
 			</div>
 		
+			<?php if ($action != 'view' || $evt->userCanEditEvent() ) { ?>
 			<div id="major-publishing-actions">
 				<div id="publishing-action">
-					<?php 
-					if ($action == 'view') {
-						if (!empty($referer)) {
-							echo '<input class="hide-if-no-js" type="button" class="button-primary" onClick="document.location.href='."'".$referer."'".'" value="'.__('Back', fsCalendar::$plugin_textdom).'" />';
-						}
+					<?php
+					if ($action == 'view') { 
+						echo '<input id="save" class="button-primary" type="button" value="'.__('Edit', fsCalendar::$plugin_textdom).'"'." name=\"changetoedit\" onClick=\"document.location.href=document.location.href.replace(/action=view/, 'action=edit')\" />";
 					} elseif ($evt->state == 'publish') {
 						echo '<input id="save" class="button-primary" type="submit" value="'.__('Save', fsCalendar::$plugin_textdom).'" name="save" />';
 					} elseif ( $evt->userCanPublishEvent() ) {
@@ -421,6 +439,7 @@ if (count($success) > 0) {
 				</div>
 				<div class="clear"></div>
 			</div>
+			<?php } ?>
 		</div>
 		
 		<?php echo $this->pagePostBoxEnd(); ?>
@@ -431,59 +450,63 @@ if (count($success) > 0) {
 					<tr>
 						<th scope="row" style="vertical-align: middle;"><?php _e('From', fsCalendar::$plugin_textdom); ?></th>
 						<td style="vertical-align: middle;">
-							<input type="text"
-						    	id="fse_datepicker_from<?php echo ($action=='view' ? 'dmy"' : ''); ?>" 
-						    	name="event_from" 
-						    	size="10"
-						    	value="<?php echo $evt->date_admin_from; ?>" 
-						    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
-						    		this.focus(); 
-						    		this.value = ''; 
-						    		alert('Bitte geben Sie ein korrektes Datum ein.') 
-						    		}; fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"  
-						    	onfocus="this.select();" 
-						    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_from').datepicker('hide')\"" : '' ); ?>
-						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
-						    <input type="text"
-						    	id="time_from"
-						    	name="event_tfrom"
-						    	size="5" 
-						    	value="<?php echo $evt->time_admin_from; ?>" 
-						    	onblur="if (fse_validateTime(this) == false) { 
-						    		this.focus(); 
-						    		this.value = ''; 
-						    		alert('Bitte geben Sie eine korrekte Uhrzeit ein.') 
-						    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" 
-						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
+							<?php if ($action == 'view') { 
+								echo $evt->date_admin_from.(!$evt->allday ? ' '.$evt->time_admin_from : '');
+							} else { ?>
+								<input type="text"
+							    	id="fse_datepicker_from<?php echo ($action=='view' ? 'dmy' : ''); ?>" 
+							    	name="event_from" 
+							    	size="10"
+							    	value="<?php echo $evt->date_admin_from; ?>" 
+							    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
+							    		this.focus(); 
+							    		this.value = ''; 
+							    		alert('Bitte geben Sie ein korrektes Datum ein.') 
+							    		}; fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"  
+							    	onfocus="this.select();" 
+							    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_from').datepicker('hide')\"" : '' ); ?> />
+							    <input type="text"
+							    	id="time_from"
+							    	name="event_tfrom"
+							    	size="5" 
+							    	value="<?php echo $evt->time_admin_from; ?>" 
+							    	onblur="if (fse_validateTime(this) == false) { 
+							    		this.focus(); 
+							    		this.value = ''; 
+							    		alert('Bitte geben Sie eine korrekte Uhrzeit ein.') 
+							    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" />
+						    <?php } ?>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row" style="vertical-align: middle;"><?php _e('To', fsCalendar::$plugin_textdom); ?></th>
 						<td style="vertical-align: middle;">
-							<input type="text"
-						    	id="fse_datepicker_to<?php echo ($action=='view' ? 'dmy"' : ''); ?>" 
-						    	name="event_to" 
-						    	size="10"
-						    	value="<?php echo $evt->date_admin_to; ?>" 
-						    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
-						    		this.focus(); 
-						    		this.value = ''; 
-						    		alert('Bitte geben Sie ein korrektes Datum ein.') 
-						    		};fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"
-						    	onfocus="this.select();"   
-						    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_to').datepicker('hide')\"" : '' ); ?>
-						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
-						    <input type="text"
-						    	id="time_to"
-						    	name="event_tto"
-						    	size="5"
-						    	value="<?php echo $evt->time_admin_to; ?>" 
-						    	onblur="if (fse_validateTime(this) == false) { 
-						    		this.focus(); 
-						    		this.value = ''; 
-						    		alert('Bitte geben Sie eine korrekte Uhrzeit ein.') 
-						    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" 
-						    	<?php echo ($action=='view' ? 'disabled="disabled"' : ''); ?>/>
+							<?php if ($action == 'view') { 
+								echo $evt->date_admin_to.(!$evt->allday ? ' '.$evt->time_admin_to : '');
+							} else { ?>
+								<input type="text"
+							    	id="fse_datepicker_to<?php echo ($action=='view' ? 'dmy' : ''); ?>" 
+							    	name="event_to" 
+							    	size="10"
+							    	value="<?php echo $evt->date_admin_to; ?>" 
+							    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
+							    		this.focus(); 
+							    		this.value = ''; 
+							    		alert('Bitte geben Sie ein korrektes Datum ein.') 
+							    		};fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"
+							    	onfocus="this.select();"   
+							    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_to').datepicker('hide')\"" : '' ); ?> />
+							    <input type="text"
+							    	id="time_to"
+							    	name="event_tto"
+							    	size="5"
+							    	value="<?php echo $evt->time_admin_to; ?>" 
+							    	onblur="if (fse_validateTime(this) == false) { 
+							    		this.focus(); 
+							    		this.value = ''; 
+							    		alert('Bitte geben Sie eine korrekte Uhrzeit ein.') 
+							    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" />
+							<?php } ?>
 						</td>
 					</tr>
 					<tr>
