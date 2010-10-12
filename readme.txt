@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -129,6 +129,11 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.2.3 =
+* FIXED: HTML error in default list template
+* FIXED: HTML errors in setting page
+* FIXED: Donation link not working
 
 = 1.2.2 = 
 * FEATURE: New Action `Duplicate` to copy an event

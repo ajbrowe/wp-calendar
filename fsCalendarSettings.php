@@ -237,7 +237,7 @@ class fsCalendarSettings {
 	 */
 	function hookAddAdminMenu() {
 		// Options
-		$menutitle = '<img src="'.fsCalendar::$plugin_img_url.'icon.png" alt=""> '.__('Calendar', fsCalendar::$plugin_textdom);
+		$menutitle = '<img src="'.fsCalendar::$plugin_img_url.'icon.png" alt="" /> '.__('Calendar', fsCalendar::$plugin_textdom);
 		add_options_page(__('Calendar', fsCalendar::$plugin_textdom), 
 						 $menutitle, 
 						 'manage_options', 
@@ -254,11 +254,20 @@ class fsCalendarSettings {
 		global $user_ID;
 		?>
 		
-		<div>
 		<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br /></div>
 		<div id="otc"><h2><?php _e('Calendar Settings', fsCalendar::$plugin_textdom); ?></h2>
 		</div>
+		
+		<div style="width: 100%; text-align: right; vertical-align: middle; display: block;">
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+		<input type="image"  align="middle"  src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+	    <img alt="" border="0" src="https://www.paypal.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+		</form>
+		</div>
+		
 		<form action="options.php" method="post">
 		<?php settings_fields('fse'); // Groupname ?>
 		
@@ -437,12 +446,12 @@ class fsCalendarSettings {
 	
 	function hookSettingOption_fse_template_lst() {
 		?>
-		<textarea rows="5" cols="80" name="fse_template_lst" /><?php echo htmlentities(get_option('fse_template_lst')); ?></textarea>
+		<textarea rows="5" cols="80" name="fse_template_lst"><?php echo htmlentities(get_option('fse_template_lst')); ?></textarea>
 		<?php	
 	}
 	function hookSettingOption_fse_template() {
 		?>
-		<textarea rows="5" cols="80" name="fse_template" /><?php echo htmlentities(get_option('fse_template')); ?></textarea>
+		<textarea rows="5" cols="80" name="fse_template"><?php echo htmlentities(get_option('fse_template')); ?></textarea>
 		<?php	
 	}
 	
@@ -472,7 +481,7 @@ class fsCalendarSettings {
 		$pages = get_pages();
 		$s = get_option('fse_page');
 		foreach($pages as $p) {
-			echo '<option value="'.esc_attr($p->ID).'"'.($s == $p->ID ? 'selected="selected"' : '').'>'.esc_attr($p->post_title).'</option>';
+			echo '<option value="'.esc_attr($p->ID).'"'.($s == $p->ID ? ' selected="selected"' : '').'>'.esc_attr($p->post_title).'</option>';
 		}
 		?>
 		</select><br />
@@ -497,7 +506,7 @@ class fsCalendarSettings {
 			   name="fse_df_wp" 
 			   value="1"
 			   id="fse_df_wp"
-			   onClick="fse_toogleInputByCheckbox(this, 'fse_df', false);"
+			   onclick="fse_toogleInputByCheckbox(this, 'fse_df', false);"
 			   size="10" 
 			   <?php echo (get_option('fse_df_wp') == true ? 'checked="checked"' : '' ); ?>/> 
 		<label for="fse_df_wp"><?php _e('Use WP settings', fsCalendar::$plugin_textdom)?></label><br />
@@ -513,7 +522,7 @@ class fsCalendarSettings {
 			   value="1"
 			   id="fse_tf_wp"
 			   size="10"
-			   onClick="fse_toogleInputByCheckbox(this, 'fse_tf', false);"  
+			   onclick="fse_toogleInputByCheckbox(this, 'fse_tf', false);"  
 			   <?php echo (get_option('fse_df_wp') == true ? 'checked="checked"' : '' ); ?>/> 
 		<label for="fse_tf_wp"><?php _e('Use WP settings', fsCalendar::$plugin_textdom)?></label><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small>
@@ -541,7 +550,7 @@ class fsCalendarSettings {
 			   name="fse_ws_wp"
 			   value="1"
 			   id="fse_ws_wp"
-			   onClick="fse_toogleInputByCheckbox(this, 'fse_ws', false);"  
+			   onclick="fse_toogleInputByCheckbox(this, 'fse_ws', false);"  
 			   <?php echo (get_option('fse_ws_wp') == true ? 'checked="checked"' : '' ); ?>/> 
 		<label for="fse_ws_wp"><?php _e('Use WP settings', fsCalendar::$plugin_textdom)?></label>
 		<?php	
@@ -702,12 +711,12 @@ class fsCalendarSettings {
 		</p>
 		<p>
 		Learn how to:
+		</p>
 		<ul>
 			<li><a href="#usage_fullcalendar"><?php _e('Show a graphical calendar in your blog', fsCalendar::$plugin_textdom); ?></a></li>
 			<li><a href="#usage_themes"><?php _e('Use WP Calendar functions in your theme', fsCalendar::$plugin_textdom); ?></a></li>
 			<li><a href="#usage_posts"><?php _e('Use short tags in your post and pages', fsCalendar::$plugin_textdom); ?></a></li>
 		</ul>
-		</p>
 		</th></tr>
 		
 		<tr><th colspan="3"><a name="usage_fullcalendar"></a><h3 class="show"><?php _e('Graphical Calendar', fsCalendar::$plugin_textdom); ?></h3>
@@ -729,6 +738,7 @@ class fsCalendarSettings {
 		<tr><th colspan="3"><a name="usage_themes"></a><h3 class="show"><?php _e('Usage in Themes', fsCalendar::$plugin_textdom); ?></h3>
 		<p>
 		<?php _e('At the moment there are four functions available', fsCalendar::$plugin_textdom); ?>:
+		</p>
 		<ul>
 			<li><code>fse_get_events($args = array())</code> - <?php _e('Returns an array of event objects for further processing by yourself', fsCalendar::$plugin_textdom); ?></li>
 			<li><code>fse_print_events($args = array())</code> - <?php _e('Prints a selection of events without any hierarchy', fsCalendar::$plugin_textdom); ?></li>
@@ -828,13 +838,13 @@ fse_print_events(
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_starttime; fmt=x; hideifallday=y}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> (using 0 or 1) if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y, ; hideifallday=z}</code></th><td colspan="2"><?php _e("The event's end time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?><br />
-		<tr><th><code>{event_allday; text=x}</code></th><td colspan="2"><?php _e("Use this tag to print out the parameter <code>text</code> if it is an allday event.", fsCalendar::$plugin_textdom); ?></td></tr>
+		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y, ; hideifallday=z}</code></th><td colspan="2"><?php _e("The event's end time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?></td></tr>
+		<tr><th><code>{event_allday; text=x}</code></th><td colspan="2"><?php _e("Use this tag to print out the parameter <code>text</code> if it is an allday event.", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_duration; type=x; suffix=y; empty=z}</code></th><td colspan="2"><?php _e("The event's duration; Pass on of the values <code>d</code>, <code>h</code>, <code>m</code> to the argument 
-			<code>type</code> to get the days, hours and minutes. You can add a suffix to the output by passing the argument <code>suffix</code>. By default empty values are not printed out, by setting the argument <code>empty</code> to 1 you can change that behaviour.", fsCalendar::$plugin_textdom); ?><br />
+			<code>type</code> to get the days, hours and minutes. You can add a suffix to the output by passing the argument <code>suffix</code>. By default empty values are not printed out, by setting the argument <code>empty</code> to 1 you can change that behaviour.", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_categories; exclude=x; sep=y}</code></th><td colspan="2"><?php _e("The event's categories; Use the paramter <code>exclude</code> to pass a comma-separated list of categories to exclude from displaying", fsCalendar::$plugin_textdom); ?>.
-		<?php _e("Use the paramter <code>sep</code> to define the separator (&quot;, &quot; is default). You can also pass the value <code>list</code>, which will force the output in unordered list", fsCalendar::$plugin_textdom); ?> (&lt;ul&gt;&lt;li&gt;cat1&lt;/li&gt;&lt;li&gt;cat2&lt;/li&gt;&lt;/ul&gt;)
+		<?php _e("Use the paramter <code>sep</code> to define the separator (&quot;, &quot; is default). You can also pass the value <code>list</code>, which will force the output in unordered list", fsCalendar::$plugin_textdom); ?> (&lt;ul&gt;&lt;li&gt;cat1&lt;/li&gt;&lt;li&gt;cat2&lt;/li&gt;&lt;/ul&gt;)</td></tr>
 		<tr><th><code>{event_publishdate; fmt=x}</code></th><td colspan="2"><?php _e("The event's publish date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_publishtime; fmt=x}</code></th><td colspan="2"><?php _e("The event's publish time; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
@@ -856,16 +866,9 @@ fse_print_events(
 		<p><?php _e('For further information please visit the', fsCalendar::$plugin_textdom); ?> <a href="http://www.faebusoft.ch/downloads/wp-calendar"><?php _e('plugin website', fsCalendar::$plugin_textdom);?></a>.</p>
 		<h3 class="show"><?php _e('Support', fsCalendar::$plugin_textdom); ?></h3>
 		<p><?php _e('If you have any questions or if you find a bug, pleas leave a comment at the', fsCalendar::$plugin_textdom); ?> <a href="http://www.faebusoft.ch/downloads/wp-calendar"><?php _e('plugin website', fsCalendar::$plugin_textdom);?></a>.<br />
-		<?php _e("Please consider that I am doing this (and a lot of other things) all in my free time. So please be patient if you don't get a reply within a few days.",  fsCalendar::$plugin_textdom);?>
+		<?php _e("Please consider that I am doing this (and a lot of other things) all in my free time. So please be patient if you don't get a reply within a few days.",  fsCalendar::$plugin_textdom);?></p>
 		<h3 class="show"><?php _e('Donation', fsCalendar::$plugin_textdom); ?></h3>
-		<p><?php _e('If you like my work please consider a small donation', fsCalendar::$plugin_textdom); ?></p>
-		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-		<input type="hidden" name="cmd" value="_s-xclick">
-		<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
-		<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-		<img alt="" border="0" src="https://www.paypal.com/de_DE/i/scr/pixel.gif" width="1" height="1">
-		</form>
-		</p>
+		<p><?php _e('Like this plugin? Consider a small donation :-) --&gt; Use the donation button on the top right corner.', fsCalendar::$plugin_textdom); ?></p>
 		<?php
 	}
 }

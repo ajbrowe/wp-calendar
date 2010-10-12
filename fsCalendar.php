@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.2.2
+Version: 1.2.3
 License: GPL
-Last Update: 07.10.2010
+Last Update: 12.10.2010
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -28,7 +28,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.2.1';
+	static $plugin_vers     = '1.2.3';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -84,7 +84,7 @@ class fsCalendar {
 									'fse_page_hide' => true,
 									'fse_number' => 10,
 									'fse_template' => '<p><strong><a href="{event_url}" title="{event_subject}">{event_subject}</a></strong><br />{event_startdate} {event_starttime} - {event_enddate} {event_endtime} @ {event_location}</p>',
-									'fse_template_lst' => '<stront><a href="{event_url}">{event_subject}</a></strong><br />{event_startdate} {event_starttime} - {event_enddate} {event_endtime} @ {event_location}',
+									'fse_template_lst' => '<strong><a href="{event_url}">{event_subject}</a></strong><br />{event_startdate} {event_starttime} - {event_enddate} {event_endtime} @ {event_location}',
 									'fse_show_enddate' => 0,
 									'fse_groupby' => 'm',
 									'fse_groupby_header' => 'M Y',

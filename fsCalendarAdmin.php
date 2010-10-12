@@ -268,7 +268,7 @@ class fsCalendarAdmin {
 					}
 					?>
 				</select>
-				<input id="doaction" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
+				<input id="doaction<?php echo $part; ?>" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
 				<?php if ($part == 1) {?>
 					<select name="event_start">
 					<option value="-1"<?php echo (!isset($filter['datefrom']) ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>

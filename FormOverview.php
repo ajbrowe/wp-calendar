@@ -352,7 +352,7 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 					<span class="delete">
 						<?php if ($e->userCanDeleteEvent()) { ?>
 						<a class="submitdelete" onclick="if ( confirm('<?php printf(__("You are about to delete this event \\'%s\\'\\n \\'Cancel\\' to stop, \\'OK\\' to delete.", fsCalendar::$plugin_textdom), esc_attr($e->subject)); ?>') ) { return true;}return false;"
-							href="<?php echo $bl; ?>&amp;action=delete&event=<?php echo esc_attr($e->eventid); ?>" 
+							href="<?php echo $bl; ?>&amp;action=delete&amp;event=<?php echo esc_attr($e->eventid); ?>" 
 							title="<?php _e('Delete this event', fsCalendar::$plugin_textdom); ?>"><?php _e('Delete', fsCalendar::$plugin_textdom);?></a> |
 						<?php } else { ?>
 							<?php _e('Delete', fsCalendar::$plugin_textdom);?> |
@@ -412,7 +412,7 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 </table>
 <?php $this->printNavigationBar($filter, 2, $page, $epp, $event_count, $bl_filter); ?>
 <?php if ($fsCalendar->userCanAddEvents()) { ?>
-	<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', fsCalendar::$plugin_textdom); ?>" onClick="document.location.href='<?php echo $bl_new; ?>';" /></p>
+	<p><input type="button" class="button-primary" name="back" value="<?php _e('Add New Event', fsCalendar::$plugin_textdom); ?>" onclick="document.location.href='<?php echo $bl_new; ?>';" /></p>
 <?php } ?>
 </form>
 <?php
