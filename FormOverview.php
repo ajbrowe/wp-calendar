@@ -320,6 +320,11 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 				</th>
 				<td>
 					<strong>
+					<?php 
+					if ($e->updatedbypost == true) {
+						echo '<img src="'.fsCalendar::$plugin_img_url.'synchronized.png" alt="" />';
+					}
+					?>
 					<a class="row-title" 
 						title="<?php _e('Edit', fsCalendar::$plugin_textdom); ?> <?php echo esc_attr($e->subject); ?>" 
 						href="<?php echo $bl; ?>&amp;action=<?php echo ($e->userCanEditEvent() == true ? 'edit' : 'view'); ?>&amp;event=<?php echo esc_attr($e->eventid); ?>">

@@ -10,6 +10,10 @@ class fsCalendarAdmin {
 		add_action('admin_init',           array(&$this, 'hookRegisterScriptsAdmin'));
 		add_action('admin_init',           array(&$this, 'hookRegisterStylesAdmin'));
 		
+		add_action('add_meta_boxes', 	   array(&$this, 'hookAddPostCalendarBox'));
+		add_action('save_post', 		   array(&$this, 'hookSaveEventFromPost'));
+		add_action('admin_notices', 	   array(&$this, 'hookSendMessagesFromPost'));
+		
 		add_filter('plugin_action_links',  array(&$this, 'hookAddPlugInSettingsLink'), 10, 2 );
 		
 		$this->settings = new fsCalendarSettings();
@@ -96,7 +100,7 @@ class fsCalendarAdmin {
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-tabs');
 		wp_enqueue_script('fs-datepicker', fsCalendar::$plugin_js_url.'ui.datepicker.js');
-		wp_enqueue_script('fs-date', fsCalendar::$plugin_js_url.'date.js');
+		//wp_enqueue_script('fs-date', fsCalendar::$plugin_js_url.'date.js');
 		wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
 				
 		if ((strpos($_SERVER['QUERY_STRING'], fsCalendar::$plugin_filename) !== false && 
@@ -145,6 +149,133 @@ class fsCalendarAdmin {
 		return $links;
 	}
 	
+	/**
+	 * Adds a "WP Calendar" Box to the Post 
+	 * @return unknown_type
+	 */
+	function hookAddPostCalendarBox() {
+		add_meta_box('wpcalevent', 
+					 __('WP Calendar Event', fsCalendar::$plugin_textdom),
+					 array(&$this, 'createCalendarPostEventBox'),
+					 'post',
+					 'side');
+	}
+	
+	function hookSaveEventFromPost($post_id) {
+		global $fsCalendar;
+		
+		@session_start();
+		
+		// Check autosave
+		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) 
+    		return;
+    	
+    	// Store the postdata in the session, because all data gets lost on the
+    	// frontend, when a error occurs!
+    	$_SESSION['fse_postdata'] = $_POST;
+    		
+    	// Check nonce
+		if (isset($_POST['eventid']) && $action != 'view') {
+			$nonce = $_POST['_fseevent'];
+			if (!wp_verify_nonce($nonce, 'event')) {
+				$_SESSION['fse_error'] = __('Security check failed', fsCalendar::$plugin_textdom);
+				return;
+			}
+		}
+		
+		$active   = (isset($_POST['fseventactive']) && $_POST['fseventactive'] == true);
+		$sync     = (isset($_POST['fseventsync']) && $_POST['fseventsync'] == true);
+		$synconce = (isset($_POST['fseventupdate']) && $_POST['fseventupdate'] == true);
+		
+		// WP Calender event active?
+		if (!$active)
+			return;
+			
+		// Only use the main post (nut the revisions)
+		if (wp_is_post_revision($post_id) !== false) {
+			return;
+		}
+		
+		// Check if an event exists
+		$evt = new fsEvent(0, '', true, $post_id);
+		
+		// Neuer Event
+		if (empty($evt->eventid)) {
+			if (!$fsCalendar->userCanAddEvents()) {
+				$_SESSION['fse_error'] = __('You do not have the permission to create events', fsCalendar::$plugin_textdom);
+				return;
+			}
+		} else {
+			// Check if needs to be updated!
+			//if (!$sync && !$synconce)
+			//	return;
+				
+			// Check authority to edit
+			if (!$evt->userCanEditEvent()) {
+				$_SESSION['fse_error'] = __('No permission to edit event', fsCalendar::$plugin_textdom);
+				return;
+			}
+		}
+		
+		// Now add all the data
+		$evt->postid = $post_id;
+		$evt->updatedbypost = $sync;
+		
+		// Some date are only updated when requestet
+		if ($sync || $synconce) {
+			$post = get_post($post_id);
+			$cats = wp_get_post_categories($post_id);
+			
+			$evt->subject = $post->post_title;
+			$evt->description = $post->post_content;
+			$evt->categories = array();
+			foreach($cats as $c) {
+				$evt->categories[] = $c;
+			}
+		}
+		
+		$evt->allday     		= (isset($_POST['event_allday']) ? true : false);
+		$evt->date_admin_from   = $_POST['event_from'];
+		$evt->date_admin_to     = $_POST['event_to'];
+		$evt->time_admin_from   = $_POST['event_tfrom'];
+		$evt->time_admin_to     = $_POST['event_tto'];
+		$evt->location    		= $_POST['event_location'];
+		
+		if (($ret = $evt->saveToDataBase()) === true) {
+			$_SESSION['fse_success'] = 'Successfully saved';
+		} else {
+			$_SESSION['fse_error'] = $ret;	
+		}
+		
+		return $post_id;
+	}
+	
+	/**
+	 * TODO: Bring message in correct box!
+	 */
+	function hookSendMessagesFromPost() {
+		// Make sure the session is started
+		@session_start();
+
+		/*if (isset($_SESSION['fse_error'])) {
+			if (is_array($_SESSION['fse_error']))
+				print_r($_SESSION['fse_error']);
+			else
+				echo $_SESSION['fse_error'];
+		}
+		
+		if (isset($_SESSION['fse_success'])) {
+			if (is_array($_SESSION['fse_success']))
+				print_r($_SESSION['fse_success']);
+			else
+				echo $_SESSION['fse_success'];
+		}
+		
+		unset($_SESSION['fse_error']);
+		unset($_SESSION['fse_success']);
+		*/
+	}
+	
 	function createCalendarPage() {
 		global $wpdb;
 		global $user_ID;
@@ -185,6 +316,84 @@ class fsCalendarAdmin {
 		include('FormEvent.php');
 	}
 	
+	function createCalendarPostEventBox() {
+		global $post;
+		global $fsCalendar;
+		
+		$post_id = $post->ID;
+		if ($res = wp_is_post_revision($post_id))
+			$post_id = $res;
+			
+		$evt = new fsEvent(0, '', true, $post_id);
+		
+		//print_r($_SESSION['fse_postdata']);
+		
+		if (isset($_SESSION['fse_postdata']['event_location'])) {
+			$evt->date_admin_from   = $_SESSION['fse_postdata']['event_from'];
+			$evt->date_admin_to     = $_SESSION['fse_postdata']['event_to'];
+			$evt->time_admin_from   = $_SESSION['fse_postdata']['event_tfrom'];
+			$evt->time_admin_to     = $_SESSION['fse_postdata']['event_tto'];
+			$evt->location    		= $_SESSION['fse_postdata']['event_location'];
+			$evt->updatedbypost     = (isset($_SESSION['fse_postdata']['fseventsync']) && $_SESSION['fse_postdata']['fseventsync'] == true);
+		}
+		
+		$active   = (isset($_SESSION['fse_postdata']['fseventactive']) && $_SESSION['fse_postdata']['fseventactive'] == true);
+		$sync     = (isset($_SESSION['fse_postdata']['fseventsync']) && $_SESSION['fse_postdata']['fseventsync'] == true);
+		
+		unset($_SESSION['fse_postdata']);
+		
+		// Create event?
+		if (empty($evt->eventid)) {
+			
+			if (!$fsCalendar->userCanAddEvents()) {
+				echo '<p>'.__('You do not have the permission to create events', fsCalendar::$plugin_textdom).'.</p>';
+				return;
+			}
+			
+			echo '<p><input type="checkbox" value="1" id="fseventactive" name="fseventactive" 
+					onclick="fse_togglePostEvent(this.checked);"'.($active ? ' checked="checked"' : '').' /> ';
+			echo '<label for="fseventactive">'.__('Create WP Calendar event', fsCalendar::$plugin_textdom).'</label></p>';
+			?>
+			<script type="text/javascript">
+			jQuery(document).ready(function() {
+				fse_togglePostEvent(jQuery('#fseventactive').attr('checked'));
+			});
+			</script>
+			<?php 
+		} else {
+			
+			if (!$fsCalendar->userCanEditEvents()) {
+				echo '<p>'.__('This post is linked to an WP Calendar event, but you do not have the permission to edit this event', fsCalendar::$plugin_textdom).'.</p>';
+				return;
+			}
+			
+			echo '<p>'.__('This post is linked to a WP Calendar Event. To jump to your WP Calender click '.
+			'<a href="admin.php?page='.fsCalendar::$plugin_filename.'&amp;action=edit&amp;event='.esc_attr($evt->eventid).'">here</a>', fsCalendar::$plugin_textdom).'.</p>';
+			if ($evt->updatedbypost) {
+				echo '<p>'.__('The events subject, description and categories are automatically updated when the post is saved', fsCalendar::$plugin_filename).'.<br />'.
+					__('You can turn this feature off by unchecking the &laquo;Keep updated&raquo; checkbox', fsCalendar::$plugin_filename).'.</p>';
+			} else {
+				echo '<p>'.__('The events subject, description and categories are <strong>not</strong> automatically updated when the post is saved', fsCalendar::$plugin_textdom).'.</p>'.
+					 '<p>'.__('Please check the &laquo;Update at next save&raquo; checkbox for updating these values at next save '.
+						'or turn it on by default for this post/event by checking the &laquo;Keep updated&raquo; checkbox', fsCalendar::$plugin_textdom).'.</p>';
+				echo '<p><input type="checkbox" value="1" name="fseventupdate" id="fseventupdate"'.($synconce ? ' checked="checked"' : '').' /> <label for="fseventupdate">'.__('Update at next save', fsCalendar::$plugin_textdom).'</label></p>';
+			}
+			echo '<input type="hidden" name="fseventactive" value="1" />';
+		}
+		
+		wp_nonce_field('event', '_fseevent');
+		
+		echo '<div id="fseventdata">';	
+		echo '<p><input type="checkbox" value="1" name="fseventsync" id="fseventsync" '.($evt->updatedbypost == true ? ' checked="checked"' : '').'/> <label for="fseventsync">'.__('Keep updated', fsCalendar::$plugin_textdom).'</label></p>';	
+		echo '<p>'.__('Location', fsCalendar::$plugin_textdom).'<br />'.
+			'<input type="text" name="event_location" style="width: 98%;" value="'.esc_attr($evt->location).'" /></p>';
+		echo '<div style="padding: 0px 6px;">';
+		echo $this->postBoxDateAndTime($evt);
+		echo '</div>';
+		echo '</div>';
+		//echo '</div>';
+	}
+	
 	/**
 	 * Creates the Postbox for category selection
 	 * @param $selected_cats
@@ -192,38 +401,66 @@ class fsCalendarAdmin {
 	 * @return unknown_type
 	 */	
 	function postBoxCategories($selected_cats, $view = false) {
-	
 		if ($view == false) {
-			echo '<ul id="category-tabs">
-				<li class="tabs"><a href="#categories-all" tabindex="3">'.__( 'All Categories' ).'</a></li>
-				<li class="hide-if-no-js"><a href="#categories-pop" tabindex="3">'.__( 'Most Used' ).'</a></li>
-			</ul>
-			
-			<div id="categories-pop" class="tabs-panel" style="display: none;">
-				<ul id="categorychecklist-pop" class="categorychecklist form-no-clear" >';
-			$popular_ids = wp_popular_terms_checklist('category');
-				echo '</ul>
+			$defaults = array('taxonomy' => 'category');
+			$args = array();
+			/*if ( !isset($box['args']) || !is_array($box['args']) )
+				$args = array();
+			else
+				$args = $box['args'];*/
+			extract( wp_parse_args($args, $defaults), EXTR_SKIP );
+			$tax = get_taxonomy($taxonomy);
+		?>
+		
+			<div id="taxonomy-<?php echo $taxonomy; ?>" class="categorydiv">
+				<ul id="<?php echo $taxonomy; ?>-tabs" class="category-tabs">
+					<li class="tabs"><a href="#<?php echo $taxonomy; ?>-all" tabindex="3"><?php echo $tax->labels->all_items; ?></a></li>
+					<li class="hide-if-no-js"><a href="#<?php echo $taxonomy; ?>-pop" tabindex="3"><?php _e( 'Most Used' ); ?></a></li>
+				</ul>
+		
+				<div id="<?php echo $taxonomy; ?>-pop" class="tabs-panel" style="display: none;">
+					<ul id="<?php echo $taxonomy; ?>checklist-pop" class="categorychecklist form-no-clear" >
+						<?php $popular_ids = wp_popular_terms_checklist($taxonomy); ?>
+					</ul>
+				</div>
+		
+				<div id="<?php echo $taxonomy; ?>-all" class="tabs-panel">
+					<?php
+		            $name = ( $taxonomy == 'category' ) ? 'post_category' : 'tax_input[' . $taxonomy . ']';
+		            echo "<input type='hidden' name='{$name}[]' value='0' />"; // Allows for an empty term set to be sent. 0 is an invalid Term ID and will be ignored by empty() checks.
+		            ?>
+					<ul id="<?php echo $taxonomy; ?>checklist" class="list:<?php echo $taxonomy?> categorychecklist form-no-clear">
+						<?php wp_terms_checklist(0, array( 'taxonomy' => $taxonomy, 'popular_cats' => $popular_ids, 'selected_cats' => $selected_cats ) ) ?>
+					</ul>
+				</div>
+			<?php if ( !current_user_can($tax->cap->assign_terms) ) : ?>
+			<p><em><?php _e('You cannot modify this taxonomy.'); ?></em></p>
+			<?php endif; ?>
+			<?php if ( current_user_can($tax->cap->edit_terms) ) : ?>
+					<div id="<?php echo $taxonomy; ?>-adder" class="wp-hidden-children">
+						<h4>
+							<a id="<?php echo $taxonomy; ?>-add-toggle" href="#<?php echo $taxonomy; ?>-add" class="hide-if-no-js" tabindex="3">
+								<?php
+									/* translators: %s: add new taxonomy label */
+									printf( __( '+ %s' ), $tax->labels->add_new_item );
+								?>
+							</a>
+						</h4>
+						<p id="<?php echo $taxonomy; ?>-add" class="category-add wp-hidden-child">
+							<label class="screen-reader-text" for="new<?php echo $taxonomy; ?>"><?php echo $tax->labels->add_new_item; ?></label>
+							<input type="text" name="new<?php echo $taxonomy; ?>" id="new<?php echo $taxonomy; ?>" class="form-required form-input-tip" value="<?php echo esc_attr( $tax->labels->new_item_name ); ?>" tabindex="3" aria-required="true"/>
+							<label class="screen-reader-text" for="new<?php echo $taxonomy; ?>_parent">
+								<?php echo $tax->labels->parent_item_colon; ?>
+							</label>
+							<?php wp_dropdown_categories( array( 'taxonomy' => $taxonomy, 'hide_empty' => 0, 'name' => 'new'.$taxonomy.'_parent', 'orderby' => 'name', 'hierarchical' => 1, 'show_option_none' => '&mdash; ' . $tax->labels->parent_item . ' &mdash;', 'tab_index' => 3 ) ); ?>
+							<input type="button" id="<?php echo $taxonomy; ?>-add-submit" class="add:<?php echo $taxonomy ?>checklist:<?php echo $taxonomy ?>-add button category-add-sumbit" value="<?php echo esc_attr( $tax->labels->add_new_item ); ?>" tabindex="3" />
+							<?php wp_nonce_field( 'add-'.$taxonomy, '_ajax_nonce-add-'.$taxonomy, false ); ?>
+							<span id="<?php echo $taxonomy; ?>-ajax-response"></span>
+						</p>
+					</div>
+				<?php endif; ?>
 			</div>
-			
-			<div id="categories-all" class="tabs-panel">
-				<ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
-				// Call it without any post id, but with selected categories instead!
-				wp_category_checklist(0, false, $selected_cats, $popular_ids);
-				echo '</ul>
-			</div>';
-			
-			if ( current_user_can('manage_categories') ) {
-				echo '<div id="category-adder" class="wp-hidden-children">
-					<h4><a id="category-add-toggle" href="#category-add" class="hide-if-no-js" tabindex="3">'.__( '+ Add New Category' ).'</a></h4>
-					<p id="category-add" class="wp-hidden-child">
-					<label class="screen-reader-text" for="newcat">'.__( 'Add New Category' ).'</label><input type="text" name="newcat" id="newcat" class="form-required form-input-tip" value="'.esc_attr( 'New category name' ).'" tabindex="3" aria-required="true"/>
-					<label class="screen-reader-text" for="newcat_parent">'.__('Parent category').':</label>';
-				wp_dropdown_categories( array( 'hide_empty' => 0, 'name' => 'newcat_parent', 'orderby' => 'name', 'hierarchical' => 1, 'show_option_none' => __('Parent category'), 'tab_index' => 3 ) );
-					echo '<input type="button" id="category-add-sumbit" class="add:categorychecklist:category-add button" value="'.esc_attr( 'Add' ).'" tabindex="3" />';
-				wp_nonce_field( 'add-category', '_ajax_nonce', false );
-					echo '<span id="category-ajax-response"></span></p>
-				</div>';
-			}
+			<?php
 		} else {
 			$cats = get_categories(array('hide_empty'=>false));
 			foreach($cats as $c) {
@@ -232,10 +469,128 @@ class fsCalendarAdmin {
 			$first = true;
 			echo '<ul>';
 			foreach($selected_cats as $c) {
-				echo '<li>'.$ca[$c].'</li>';
+				echo '<li>'.$ca[$c].'<input type="hidden" name="post_category[]" value="'.$c.'" /></li>';
 			}
 			echo '</ul>';
 		}
+	}
+	
+	function postBoxDateAndTime($evt, $view = false) {
+		$df = get_option('fse_df_admin');
+		$ds = get_option('fse_df_admin_sep');
+		
+		$gc_enabled = get_option('fse_adm_gc_enabled');
+		$gc_mode = get_option('fse_adm_gc_mode');
+		
+		$f = $evt->date_admin_format;
+		$f = str_replace('d', 'dd', $f);
+		$f = str_replace('m', 'mm', $f);
+		$f = str_replace('Y', 'yy', $f);
+		?>
+		<table class="fs-table">
+			<tbody>
+				<tr>
+					<th scope="row" style="vertical-align: middle;"><?php _e('From', fsCalendar::$plugin_textdom); ?></th>
+					<td style="vertical-align: middle;">
+						<?php if ($view) { 
+							echo $evt->date_admin_from.(!$evt->allday ? ' '.$evt->time_admin_from : '');
+						} else { ?>
+							<input type="text"
+						    	id="fse_datepicker_from<?php echo ($view ? 'dmy' : ''); ?>" 
+						    	name="event_from" 
+						    	size="10"
+						    	value="<?php echo $evt->date_admin_from; ?>" 
+						    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('<?php _e('Please enter a valid date', fsCalendar::$plugin_textdom); ?>.') 
+						    		}; fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"  
+						    	onfocus="this.select();" 
+						    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_from').datepicker('hide')\"" : '' ); ?> />
+						    <input type="text"
+						    	id="time_from"
+						    	name="event_tfrom"
+						    	size="5" 
+						    	value="<?php echo $evt->time_admin_from; ?>" 
+						    	onblur="if (fse_validateTime(this) == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('<?php _e('Please enter a valid time', fsCalendar::$plugin_textdom); ?>.') 
+						    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" />
+					    <?php } ?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row" style="vertical-align: middle;"><?php _e('To', fsCalendar::$plugin_textdom); ?></th>
+					<td style="vertical-align: middle;">
+						<?php if ($view) { 
+							echo $evt->date_admin_to.(!$evt->allday ? ' '.$evt->time_admin_to : '');
+						} else { ?>
+							<input type="text"
+						    	id="fse_datepicker_to<?php echo ($view ? 'dmy' : ''); ?>" 
+						    	name="event_to" 
+						    	size="10"
+						    	value="<?php echo $evt->date_admin_to; ?>" 
+						    	onchange="if (fse_validateDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>') == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('<?php _e('Please enter a valid date', fsCalendar::$plugin_textdom); ?>.') 
+						    		};fse_updateOtherDate(this, '<?php echo $df; ?>','<?php echo $ds; ?>');"
+						    	onfocus="this.select();"   
+						    	<?php echo ($gc_enabled ? "onkeydown=\"jQuery('#fse_datepicker_to').datepicker('hide')\"" : '' ); ?> />
+						    <input type="text"
+						    	id="time_to"
+						    	name="event_tto"
+						    	size="5"
+						    	value="<?php echo $evt->time_admin_to; ?>" 
+						    	onblur="if (fse_validateTime(this) == false) { 
+						    		this.focus(); 
+						    		this.value = ''; 
+						    		alert('<?php _e('Please enter a valid time', fsCalendar::$plugin_textdom); ?>.') 
+						    		} fse_updateOtherTime(this, '<?php echo $df; ?>','<?php echo $ds; ?>');" />
+						<?php } ?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					    <input type="checkbox"
+					    	id="allday"
+					    	name="event_allday"
+					    	onclick="fse_toogleAllday(this.checked);" 
+					    	<?php echo ($evt->allday == true ? 'checked="checked"' : ''); ?> 
+					    	<?php echo ($view ? 'disabled="disabled"' : ''); ?>/>
+					    <label for="allday"><?php _e('All day event', fsCalendar::$plugin_textdom)?></label>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<script type="text/javascript">
+		jQuery(document).ready(function() {
+			<?php if ($gc_enabled == 1) { 
+				?>
+				jQuery('#fse_datepicker_from').datepicker(
+						{dateFormat: '<?php echo $f; ?>'
+							<?php echo (get_option('fse_adm_gc_show_week') == 1 ? ',showWeek: true' : '');?>
+							<?php echo (get_option('fse_adm_gc_show_sel') == 1 ? ',changeMonth: true, changeYear: true' : '');?>
+							, showOn: <?php echo ($gc_mode == 0 ? "'focus'" : ($gc_mode == 1 ? "'button'" : "'both'")); ?>
+							<?php echo (($gc_mode == 1 || $gc_mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
+							, duration: 0
+							});
+				jQuery('#fse_datepicker_to').datepicker(
+						{dateFormat: '<?php echo $f; ?>'
+							<?php echo (get_option('fse_adm_gc_show_week') == 1 ? ',showWeek: true' : '');?>
+							<?php echo (get_option('fse_adm_gc_show_sel') == 1 ? ',changeMonth: true, changeYear: true' : '');?>
+							, showOn: <?php echo ($gc_mode == 0 ? "'focus'" : ($gc_mode == 1 ? "'button'" : "'both'")); ?>
+							<?php echo (($gc_mode == 1 || $gc_mode == 2) == 1 ? ", buttonImage: '".fsCalendar::$plugin_img_url."calendar.png', buttonImageOnly: true" : '');?>
+							, duration: 0
+							});
+			<?php } ?>
+			fse_toogleAllday(jQuery('#allday').attr('checked'));
+		});
+		</script>
+		
+		<?php 
 	}
 	
 	/**
@@ -399,5 +754,106 @@ class fsCalendarAdmin {
 	function pagePostBoxEnd() {
 		return '</div></div>';
 	}
+}
+
+function fse_ValidateDate($date, $fmt, $ret_sep = false) {
+	
+	if (strpos($fmt, '.') !== false) {
+		$sep = '.';
+	} elseif (strpos($fmt, '-') !== false) {
+		$sep = '-';
+	} elseif (strpos($fmt, '/') !== false) {
+		$sep = '/';
+	} else {
+		return false;
+	}
+	
+	$fmt_t = explode($sep, $fmt);
+	
+	$dat_t = explode($sep, $date);
+	
+	if (count($fmt_t) <> count($dat_t)) {
+		return false;
+	}
+	
+	$ret = '';
+	foreach($dat_t as $k => $t) {
+		$t = intval($t);
+		$typ = $fmt_t[$k];
+		if ($t < 1) {
+			return false;
+		}
+		switch($typ) {
+			case 'd':
+				$day = $t;
+				break;
+			case 'm':
+				if ($t > 12) {
+					return false;
+				}
+				$month = $t;
+				break;
+			case 'Y':
+				if ($t < 99) {
+					if ($t >= 70) {
+						$t+=1900;
+					} else {
+						$t+=2000;
+					}
+				}
+				if ($t < 1970) {
+					return false;
+				}
+				$year = $t;
+				break;
+			default:
+				return false;
+		}
+	}
+	
+	if (empty($day) || empty($month) || empty($year)) {
+		return false;
+	}
+	// Validate date by creating it. If the day changes, the date is
+	// invalid
+	$ts = mktime(0,0,0,$month, $day, $year);
+	if (intval(fsCalendar::date('d', $ts)) <> $day) {
+		return false;
+	}
+	
+	if ($ret_sep == true) {
+		return array('d'=>$day, 'm'=>$month, 'y'=>$year);
+	} else {
+		return fsCalendar::date_i18n($fmt, $ts);
+	}
+}
+
+function fse_ValidateTime($time, $ret_sep = false) {
+	if (strpos($time, ':') !== false) {
+		list($h, $m) = explode(':', $time);	
+	} elseif (strpos($time,'.') !== false) {
+		list($h, $m) = explode(':', $time);
+	} elseif (strlen($time) == 4) {
+		$h = substr($time, 0, 2);
+		$m = substr($time, 2, 2);
+	} elseif (strlen($time) == 3) {
+		$h = substr($time, 0, 1);
+		$m = substr($time, 1, 2);
+	} else {
+		return false;
+	}
+	
+	if ($h < 0 || $h > 23) {
+		return false;
+	}
+	if ($m < 0 || $m > 59) {
+		return false;
+	}
+	
+	if ($ret_sep == true) {
+		return array('h'=>intval($h), 'm'=>intval($m));
+	}
+	
+	return sprintf("%02d:%02d", $h, $m);
 }
 ?>

@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WP Calendar
-Plugin URI: http://www.faebusoft.ch/downloads/wp-calendar
+Plugin URI: http://www.faebusoft.ch/webentwicklung/wpcalendar/
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.2.4
+Version: 1.3.0
 License: GPL
 Last Update: 19.10.2010
 */
@@ -59,6 +59,7 @@ class fsCalendar {
 								 );
 
 	var $admin;
+	var $load_fc_libs = false;
 								 
 	// Options for Fullcalendar
 	/*static $full_calendar_header_opts = array('title', 'prev', 'next', 'prevYear', 
@@ -108,7 +109,8 @@ class fsCalendar {
 									'fse_pagination_next_text'=>'&raquo;',
 									'fse_pagination_end_size'=>3,
 									'fse_pagination_mid_size'=>3,
-									'fse_gmt_hack'=>0
+									'fse_gmt_hack'=>0,
+									'fse_load_fc_libs'=>1
 								);
 								
 		self::$plugin_filename = plugin_basename( __FILE__ );
@@ -161,7 +163,7 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookRegisterStyles() {
-		if (!is_admin()) {
+		if (!is_admin() && get_option('fse_load_fc_libs') == true) {
 			// Check if user has its own CSS file in the theme folder
 			$custcss = get_template_directory().'/fullcalendar.css';
 			if (file_exists($custcss))
@@ -177,7 +179,7 @@ class fsCalendar {
 	 * @return void
 	 */
 	function hookRegisterScripts() {
-		if (!is_admin()) {
+		if (!is_admin() && get_option('fse_load_fc_libs') == true) {
 			if (get_option('fse_load_jquery') == true)
 				wp_enqueue_script('jquery');
 			if (get_option('fse_load_jqueryui') == true)
@@ -511,10 +513,16 @@ class fsCalendar {
 							  fsCalendar::date('Y', $evt->tsto) == fsCalendar::date('Y', $evt->tsfrom) )) {
 							$rep = '';
 						} else {
-							if (isset($opts['fmt']))
-								$rep = $evt->getEnd($opts['fmt'], 2);
+							
+							if (isset($opts['before']))
+								$rep = $opts['before'];
 							else
-								$rep = $evt->getEnd('', 2);
+								$rep = '';
+							
+							if (isset($opts['fmt']))
+								$rep .= $evt->getEnd($opts['fmt'], 2);
+							else
+								$rep .= $evt->getEnd('', 2);
 						}
 					} else {
 						$rep = '';	
@@ -557,10 +565,16 @@ class fsCalendar {
 							($l_sed == false && $evt->tsfrom == $evt->tsto)) {
 							$rep = '';
 						} else {
-							if (isset($opts['fmt']))
-								$rep = $evt->getEnd($opts['fmt'], 3);
+							
+							if (isset($opts['before']))
+								$rep = $opts['before'];
 							else
-								$rep = $evt->getEnd('', 3);
+								$rep = '';
+							
+							if (isset($opts['fmt']))
+								$rep .= $evt->getEnd($opts['fmt'], 3);
+							else
+								$rep .= $evt->getEnd('', 3);
 						}
 					} else {
 						$rep = '';	
@@ -807,7 +821,11 @@ class fsCalendar {
 	function filterContentProcessCalOpts($key, $val) {
 		$ret = $key.': ';
 		if (!is_array($val)) {
-			$ret .= (is_numeric($val) ? '' : '"').$val.(is_numeric($val) ? '' : '"');
+			if (substr($val,0,1) == '[' || substr($val,0,1) == '{') {
+				$ret .= $val;
+			} else {
+				$ret .= (is_numeric($val) ? '' : '"').$val.(is_numeric($val) ? '' : '"');
+			}
 		} else {
 			$ret .= '{';
 			
@@ -1463,7 +1481,10 @@ class fsCalendar {
 			`state` VARCHAR(10) NOT NULL,
 			`recurring` TINYINT(1) NOT NULL DEFAULT '0',
 			`rec_main_id` INT NULL,
-			PRIMARY KEY  (`eventid`)
+			`postid` BIGINT NULL,
+			`updatedbypost` TINYINT NOT NULL DEFAULT '0',
+			PRIMARY KEY  (`eventid`),
+			KEY `postid` (`postid`)
 			);";
 		
 		dbDelta($sql);

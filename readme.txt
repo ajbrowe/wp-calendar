@@ -3,31 +3,30 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.2.4
+Stable tag: 1.3.0
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
 
-WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. The whole
-usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
-To manage the event, the same authority checks as for post are used. The plug-in can be integrated in any theme by using 
-different functions and integrated in any post and page by using different tags.
+WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
+The whole usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
+To manage the event, the same authority checks as for post are used. The plug-in can be integrated in your blog using widgets, 
+into any theme by using different functions and in any post and page by using different tags.
 
 = Features =
-* Normal and all-day events
+* NEW: Event creation from post including content synchronization
+* Graphical calendar for your blog
+* Widgets for your blog
 * Event categorization (using WP categories)
 * Event states (draft, published)
+* Normal and all-day events
 * Easy to use admin interface (Wordpress style)
 * Event overview including filters and pagination
-* Mass operations on events (delete, set state)
-* Graphical date chooser
-* Graphical calendar for your blog
-* Pagination
-* Widgets for your blog
-* Same authority checks as for post and pages
-* Date format configuration
 * Easy and fully documented integration
-* Supporting special tags in post/page content and title
+* Mass operations on events (delete, set state)
+* Same authority checks as for post and pages
+* Supports special tags in post/page content and title
+* Many customization options
 * Different functions for integration in your theme
 * Single event output
 * Multi event output with many options
@@ -36,11 +35,14 @@ different functions and integrated in any post and page by using different tags.
 * Output of all fields (author, publisher, dates, states, ...)
 * Internationalization including dates
 
+
 = Planned =
-* Repeating events
+* Repeating/Reccuring events (planned for 1.4.0)
 * Customer fields
 * Google Maps integration
 * Dashboard integration
+* Location templates
+* Content templates
 
 
 == Installation ==
@@ -129,6 +131,17 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 will be translated in the next few months to english. 
 
 == Changelog ==
+
+= 1.3.0 =
+* FEATURE: Create events from post and keep them synchronized
+* FEATURE: New attribute `before` for the `endtime` and `enddate` paramters to display an additional text (e.g. a hyphen), when the end date/time is shown
+* FIXED: Admin interface tries to load date.js, which does not exist
+* FIXED: Added some missing authority checks
+* FIXED: Added missing translation on date and time validation
+* FIXED: Categories box not working correctly
+* FIXED: Option to disable fullcalendar libraries
+* FIXED: Datepicker not hiding on blur (because of animation)
+* Updated Datepicker Library
 
 = 1.2.4 =
 * FIXED: Error parsing tag, when using a = in a tag value (e.g. in the template tag)

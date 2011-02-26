@@ -1,12 +1,17 @@
-function fse_toogleAllday(obj) {
-	var f = document.forms["event"];
+function fse_togglePostEvent(checked) {
+	if (checked)
+		jQuery('#fseventdata').slideDown();
+	else
+		jQuery('#fseventdata').slideUp();
+}
+function fse_toogleAllday(checked) {
 	
-	f.time_from.disabled = obj.checked;
-	f.time_to.disabled = obj.checked;
+	jQuery('#time_from').attr('disabled', checked);
+	jQuery('#time_to').attr('disabled', checked);
 	
-	if (obj.checked == true) {
-		f.time_from.value = '00:00';
-		f.time_to.value = '23:59';
+	if (checked) {
+		jQuery('#time_from').val('00:00');
+		jQuery('#time_to').val('23:59');
 	}
 }
 
@@ -21,6 +26,10 @@ function fse_toogleInputByCheckbox(objref, node, inverse) {
 }
 
 function fse_validateDate(objref, format, sep) {
+	if (objref.value == '')
+		return;
+	
+	
 	var date = fse_transformStringToDate(objref.value, format, sep);
 	
 	if (date == false) {
@@ -32,6 +41,9 @@ function fse_validateDate(objref, format, sep) {
 }
 
 function fse_validateTime(objref) {
+	if (objref.value == '')
+		return;
+	
 	var time = fse_transformStringToTime(objref.value);
 	
 	if (time == false) {
@@ -46,18 +58,18 @@ function fse_updateOtherDate(objref, format, sep) {
 	if (objref.name == "event_from") {
 		var datefrom = fse_transformStringToDate(objref.value, format, sep);
 		if (datefrom == false) { return; }
-		var dateto   = fse_transformStringToDate(document.forms['event'].event_to.value, format, sep);
+		var dateto   = fse_transformStringToDate(objref.form.event_to.value, format, sep);
 	} else {
 		var dateto   = fse_transformStringToDate(objref.value, format, sep);
 		if (dateto == false) { return; }
-		var datefrom = fse_transformStringToDate(document.forms['event'].event_from.value, format, sep);
+		var datefrom = fse_transformStringToDate(objref.form.event_from.value, format, sep);
 	}
 	
 	if (datefrom == false || dateto == false || dateto < datefrom) {
 		if (objref.name == "event_from") {
-			document.forms['event'].event_to.value = objref.value;
+			objref.form.event_to.value = objref.value;
 		} else {
-			document.forms['event'].event_from.value = objref.value;
+			objref.form.event_from.value = objref.value;
 		}
 	}
 }
@@ -65,8 +77,8 @@ function fse_updateOtherDate(objref, format, sep) {
 function fse_updateOtherTime(objref, format, sep) {
 	
 	// Only if on the same date!
-	var datefrom = fse_transformStringToDate(document.forms['event'].event_from.value, format, sep);
-	var dateto   = fse_transformStringToDate(document.forms['event'].event_to.value, format, sep);
+	var datefrom = fse_transformStringToDate(objref.form.event_from.value, format, sep);
+	var dateto   = fse_transformStringToDate(objref.form.event_to.value, format, sep);
 	
 	if (datefrom == false || 
 	    dateto   == false || 
@@ -77,18 +89,18 @@ function fse_updateOtherTime(objref, format, sep) {
 	if (objref.name == "event_tfrom") {
 		var timefrom = fse_transformStringToTime(objref.value);
 		if (timefrom == false) { return; }
-		var timeto   = fse_transformStringToTime(document.forms['event'].event_tto.value);
+		var timeto   = fse_transformStringToTime(objref.form.event_tto.value);
 	} else {
 		var timeto   = fse_transformStringToTime(objref.value);
 		if (timeto == false) { return; }
-		var timefrom = fse_transformStringToTime(document.forms['event'].event_tfrom.value);
+		var timefrom = fse_transformStringToTime(objref.form.event_tfrom.value);
 	}
 	
 	if (timeto == false || timefrom == false || timeto < timefrom) {
 		if (objref.name == "event_tfrom") {
-			document.forms['event'].event_tto.value = objref.value;
+			objref.form.event_tto.value = objref.value;
 		} else {
-			document.forms['event'].event_tfrom.value = objref.value;
+			objref.form.event_tfrom.value = objref.value;
 		}
 	}
 }
@@ -247,4 +259,8 @@ function fse_overviewSort(field) {
 	document.forms['event'].elements['event_sort'].value = field;
 	document.forms['event'].elements['event_sortdir'].value = dir;
 	document.forms['event'].submit();
+}
+
+function fse_disableAutoSynchronization() {
+	
 }

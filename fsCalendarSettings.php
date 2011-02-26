@@ -128,6 +128,10 @@ class fsCalendarSettings {
 							   __('Loading of jQuery UI library', fsCalendar::$plugin_textdom), 
 							   array(&$this, 'hookSettingOption_fse_load_jqueryui'), 
 							   'fse_global', 'fse_global4');
+			add_settings_field('fse_load_fc_libs', 
+							   __('Loading of FullCalendar files', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_load_fc_libs'), 
+							   'fse_global', 'fse_global4');
 		}
 		
 		add_settings_section('fse_pagination', 
@@ -440,6 +444,15 @@ class fsCalendarSettings {
 		<select name="fse_load_jqueryui">
 		<option value="1"<?php echo (get_option('fse_load_jqueryui') == true ? ' selected="selected"' : ''); ?>><?php _e('Enabled', fsCalendar::$plugin_textdom); ?></option>
 		<option value="0"<?php echo (get_option('fse_load_jqueryui') == false ? ' selected="selected"' : ''); ?>><?php _e('Disabled', fsCalendar::$plugin_textdom); ?></option>
+		</select>
+		<?php
+	}
+	
+	function hookSettingOption_fse_load_fc_libs() {
+		?>
+		<select name="fse_load_fc_libs">
+		<option value="1"<?php echo (get_option('fse_load_fc_libs') == true ? ' selected="selected"' : ''); ?>><?php _e('Enabled', fsCalendar::$plugin_textdom); ?></option>
+		<option value="0"<?php echo (get_option('fse_load_fc_libs') == false ? ' selected="selected"' : ''); ?>><?php _e('Disabled', fsCalendar::$plugin_textdom); ?></option>
 		</select>
 		<?php
 	}
@@ -834,11 +847,11 @@ fse_print_events(
 		<tr><th><code>{event_description}</code></th><td colspan="2"><?php _e("The event's description", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_startdate; fmt=x}</code></th><td colspan="2"><?php _e("The event's start date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_enddate; fmt=x; alwaysshowenddate=y}</code></th><td colspan="2"><?php _e("The event's end date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
+		<tr><th><code>{event_enddate; fmt=x; alwaysshowenddate=y; before=z}</code></th><td colspan="2"><?php _e("The event's end date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_starttime; fmt=x; hideifallday=y}</code></th><td colspan="2"><?php _e("The event's start time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> (using 0 or 1) if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
-		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y, ; hideifallday=z}</code></th><td colspan="2"><?php _e("The event's end time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?></td></tr>
+		<tr><th><code>{event_endtime; fmt=x; alwaysshowenddate=y; hideifallday=z; before=z}</code></th><td colspan="2"><?php _e("The event's end time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> if you wanna hide the time, if it's an all-day event.", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_allday; text=x}</code></th><td colspan="2"><?php _e("Use this tag to print out the parameter <code>text</code> if it is an allday event.", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_duration; type=x; suffix=y; empty=z}</code></th><td colspan="2"><?php _e("The event's duration; Pass on of the values <code>d</code>, <code>h</code>, <code>m</code> to the argument 

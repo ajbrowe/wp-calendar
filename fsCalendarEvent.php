@@ -1,6 +1,7 @@
 <?php
 class fsEvent {
 	var $eventid = 0;
+	var $postid = 0;
 	var $subject;
 	var $location; 
 	var $description;
@@ -13,12 +14,13 @@ class fsEvent {
 	var $publishdate;
 	var $categories = array();
 	var $state;
+	var $updatedbypost;
 	
 	// For Admin only
 	var $date_admin_from;
 	var $date_admin_to;
 	var $time_admin_from;
-	var $tim_admin_to;
+	var $time_admin_to;
 	
 	// Formated values
 	var $author_t;
@@ -32,15 +34,24 @@ class fsEvent {
 	var $date_admin_format;
 	var $time_admin_format;
 	
-	function fsEvent($eventid, $state = '', $admin_fields = true) {
+	function fsEvent($eventid = 0, $state = '', $admin_fields = true, $postid = 0) {
 		global $wpdb;
 		
 		$this->loadOptions($admin_fields);
 			
 		$this->eventid = intval($eventid);
+		$this->postid  = intval($postid);
 		
-		if (empty($this->eventid)) {
+		if (empty($this->eventid) && empty($this->postid)) {
 			return;
+		}
+		
+		// If post ID is provided just lookup and get eventid
+		if (empty($this->eventid) && !empty($this->postid)) {
+			$sql = $wpdb->prepare('SELECT eventid FROM '.$wpdb->prefix.'fsevents '.' WHERE postid='.$this->postid);
+			$this->eventid = $wpdb->get_var($sql);
+			if (empty($this->eventid))
+				return;
 		}
 		
 		if (!empty($state))
@@ -55,12 +66,14 @@ class fsEvent {
 			return;
 		}
 		
+		$this->postid = $ret->postid;
+		$this->updatedbypost = ($ret->updatedbypost == true ? true : false);
 		$this->subject = $ret->subject;
 		$this->location = $ret->location;
 		$this->description = $ret->description;
 		$this->tsfrom = $ret->tsfrom;
 		$this->tsto = $ret->tsto;
-		$this->allday = $ret->allday;
+		$this->allday = ($ret->allday == true ? true : false);
 		$this->author = $ret->author;
 		$this->publishauthor = $ret->publishauthor;
 		$this->createdate = $ret->createdate;
@@ -265,5 +278,244 @@ class fsEvent {
 		}
 	}
 	
+	/**
+	 * Saves the current event back to the database
+	 * This returns true, if successfull or an array with error messages
+	 * @use To check the result compare it with true using === (3!)
+	 * @return True, if successfull or an array of error messages
+	 */
+	function saveToDataBase() {
+		global $wpdb;
+		global $user_ID;
+		global $fsCalendar;
+		
+		$errors = array();
+		
+		if ($this->eventid <= 0 && !$fsCalendar->userCanAddEvents()) {
+			return __('No permission to create event', fsCalendar::$plugin_textdom);
+		}
+		if ($this->eventid > 0 && !$this->userCanEditEvent()) {
+			return __('No permission to edit event', fsCalendar::$plugin_textdom);
+		}
+		
+		// Do all the validaten
+		if (!is_array($this->categories)) {
+			$this->categories = array(1); // Uncategorized
+		}
+		
+		// Vaidate subject
+		if (empty($this->subject)) {
+			$errors[] = __('Please enter a subject', fsCalendar::$plugin_textdom);
+		}
+		// Validate date/time
+		$ret_df = fse_ValidateDate($this->date_admin_from, $this->date_admin_format);
+		if ($ret_df === false) {
+			$errors[] = __('Please enter a valid `from` date', fsCalendar::$plugin_textdom);
+		} else {
+			$this->date_admin_from = $ret_df;
+		}
+		if ($this->allday == 0) {
+			$ret_tf = fse_ValidateTime($this->time_admin_from);
+			if ($ret_tf === false) {
+				$errors[] = __('Please enter a valid `from` time', fsCalendar::$plugin_textdom);
+			} else {
+				$this->time_admin_from = $ret_tf;
+			}
+		} else {
+			$this->time_admin_from = '00:00';
+		}
+		$ret_dt = fse_ValidateDate($this->date_admin_to, $this->date_admin_format);
+		if ($ret_dt === false) {
+			$errors[] = __('Please enter a valid `to` date', fsCalendar::$plugin_textdom);
+		} else {
+			$this->date_admin_to = $ret_dt;
+		}
+		if ($this->allday == 0) {
+			$ret_tt = fse_ValidateTime($this->time_admin_to);
+			if ($ret_tt === false) {
+				$errors[] = __('Please enter a valid `to` time', fsCalendar::$plugin_textdom);
+			} else {
+				$this->time_admin_to = $ret_tt;
+			}
+		} else {
+			$this->time_admin_to = '00:00';
+		}
+		
+		$fd = fse_ValidateDate($this->date_admin_from, $this->date_admin_format, true);
+		$ft = fse_ValidateTime($this->time_admin_from, true);
+		$td = fse_ValidateDate($this->date_admin_to, $this->date_admin_format, true);
+		$tt = fse_ValidateTime($this->time_admin_to, true);
+		
+		$ts_from = mktime($ft['h'], $ft['m'], 0, $fd['m'], $fd['d'], $fd['y']);
+		$ts_to   = mktime($tt['h'], $tt['m'], 0, $td['m'], $td['d'], $td['y']);
+		
+		if (empty($this->state)) {
+			$this->state = 'draft';
+		}
+		
+		if ($ts_from > $ts_to) {
+			$errors[] = __('End is before start', fsCalendar::$plugin_textdom);
+		}
+		
+		// Error -> return them
+		if (count($errors) > 0) {
+			return $errors;
+		}
+							
+		if ($this->eventid > 0) {
+			// Check authority
+			if ($this->userCanEditEvent()) {
+				$sql = $wpdb->prepare("UPDATE ".$wpdb->prefix.'fsevents '."
+					SET subject=%s, tsfrom=$ts_from, tsto=$ts_to, allday=%d, description=%s, location=%s, state=%s, 
+					updatedbypost=%d 
+					WHERE eventid=$this->eventid",
+		        	$this->subject, ($this->allday == true ? 1 : 0),$this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
+			} else {
+				$errors[] = __('No permission to edit event', fsCalendar::$plugin_textdom);
+			}
+		} else {
+			if ($fsCalendar->userCanAddEvents()) {
+				$time = time();
+				
+				if (empty($this->postid))
+					$postid = 'NULL';
+				else
+					$postid = intval($this->postid);
+				
+				$sql = $wpdb->prepare("INSERT INTO ".$wpdb->prefix.'fsevents '."
+					(subject, tsfrom, tsto, allday, description, location, author, createdate, state, postid, updatedbypost)
+					VALUES (%s, $ts_from, $ts_to, %d, %s, %s, $user_ID, $time, %s, $postid, %d)", 
+		        	$this->subject, ($this->allday == true ? 1 : 0), $this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
+			} else {
+				$errors[] = __('No permission to create event', fsCalendar::$plugin_textdom);
+			}
+		}
+        
+		// Error -> return them
+		if (count($errors) > 0) {
+			return $errors;
+		}
+		
+        if ($wpdb->query($sql) !== false) {
+        	if ($this->eventid <= 0) {
+	        	$this->eventid = $wpdb->insert_id;
+	        	
+	        	$this->author = $user_ID;
+	        	$this->createdate = $time;
+	        	
+	        	$u = new WP_User($user_ID);
+	        	$this->author_t = $u->display_name;
+	        	unset($u);
+	        	
+	        	$action = 'edit'; // Switch to edit mode!
+        	} else {
+        		$success[] = __('Event updated', fsCalendar::$plugin_textdom);
+        	}
+        	
+        	// Handle categories
+        	$ret_cats = $wpdb->get_col('SELECT catid FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid);
+        	if (!is_array($ret_cats)) {
+        		$ret_cats = array();
+        	}
+        	
+        	// Insert missing
+        	foreach($this->categories as $c) {
+        		if (!in_array($c, $ret_cats)) {
+        			$sql = 'INSERT INTO '.$wpdb->prefix.'fsevents_cats VALUES ('.$this->eventid.','.$c.')';
+        			$wpdb->query($sql);
+        		}
+        	}
+        	// Remove old
+        	foreach($ret_cats as $c) {
+        		if (!in_array($c, $this->categories)) {
+        			$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid.' AND catid='.$c;
+        			$wpdb->query($sql);
+        		}
+        	}
+        	return true;
+        	
+        } else {
+        	$errors[] = $sql;
+        	$errors[] = __('DB Error', fsCalendar::$plugin_textdom);
+        	return $errors;
+        }
+	}
+	
+	/**
+	 * Publishes the current event
+	 * @use To check the result compare it with true using === (3!)
+	 * @return True, if successfull or an array of error messages
+	 */
+	function setStatePublished() {
+		global $user_ID;
+		global $wpdb;
+		
+		if (empty($this->eventid)) {
+			return __('Event does not exist');
+		}
+		if ($this->eventid > 0 && !$fsCalendar->userCanEditEvent()) {
+			return __('No permission to edit event', fsCalendar::$plugin_textdom);
+		}
+		
+		$time = time();
+		if ($wpdb->query('UPDATE '.$wpdb->prefix.'fsevents '.' 
+						  SET state="publish", publishauthor="'.intval($user_ID).'", publishdate='.$time.' 
+						  WHERE eventid='.$this->eventid) !== false) {
+			$this->state = 'publish';
+			$this->publishauthor = $user_ID;
+			$this->publishdate   = $time;
+			$u = new WP_User($user_ID);
+			$this->publishauthor_t = $u->display_name;
+			unset($u);
+			
+			return true;			
+		} else {
+			return __('Event could not be published', fsCalendar::$plugin_textdom);
+		}
+	}
+	
+	/**
+	 * Publishes the current event
+	 * @use To check the result compare it with true using === (3!)
+	 * @return True, if successfull or an array of error messages
+	 */
+	function setStateDraft() {
+		global $user_ID;
+		global $wpdb;
+		
+		if (empty($this->eventid)) {
+			return __('Event does not exist');
+		}
+		if ($this->eventid > 0 && !$this->userCanEditEvent()) {
+			return __('No permission to edit event', fsCalendar::$plugin_textdom);
+		}
+		
+		if ($wpdb->query('UPDATE '.$wpdb->prefix.'fsevents '.' 
+					  SET state="draft", publishdate=NULL, publishauthor=NULL 
+					  WHERE eventid='.$this->eventid) !== false) {
+			$this->state = 'draft';
+			$this->publishauthor = '';
+			$this->publishauthor_t = '';
+			$this->publishdate = '';
+			return true;
+		} else {
+			return __('Event could not be set to draft state', fsCalendar::$plugin_textdom);
+		}
+	}
+	
+	/**
+	 * Disabled Synchronization
+	 */
+	function disableSynchronization() {
+		global $wpdb;
+		if ($this->updatedbypost) {
+			$sql = $wpdb->prepare("UPDATE ".$wpdb->prefix.'fsevents '."
+				SET updatedbypost=0 
+				WHERE eventid=$this->eventid");
+			$wpdb->query($sql);
+			
+			$this->updatedbypost = false;
+		}
+	}
 }
 ?>
