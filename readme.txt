@@ -127,8 +127,7 @@ theme's directory (not in a subdirectory of it). It will be loaded instead of th
 Please refer to the usage documentation in the calendar's options page. Since version this plug-in has built-in widgets
 for easy usage. If these widgets don't fit your needs, you may integration WP Calendar manually by using tags or php functions.
 
-For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebu.ch/webdev/wp/integration-von-wp-calendar). This post 
-will be translated in the next few months to english. 
+For all german speaker plese see also the post [Integration von WP Calendar]http://www.faebusoft.ch/webentwicklung/wp-calendar-integration/).
 
 == Changelog ==
 

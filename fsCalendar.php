@@ -7,7 +7,7 @@ Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
 Version: 1.3.0
 License: GPL
-Last Update: 19.10.2010
+Last Update: 2011-02-26
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
