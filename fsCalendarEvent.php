@@ -453,7 +453,7 @@ class fsEvent {
 		if (empty($this->eventid)) {
 			return __('Event does not exist');
 		}
-		if ($this->eventid > 0 && !$fsCalendar->userCanEditEvent()) {
+		if ($this->eventid > 0 && !$this->userCanEditEvent()) {
 			return __('No permission to edit event', fsCalendar::$plugin_textdom);
 		}
 		

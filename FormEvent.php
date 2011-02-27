@@ -89,8 +89,7 @@ if (isset($_POST['eventid']) && $action != 'view') {
 }
 
 if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
-	if (isset($_POST['eventid']) && $action != 'view') {
-		
+	if (isset($_POST['eventid']) && $action != 'view') {	
 		// Save post
 		if (isset($_POST['save']) || (isset($_POST['publish']) && empty($evt->eventid))) {
 			if (($res = $evt->saveToDatabase()) === true) {
@@ -107,7 +106,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 		
 		// Publish
 		if (isset($_POST['publish']) && !empty($evt->eventid)) {
-			if (($res = $evt->setStatePublished) === true) {
+			if (($res = $evt->setStatePublished()) === true) {
 				$success[] = __('Event published', fsCalendar::$plugin_textdom);
 				
 				// Check again if user has right to edit that one

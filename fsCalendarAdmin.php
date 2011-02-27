@@ -562,6 +562,7 @@ class fsCalendarAdmin {
 					    <label for="allday"><?php _e('All day event', fsCalendar::$plugin_textdom)?></label>
 					</td>
 				</tr>
+				
 			</tbody>
 		</table>
 		
