@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/webentwicklung/wpcalendar/
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.3.1
+Version: 1.4.0
 License: GPL
-Last Update: 2011-02-27
+Last Update: 2011-03-04
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -19,6 +19,9 @@ define('FSE_GROUPBY_DAY', 'd'); // Event grouping by day
 define('FSE_GROUPBY_MONTH', 'm'); // Event grouping by month
 define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 
+define('FSE_META_EVENT_ID', 'event_id');
+define('FSE_META_EVENT_ID_TEMP', 'event_id_temp');
+
 require_once('fsCalendarSettings.php');
 require_once('fsCalendarAdmin.php');
 require_once('fsCalendarEvent.php');
@@ -28,7 +31,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.3.1';
+	static $plugin_vers     = '1.4.0';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -124,23 +127,31 @@ class fsCalendar {
 		
 		
 		// General/Frontend Hooks
-		add_action('init',                 array(&$this, 'hookInit'));
-		add_action('init',                 array(&$this, 'hookRegisterScripts'));
-		add_action('init',                 array(&$this, 'hookRegisterStyles'));
-		add_action('widgets_init', 		   array(&$this, 'hookRegisterWidgets'));
+		add_action('init',                  array(&$this, 'hookInit'));
+		add_action('init',                  array(&$this, 'hookRegisterScripts'));
+		add_action('init',                  array(&$this, 'hookRegisterStyles'));
+		add_action('widgets_init', 		    array(&$this, 'hookRegisterWidgets'));
 		
 		add_action( 'wp_ajax_nopriv_wpcal-getevents', 
-										   array(&$this, 'hookAjaxGetEvents'));
+										    array(&$this, 'hookAjaxGetEvents'));
 		add_action( 'wp_ajax_wpcal-getevents', 
-										   array(&$this, 'hookAjaxGetEvents'));
+										    array(&$this, 'hookAjaxGetEvents'));
+
+		add_action('comment_form_top',      array(&$this, 'hookAddEventToCommentForm'));
+		add_action('comment_post',          array(&$this, 'hookSaveCommentMeta'), 1, 2);
+		add_action('wp_set_comment_status', array(&$this, 'hookUpdateCommentMeta'), 1, 2);
 		
-		add_filter('the_title',            array(&$this, 'hookFilterTitle'), 1, 2);
-		add_filter('wp_title',             array(&$this, 'hookFilterPageTitle'));
-		add_filter('the_content',          array(&$this, 'hookFilterContent'));
-		add_filter('get_pages',            array(&$this, 'hookHidePageFromSelection'));
+		add_filter('the_title',             array(&$this, 'hookFilterTitle'), 1, 2);
+		add_filter('wp_title',              array(&$this, 'hookFilterPageTitle'));
+		add_filter('the_content',           array(&$this, 'hookFilterContent'));
+		add_filter('get_pages',             array(&$this, 'hookHidePageFromSelection'));
+		add_filter('comments_array',        array(&$this, 'hookFilterCommentEvents'));
+		add_filter('get_comments_number',   array(&$this, 'hookFilterCommentEventsCount'));
+		add_filter('comment_post_redirect', array(&$this, 'hookFixCommentPostRedirection'));
+		add_filter('page_link',             array(&$this, 'hookFixEventPageLink'), 99, 2);
 		
-		register_activation_hook(__FILE__, array(&$this, 'hookActivate'));
-		register_uninstall_hook(__FILE__,  array(&$this, 'hookUninstall'));
+		register_activation_hook(__FILE__,  array(&$this, 'hookActivate'));
+		register_uninstall_hook(__FILE__,   array(&$this, 'hookUninstall'));
 		
 		// Init Admin
 		if (is_admin()) {
@@ -207,12 +218,24 @@ class fsCalendar {
 	 * @return String post title
 	 */
 	function hookFilterTitle($title, $postid = -1) {
+		global $comment;
+		
 		// Make sure, that the titles are not filtered in admin interface
 		$req = $_SERVER['REQUEST_URI'];
-		
-		
+				
 		if (strpos($req, 'edit-pages.php') === false &&
 		    strpos($req, 'edit.php?post_type=page') === false) {
+		    	
+		    // If we have a comment for the post (comment lists)
+		    // read the meta data and enrich the title, to make sure tags
+		    // are evaluated correctly
+		    if (!isset($_GET['event']) && $comment->comment_post_ID == $postid) {
+		    	$com_event_id = get_comment_meta($comment->comment_ID, FSE_META_EVENT_ID, true);
+		    	if (!empty($com_event_id) && strpos($title, '{event_id') === false) {
+					$title = '{event_id; id='.intval($com_event_id).'}'.$title.' ('.__('Event').')';		    		
+		    	}
+		    }
+		    	
 			return $this->hookFilterContent($title);
 		} else {
 			// Get Page Id from settings and mark it
@@ -303,6 +326,8 @@ class fsCalendar {
 		foreach($events as $evt) {
 			unset($e);
 			$e['id'] = $evt->eventid;
+			$e['post_id'] = $evt->postid;
+			$e['post_url'] = (empty($evt->postid) ? '' : get_permalink($evt->postid));
 			$e['title'] = $evt->subject;
 			$e['allDay'] = ($evt->allday == true ? true : false);
 			$e['start'] = fsCalendar::date('c', $evt->tsfrom);
@@ -326,6 +351,157 @@ class fsCalendar {
 		echo $response;
 		
 		exit;
+	}
+	
+	/**
+	 * If the comment is for the events detail page, it saves the relation
+	 * to the event id
+	 * @param $comment_id
+	 */
+	function hookSaveCommentMeta($comment_id, $approved) {
+				
+		// Event Id beschaffen zum Kommentar
+		if (isset($_POST['fse_eventid'])) {
+			$eventid = intval($_POST['fse_eventid']);
+		} else {
+			return;
+		}
+		
+		if ($approved == '1') {
+			add_comment_meta($comment_id, FSE_META_EVENT_ID, $eventid, true);
+		} else {
+			add_comment_meta($comment_id, FSE_META_EVENT_ID_TEMP, $eventid, true);
+		}
+	}
+	
+	function hookUpdateCommentMeta($comment_id, $status) {
+		
+		$eventid = get_comment_meta($comment_id, FSE_META_EVENT_ID, $eventid, true);
+		if (!empty($eventid)) {
+			$approved_old = true;
+		} else {
+			$eventid = get_comment_meta($comment_id, FSE_META_EVENT_ID_TEMP, $eventid, true);
+			if (!empty($eventid)) {
+				$approved_old = false;
+			}
+		}
+				
+		if (empty($eventid)) {
+			return;
+		}
+		
+		if (is_array($eventid)) {
+			$eventid = $eventid[0];
+		}
+		
+		
+		// Action is approved, when manually done by admin, if comment is restored from
+		// trash or spam, the approve state from the DB ist in the state [0/1]
+		$approved_new = ($status == 'approve' || $status == '1');
+		if ($approved_new == true && $approved_old == false) {
+			add_comment_meta($comment_id, FSE_META_EVENT_ID, $eventid, true);
+			delete_comment_meta($comment_id, FSE_META_EVENT_ID_TEMP);
+		} elseif ($approved_new == false && $approved_old == true) {
+			add_comment_meta($comment_id, FSE_META_EVENT_ID_TEMP, $eventid, true);
+			delete_comment_meta($comment_id, FSE_META_EVENT_ID);
+		}
+	}
+	
+	function hookAddEventToCommentForm($fields) {
+		if (isset($_GET['event'])) {
+			the_comment_event_meta();
+		}
+	}
+	
+	/**
+	 * Filters all comments just for the current event
+	 * @param $comments
+	 * @param $postid
+	 */
+	function hookFilterCommentEvents($comments) {
+		if (!isset($_GET['event'])) {
+			return $comments;
+		} else {
+			$event_id = intval($_GET['event']);
+		}
+		
+		$new_comments = array();
+		foreach($comments as $comment) {
+			$com_event_id = get_comment_meta($comment->comment_ID, FSE_META_EVENT_ID, true);
+			if (empty($com_event_id) || $com_event_id == $event_id) {
+				$new_comments[] = $comment;
+			}
+		}
+		return $new_comments;	
+	}
+	
+	/**
+	 * Fixes the number of comments for the current event
+	 * @param $count
+	 * @param $post_id
+	 */
+	function hookFilterCommentEventsCount($count) {
+		global $wp_query;
+		
+		if (isset($_GET['event'])) {
+			return count($wp_query->comments);
+		} else {
+			return $count;
+		}
+	}
+	
+	
+	function hookFixCommentPostRedirection($location) {
+		if (strpos($location, '&event=') > 0 || 
+		    strpos($location, '?event=') > 0) {
+			return $location;    	
+		}
+		
+		if (isset($_GET['event'])) {
+			$event_id = $_GET['event'];
+		} elseif (isset($_POST['fse_eventid'])) {
+			$event_id = $_POST['fse_eventid'];
+		} else {
+			return $location;
+		}
+		
+		$hash = '';
+		if (($pos = strpos($location, '#')) > 0) {
+			$hash = substr($location, $pos);
+			$location = substr($location, 0, $pos);
+		}
+		
+		if (strpos($location, '?') > 0) {
+			$location .= '&event='.$event_id;
+		} else {
+			$location .= '?event='.$event_id;
+		}
+		return $location.$hash;
+	}
+	
+	function hookFixEventPageLink($link, $pageid) {
+		global $comment;
+		
+	    if (!isset($_GET['event']) && $comment->comment_post_ID == $pageid &&
+	    	strpos($link,'&event=') === false && strpos($link, '?event=') == false) {
+	    	$com_event_id = get_comment_meta($comment->comment_ID, FSE_META_EVENT_ID, true);
+	    	if (!empty($com_event_id)) {	    		
+				$hash = '';
+				if (($pos = strpos($link, '#')) > 0) {
+					$hash = substr($link, $pos);
+					$link = substr($link, 0, $pos);
+				}
+				
+				if (strpos($link, '?') > 0) {
+					$link .= '&event='.$com_event_id;
+				} else {
+					$link .= '?event='.$com_event_id;
+				}
+				$link .= $hash;
+	    	}
+	    }
+		
+		return $link;
 	}
 	
 	/**
@@ -673,10 +849,13 @@ class fsCalendar {
 					}
 					break;
 				case 'url':
-					if (!empty($page_url) && !empty($evt->eventid))
+					if ($opts['linktopost'] == true && !empty($evt->postid)) {
+						$rep = get_permalink($evt->postid);	
+					} elseif (!empty($page_url) && !empty($evt->eventid)) {
 						$rep = $page_url.$evt->eventid;
-					else
+					} else {
 						$rep = '';
+					}
 					break;
 				case 'print':
 					$opts['echo'] = false; // No echo!
@@ -779,8 +958,16 @@ class fsCalendar {
 					}
 
 					// Link Click
-					if (isset($page_url)) {
-						$rep .= "eventClick: function(calEvent, jsEvent, view) {document.location.href='$page_url'+calEvent.id;},";
+					$postlink = (isset($opts_orig['linktopost']) && $opts_orig['linktopost'] == true);
+					if ($postlink || isset($page_url)) {
+						$rep .= "eventClick: function(calEvent, jsEvent, view) {";
+						if ($postlink) {
+							$rep .= "if (calEvent.post_url != '') { document.location.href=calEvent.post_url; return; }";
+						}
+						if (!empty($page_url)) {
+							$rep .= "document.location.href='$page_url'+calEvent.id;";	
+						}
+						$rep .= "},";
 					}
 					
 					$rep .= "events: function(start, end, callback) {

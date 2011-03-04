@@ -241,7 +241,7 @@ class fsCalendarSettings {
 	 */
 	function hookAddAdminMenu() {
 		// Options
-		$menutitle = '<img src="'.fsCalendar::$plugin_img_url.'icon.png" alt="" /> '.__('Calendar', fsCalendar::$plugin_textdom);
+		$menutitle = __('Calendar', fsCalendar::$plugin_textdom);
 		add_options_page(__('Calendar', fsCalendar::$plugin_textdom), 
 						 $menutitle, 
 						 'manage_options', 
@@ -369,7 +369,7 @@ class fsCalendarSettings {
 	}
 	function hookSettingHeader_Fc() {
 		?>
-		<p><?php _e('WP Calendar allows an easy intergration of <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar</a>, a nice graphical calendar. '.
+		<p><?php _e('WP Calendar allows an easy integration of <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar</a>, a nice graphical calendar. '.
 					'This graphical calendar has many features and options, which can all be set when integration it in your blog (see usage documentation). '.
 					'All the options, which are relevant for localization are passed by WP Calenar (first day of week, time format, all translations like daynames). '.
 					'Since the date format varies depending on the view, you can define all the date formats here. ', fsCalendar::$plugin_textdom); ?>
@@ -711,7 +711,7 @@ class fsCalendarSettings {
 	function hookSettingsUsage() {
 		?>
 		<table class="form-table">
-		<tr><th colspan="3"><a name="usage_top"></a><h3 class="show"><?php _e('Use Widget for easy Intergration!', fsCalendar::$plugin_textdom); ?></h3>
+		<tr><th colspan="3"><a name="usage_top"></a><h2 class="show"><?php _e('Use Widget for easy integration!', fsCalendar::$plugin_textdom); ?></h2>
 		<p>
 		<?php _e('The easiest way to display your events in your blog is the usage of widgets. There are two widgets you can use. '.
 		'One can be used for displaying an unordered list of your events, which are grouped by year, month or day. The other one just prints your events without any grouping.<br /> '.
@@ -732,11 +732,11 @@ class fsCalendarSettings {
 		</ul>
 		</th></tr>
 		
-		<tr><th colspan="3"><a name="usage_fullcalendar"></a><h3 class="show"><?php _e('Graphical Calendar', fsCalendar::$plugin_textdom); ?></h3>
+		<tr><th colspan="3"><a name="usage_fullcalendar"></a><h2 class="show"><?php _e('Graphical Calendar', fsCalendar::$plugin_textdom); ?></h2>
 		<p>
 		<?php _e('This plug-in comes with <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar</a>, a very nice, simple, customizeable ajax-based calendar. You can integrate this calendar by using the tag <code>{events_calendar}</code> in your page or post. '.
 				 'WP Calendar will set some options for your, especially all the transaltions for day- and monthnames and some WP options like the time format or the first day of the week. '.
-				 'All the date formatting options can be maintained the FullCalendar settings tab. All FullCalendar <a href="http://arshaw.com/fullcalendar/docs/" target="_blank">options</a> can be passed as a parameter of the tag. Nested options must be accessed using its path '.
+				 'All the date formatting options can be maintained in the FullCalendar settings tab. All FullCalendar <a href="http://arshaw.com/fullcalendar/docs/" target="_blank">options</a> can be passed as parameters of the tag. Nested options must be accessed using its path '.
 				 '(e.g. Header->right: "today"). Along with the FullCalendar options, you can also pass various parameters for filtering the output (See <a href="#filters">filter options</a>).' , fsCalendar::$plugin_textdom); ?>
 		</p>
 		<p>
@@ -744,11 +744,12 @@ class fsCalendarSettings {
 		</p>
 		<p><code>{events_calendar; categories="3,5"; height=600; header->left="prev"; header->center="today, title"; header->right="next"; weekends=false}</code></p>
 		<p>
-		<?php _e('If you pass any parameters for date or time formatting use the <a href="http://arshaw.com/fullcalendar/docs/utilities/formatDate/" target="_blank">parameters</a> of FullCalendar and not the parameters of the php date function.', fsCalendar::$plugin_textdom); ?>:
+		<?php _e('If you pass any parameters for date or time formatting use the <a href="http://arshaw.com/fullcalendar/docs/utilities/formatDate/" target="_blank">parameters</a> of FullCalendar and not the parameters of the php date function.', fsCalendar::$plugin_textdom); ?>
 		</p>
 		</th></tr>
-		
-		<tr><th colspan="3"><a name="usage_themes"></a><h3 class="show"><?php _e('Usage in Themes', fsCalendar::$plugin_textdom); ?></h3>
+		<tr><th><?php _e('Parameter', fsCalendar::$plugin_textdom); ?></th><td><?php _e('Default', fsCalendar::$plugin_textdom); ?></td><td><?php _e('Description', fsCalendar::$plugin_textdom); ?></td></tr>
+		<tr><th><code>linktopost</code></th><td>false</td><td><?php _e('If the event is synchronized with a post, clicking on the event redirects to the post and not to the single page view', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th colspan="3"><a name="usage_themes"></a><h2 class="show"><?php _e('Usage in Themes', fsCalendar::$plugin_textdom); ?></h2>
 		<p>
 		<?php _e('At the moment there are four functions available', fsCalendar::$plugin_textdom); ?>:
 		</p>
@@ -763,9 +764,9 @@ class fsCalendarSettings {
 fse_print_events(
   array( 'number'   =&gt; 10,
          'exclude'  =&gt; array(387, 827),
-         'before'   =&gt; '&lt;table cellpadding="0" cellspacing="0">',
-         'after'    =&gt; '&lt;/table>',
-         'template' =&gt; '&lt;tr>&lt;td>{event_subject}&lt;br />@{event_location}&lt;/td>&lt;/tr>'
+         'before'   =&gt; '&lt;table cellpadding="0" cellspacing="0"&gt;',
+         'after'    =&gt; '&lt;/table&gt;',
+         'template' =&gt; '&lt;tr>&lt;td&gt;{event_subject}&lt;br />@{event_location}&lt;/td&gt;&lt;/tr&gt;'
   )
 );
 		</pre>
@@ -799,7 +800,19 @@ fse_print_events(
 		<tr><th><code>pagination_mid_size</code></th><td>Calendar options</td>
 			<td><?php _e('The number of pages to show before and after the current page, if the option <code>pagination_use_dots</code> is enabled', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		
-		<tr><th colspan="3"><strong><a name="filters"></a><?php _e('Standard filtering', fsCalendar::$plugin_textdom); ?></strong></th></tr>
+		<tr><th colspan="3"><strong><?php _e('Grouping', fsCalendar::$plugin_textdom); ?></strong><br />
+		<p><?php _e('Grouping is only available for the function <code>fse_print_events_list</code>', fsCalendar::$plugin_textdom); ?>.</p></th></tr>
+		<tr><th><code>groupby</code></th><td><?php _e('Calendar options', fsCalendar::$plugin_textdom); ?></td><td><?php _e('Use the following constants', fsCalendar::$plugin_textdom); ?>:
+		<ul>
+		<li><code>FSE_GROUPBY_NONE</code> - <?php _e('No grouping', fsCalendar::$plugin_textdom); ?></li>
+		<li><code>FSE_GROUPBY_DAY</code> - <?php _e('Group by day', fsCalendar::$plugin_textdom); ?></li>
+		<li><code>FSE_GROUPBY_MONTH</code> - <?php _e('Group by month', fsCalendar::$plugin_textdom); ?></li>
+		<li><code>FSE_GROUPBY_YEAR</code> - <?php _e('Group by year', fsCalendar::$plugin_textdom); ?></li>
+		</ul>
+		</td></tr>
+		<tr><th><code>groupby_header</code></th><td><?php _e('Calendar options', fsCalendar::$plugin_textdom); ?></td><td><?php _e('The header format when grouping, refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		
+		<tr><th colspan="3"><h2 class="show"><a name="filters"></a><?php _e('Filter', fsCalendar::$plugin_textdom); ?></h2></th></tr>
 		<tr><th><code>include</code></th><td>-</td><td><?php _e('An array of event IDs to explicitly include. In combinaion with other filter the results always is an intersection', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>exclude</code></th><td>-</td><td><?php _e('An array of event IDs to explicitly exclude', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>author</code></th><td>''</td><td><?php _e('Only events of this author will be fetched', fsCalendar::$plugin_textdom); ?>.</td></tr>
@@ -822,19 +835,8 @@ fse_print_events(
 		<tr><th colspan="3"><strong><?php _e('Date/Time filtering', fsCalendar::$plugin_textdom); ?></strong></th></tr>
 		<tr><th><code>orderby</code></th><td>datefrom</td><td><?php _e('An array of fields to be sorted. This parameter is not available for the function <code>fse_print_events_list</code>, when grouping is active', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>orderdir</code></th><td>ASC</td><td><?php _e('An array of sort directions (<code>asc</code> or <code>desc</code>). Use the same key as in the array <code>orderby</code> to join the right field', fsCalendar::$plugin_textdom); ?>.</td></tr>
-		<tr><th colspan="3"><strong><?php _e('Grouping', fsCalendar::$plugin_textdom); ?></strong><br />
-		<p><?php _e('Grouping is only available for the function <code>fse_print_events_list</code>', fsCalendar::$plugin_textdom); ?>.</p></th></tr>
-		<tr><th><code>groupby</code></th><td><?php _e('Calendar options', fsCalendar::$plugin_textdom); ?></td><td><?php _e('Use the following constants', fsCalendar::$plugin_textdom); ?>:
-		<ul>
-		<li><code>FSE_GROUPBY_NONE</code> - <?php _e('No grouping', fsCalendar::$plugin_textdom); ?></li>
-		<li><code>FSE_GROUPBY_DAY</code> - <?php _e('Group by day', fsCalendar::$plugin_textdom); ?></li>
-		<li><code>FSE_GROUPBY_MONTH</code> - <?php _e('Group by month', fsCalendar::$plugin_textdom); ?></li>
-		<li><code>FSE_GROUPBY_YEAR</code> - <?php _e('Group by year', fsCalendar::$plugin_textdom); ?></li>
-		</ul>
-		</td></tr>
-		<tr><th><code>groupby_header</code></th><td><?php _e('Calendar options', fsCalendar::$plugin_textdom); ?></td><td><?php _e('The header format when grouping, refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th colspan="3">&nbsp;</th></tr>
-		<tr><th colspan="3"><a name="usage_posts"></a><h3 class="show"><?php _e('Single Event Usage in Posts and Pages', fsCalendar::$plugin_textdom); ?></h3>
+		<tr><th colspan="3"><a name="usage_posts"></a><h2 class="show"><?php _e('Single Event Usage in Posts and Pages', fsCalendar::$plugin_textdom); ?></h2>
 		<p><?php _e("You can display event's details in a post or page by using predefined tags. The eventid is passed by url or directly in the post by using a special tag", fsCalendar::$plugin_textdom); ?>.</p>
 		<p><?php _e('To pass the ID by url, just append the paramter <code>event</code> to your url (e.g. <code>www.yourblog.com/pages/myevent?event=37</code>). To load an event in your post without passing by url, use the tag <code>{event_id; id=x}</code> (e.g. <code>{event_id; id=538}</code> directly in your post before using the other tags. By using this tag it is also possible to load more than one event in a sequentiall mechanism. Everytime you insert the <code>event_id</code> tag another event can be loaded', fsCalendar::$plugin_textdom); ?>.</p>
 		<p><?php _e('Tags can also be used in the title of the post or page. The mechanism is the same as for the content', fsCalendar::$plugin_textdom); ?>.</p>
@@ -866,7 +868,7 @@ fse_print_events(
 		<tr><th><code>{event_authorid}</code></th><td colspan="2"><?php _e("The event's author's user ID", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_publisher}</code></th><td colspan="2"><?php _e("The event's publisher's display name", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_publisherid}</code></th><td colspan="2"><?php _e("The event's publisher's user ID", fsCalendar::$plugin_textdom); ?></td></tr>
-		<tr><th><code>{event_url}</code></th><td colspan="2"><?php _e("The event's url for the single view", fsCalendar::$plugin_textdom); ?></td></tr>
+		<tr><th><code>{event_url; linktopost=x}</code></th><td colspan="2"><?php _e("The event's url for the single view. If set to 1 (true) the url points to the post if the event is synchronized.", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th colspan="3"><?php _e("By using the following two tags you can print a list of events in the same way as in your themes.", fsCalendar::$plugin_textdom); ?></th></tr>
 		<tr><th><code>{events_print; number=x; template=y...}</code></th><td colspan="2"><?php _e('Please see the <a href="#usage_themes">documentation</a> of the function <code>fse_print_events</code>', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>{events_printlist; number=x; template=y...}</code></th><td colspan="2"><?php _e('Please see the <a href="#usage_themes">documentation</a> of the function <code>fse_print_events_list</code>', fsCalendar::$plugin_textdom); ?>.</td></tr>

@@ -356,7 +356,7 @@ if (count($success) > 0) {
 				<input type="hidden" name="event_desc" value="<?php echo esc_attr($evt->description); ?>" />
 			<?php } else { ?>
 				<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-				<?php the_editor($evt->description, 'event_desc'); ?>
+				<?php the_editor($evt->description, 'event_desc'); // This has a parameter for TABINDEX ?>
 				</div>
 			<?php } ?>
 		</div>

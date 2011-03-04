@@ -1,4 +1,6 @@
 <?php 
+global $wpdb;
+
 if ( !defined('ABSPATH') )
 	die('-1');
 
@@ -287,6 +289,9 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 				<?php _e('Location', fsCalendar::$plugin_textdom);?></a>
 				<?php if ($sort == 'location') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 			<th id="categories" class="manage-column" scope="col"><?php _e('Categories', fsCalendar::$plugin_textdom);?></th>
+			<th id="comments" class="manage-column num" scope="col" style="width: 60px">
+				<img src="images/comment-grey-bubble.png" alt="" />
+			</th>
 			<th id="date" class="manage-column" scope="col"><?php _e('State', fsCalendar::$plugin_textdom);?></th>
 		</tr>
 	</thead>
@@ -301,6 +306,9 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 			<th class="manage-column" scope="col"><?php _e('Time', fsCalendar::$plugin_textdom);?></th>
 			<th class="manage-column" scope="col"><?php _e('Location', fsCalendar::$plugin_textdom);?></th>
 			<th class="manage-column" scope="col"><?php _e('Categories', fsCalendar::$plugin_textdom);?></th>
+			<th class="manage-column num" scope="col">
+				<img src="images/comment-grey-bubble.png" alt="" />
+			</th>
 			<th class="manage-column" scope="col"><?php _e('State', fsCalendar::$plugin_textdom);?></th>
 		</tr>
 	</tfoot>
@@ -406,6 +414,14 @@ foreach(fsCalendar::$valid_states as $k => $l) {
 					
 				}
 				?></td>
+				<td class="num">
+				<?php
+				$count = $wpdb->get_var('SELECT COUNT(*) FROM '.$wpdb->commentmeta.' WHERE meta_key="event_id" AND meta_value="'.$e->eventid.'"');
+				
+				echo '<span class="post-com-count" style="cursor: default"><span class="comment-count" style="cursor: default">'.$count.'</span></span>';
+				
+				?>
+				</td>
 				<td><?php echo esc_attr(fsCalendar::$valid_states[$e->state]); ?> <?php _e('on', fsCalendar::$plugin_textdom) ?><br />
 				<?php echo fsCalendar::date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
 			</tr>

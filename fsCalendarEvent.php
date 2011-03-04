@@ -369,7 +369,7 @@ class fsEvent {
 					SET subject=%s, tsfrom=$ts_from, tsto=$ts_to, allday=%d, description=%s, location=%s, state=%s, 
 					updatedbypost=%d 
 					WHERE eventid=$this->eventid",
-		        	$this->subject, ($this->allday == true ? 1 : 0),$this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
+		        	$this->subject, ($this->allday == true ? 1 : 0), $this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
 			} else {
 				$errors[] = __('No permission to edit event', fsCalendar::$plugin_textdom);
 			}

@@ -95,27 +95,49 @@ class fsCalendarAdmin {
 	 * @return void
 	 */
 	function hookRegisterScriptsAdmin() {
+		$editor = $datepicker = $tabs = false;
+		
+		if (strpos($_SERVER['REQUEST_URI'], 'wp-cal-add') > 0) {
+			$datepicker = true;
+			$editor = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], fsCalendar::$plugin_filename) > 0 &&
+			isset($_GET['action'])) {
+			$datepicker = true;
+			$editor = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'post.php') > 0) {
+			$datepicker = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'wp-cal-settings') > 0) {
+			$tabs = true;
+		} else {
+			return;
+		}
+		
 		wp_enqueue_script('common');
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
-		wp_enqueue_script('jquery-ui-tabs');
-		wp_enqueue_script('fs-datepicker', fsCalendar::$plugin_js_url.'ui.datepicker.js');
-		//wp_enqueue_script('fs-date', fsCalendar::$plugin_js_url.'date.js');
-		wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
-				
-		if ((strpos($_SERVER['QUERY_STRING'], fsCalendar::$plugin_filename) !== false && 
-		   (isset($_GET['action']) && ($_GET['action'] == 'new' || $_GET['action'] == 'edit') || $_GET['action'] == 'copy')) ||
-		   (isset($_GET['page']) && $_GET['page'] == 'wp-cal-add')) {
-			wp_enqueue_script('post');
-			if (user_can_richedit()) {
-				wp_enqueue_script('editor');
-				wp_enqueue_script('editor-functions');
-				add_thickbox();
-				wp_enqueue_script('media-upload');
+		
+		if ($datepicker) {
+			wp_enqueue_script('fs-datepicker', fsCalendar::$plugin_js_url.'ui.datepicker.js');
+			wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
+		}
+		
+		if ($tabs) {
+			wp_enqueue_script('jquery-ui-tabs');
+		}
+
+		if ($editor) {
+			if (!isset($_GET['action']) || $_GET['action'] != 'view') {
 				wp_enqueue_script('post');
-				wp_enqueue_script('tiny_mce');
-				
-				add_action('admin_print_footer_scripts', 'wp_tiny_mce', 25 );
+				if (user_can_richedit()) {
+					wp_enqueue_script('editor');
+					wp_enqueue_script('word-count');
+					add_thickbox();
+					wp_enqueue_script('media-upload');
+					
+					add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
+					add_action( 'admin_print_footer_scripts', 'wp_tiny_mce_preload_dialogs', 30 );
+					wp_enqueue_script('quicktags');
+				}
 			}
 		}
 	}
@@ -125,16 +147,34 @@ class fsCalendarAdmin {
 	 * @return void
 	 */
 	function hookRegisterStylesAdmin() {
-		wp_enqueue_style('dashboard');
-		wp_enqueue_style('thickbox');
-		wp_enqueue_style('fs-styles-dp', fsCalendar::$plugin_css_url.'jquery-ui-1.7.2.custom.css');
+		$editor = $datepicker = $tabs = false;
+		
+		if (strpos($_SERVER['REQUEST_URI'], 'wp-cal-add') > 0) {
+			$datepicker = true;
+			$editor = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], fsCalendar::$plugin_filename) > 0 &&
+			isset($_GET['action'])) {
+			$datepicker = true;
+			$editor = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'post.php') > 0) {
+			$datepicker = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'wp-cal-settings') > 0) {
+			$tabs = true;
+		} else {
+			return;
+		}
 		wp_enqueue_style('fs-styles', fsCalendar::$plugin_css_url.'default.css');
 		wp_enqueue_style('wp-calendar', fsCalendar::$plugin_css_url.'wpcalendar.css');
 		
-		/*if (strpos($_SERVER['QUERY_STRING'], fsCalendar::$plugin_filename) !== false && 
-		   ($_GET['action'] == 'new' || $_GET['action'] == 'edit')) {
-			wp_enqueue_style('post');
-		}*/
+		if ($editor) {		
+			wp_enqueue_style('dashboard');
+			wp_enqueue_style('thickbox');
+		}
+		
+		if ($datepicker) {
+			wp_enqueue_style('wp-cale-ui-dp', fsCalendar::$plugin_css_url.'ui.datepicker.css');
+			wp_enqueue_style('wp-cale-ui-theme', fsCalendar::$plugin_css_url.'ui.theme.css');
+		}
 	}
 	
 	/**

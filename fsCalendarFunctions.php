@@ -29,4 +29,19 @@ function fse_get_events($args = array()) {
 	
 	return $fsCalendar->getEventsExternal($args);
 }
+
+function the_event_id() {
+	echo get_the_event_id();
+}
+
+function get_the_event_id() {
+	if (isset($_GET['event'])) {
+		return intval($_GET['event']);
+	} elseif (isset($_POST['event'])) {
+		return intval($_GET['event']);
+	}	
+}
+function the_comment_event_meta() {
+	echo '<input type="hidden" name="fse_eventid" value="'.get_the_event_id().'" />';
+}
 ?>

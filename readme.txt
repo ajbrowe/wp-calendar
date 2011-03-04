@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -14,7 +14,7 @@ To manage the event, the same authority checks as for post are used. The plug-in
 into any theme by using different functions and in any post and page by using different tags.
 
 = Features =
-* NEW: Event creation from post including content synchronization
+* NEW: [Comments for WP Calendar](http://www.faebusoft.ch/webentwicklung/wp-calendar-1-4-0-freigegeben/)
 * Graphical calendar for your blog
 * Widgets for your blog
 * Event categorization (using WP categories)
@@ -24,6 +24,7 @@ into any theme by using different functions and in any post and page by using di
 * Event overview including filters and pagination
 * Easy and fully documented integration
 * Mass operations on events (delete, set state)
+* Event creation from post including content synchronization
 * Same authority checks as for post and pages
 * Supports special tags in post/page content and title
 * Many customization options
@@ -127,9 +128,18 @@ theme's directory (not in a subdirectory of it). It will be loaded instead of th
 Please refer to the usage documentation in the calendar's options page. Since version this plug-in has built-in widgets
 for easy usage. If these widgets don't fit your needs, you may integration WP Calendar manually by using tags or php functions.
 
-For all german speaker plese see also the post [Integration von WP Calendar]http://www.faebusoft.ch/webentwicklung/wp-calendar-integration/).
+For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebusoft.ch/webentwicklung/wp-calendar-integration/).
 
 == Changelog ==
+
+= 1.4.0 =
+* FEATURE: Comments for WP Calendar
+* FEATURE: New parameter `linktopost` for tag `event_url` and `events_calendar` to create an url pointing to the synchronized post instead of the single view page
+* FIXED: Dialogs of TinyMCE Editor not working with WP 3.1
+* FIXED: Layout of WP dialogs scrambled
+* FIXED: JavaScript/Css loading optimized in admin interface 
+* Removed Icon in WP settings menu
+* Updated the fullcalendar version 1.4.11 
 
 = 1.3.1 =
 * FIXED: Event cannot published anymore
