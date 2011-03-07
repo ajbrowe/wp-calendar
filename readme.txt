@@ -3,7 +3,7 @@ Contributors: faebu
 Tags: calendar, events
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -38,7 +38,7 @@ into any theme by using different functions and in any post and page by using di
 
 
 = Planned =
-* Repeating/Reccuring events (planned for 1.4.0)
+* Repeating/Reccuring events (planned for 1.5.0)
 * Customer fields
 * Google Maps integration
 * Dashboard integration
@@ -131,6 +131,9 @@ for easy usage. If these widgets don't fit your needs, you may integration WP Ca
 For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebusoft.ch/webentwicklung/wp-calendar-integration/).
 
 == Changelog ==
+
+= 1.4.1 =
+* FIXED: Optimized db upgrade process with notification about manual steps
 
 = 1.4.0 =
 * FEATURE: Comments for WP Calendar

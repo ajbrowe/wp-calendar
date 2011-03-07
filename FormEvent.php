@@ -200,6 +200,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 	
 } // End Fatal Error Skip
 
+
 // If Post is synchronized, show a message
 if ($action == 'edit' && !isset($_POST['eventid']) && !empty($evt->eventid) && $evt->updatedbypost == true) {
 	$disabled_sync = true;
@@ -208,167 +209,173 @@ if ($action == 'edit' && !isset($_POST['eventid']) && !empty($evt->eventid) && $
 } else {
 	$disabled_sync = false;
 }
-
+	
 echo $this->pageStart(($evt->eventid == 0 ? __('Add New Event', fsCalendar::$plugin_textdom) : ($action == 'view' ? __('View Event', fsCalendar::$plugin_textdom) : __('Edit Event', fsCalendar::$plugin_textdom))), '', 'icon-edit');
-
-// Bei Fatal Errors gleich wieder raus!
-if (count($fatal) > 0) {
-	echo '<div id="notice" class="error"><p>';
-	foreach($fatal as $f) {
-		echo $f.'<br />';
+	
+	// Check DB Version
+$dbver = get_option('fse_db_version', -1);
+if ($dbver < FSE_DB_VERSION) {
+	
+} else {
+	// Bei Fatal Errors gleich wieder raus!
+	if (count($fatal) > 0) {
+		echo '<div id="notice" class="error"><p>';
+		foreach($fatal as $f) {
+			echo $f.'<br />';
+		}
+		echo '</p></div>';
+		echo $this->pageEnd();
+		return;	
 	}
-	echo '</p></div>';
-	echo $this->pageEnd();
-	return;	
-}
-if (count($errors) > 0) {
-	echo '<div id="notice" class="error"><p>';
-	foreach($errors as $e) {
-		echo $e.'<br />';
+	if (count($errors) > 0) {
+		echo '<div id="notice" class="error"><p>';
+		foreach($errors as $e) {
+			echo $e.'<br />';
+		}
+		echo '</p></div>';
 	}
-	echo '</p></div>';
-}
-if (count($success) > 0) {
-	echo '<div id="message" class="updated fade"><p>';
-	foreach($success as $e) {
-		echo $e.'<br />';
+	if (count($success) > 0) {
+		echo '<div id="message" class="updated fade"><p>';
+		foreach($success as $e) {
+			echo $e.'<br />';
+		}
+		echo '</p></div>';
 	}
-	echo '</p></div>';
-}
-
-
-?>
-
-<form id="event" method="post" action="" name="event">
-<div id="poststuff" class="metabox-holder has-right-sidebar">
-	<div id="side-info-column" class="inner-sidebar">
-		<div id="side-sortables" class="meta-box-sortables ui-sortable">
-		
-		<?php echo $this->pagePostBoxStart('state', __('Publish State', fsCalendar::$plugin_textdom)); ?>
-		<div id="submitpost" class="submitbox">
+	
+	
+	?>
+	
+	<form id="event" method="post" action="" name="event">
+	<div id="poststuff" class="metabox-holder has-right-sidebar">
+		<div id="side-info-column" class="inner-sidebar">
+			<div id="side-sortables" class="meta-box-sortables ui-sortable">
 			
-			<?php if ($action != 'view' && $evt->state == 'draft' && $evt->userCanPublishEvent()) { ?>
-			<div id="minor-publishing-actions">
-				<div id="save-action">
-					<?php if (empty($evt->eventid)) { ?>
-						<input id="save-post" class="button button-highlighted" type="submit" value="Save Draft" name="save"/>
-					<?php } else { ?>
-						<input id="save-post" class="button button-highlighted" type="submit" value="Save" name="save"/>
-					<?php } ?>
-				</div>
-				<div class="clear"/></div>
-			</div>
-			<?php } ?>
-			
-			<div id="minor-publishing">
-				<div id="misc-publishing-actions">
-					<div class="misc-pub-section">
-						<?php _e('State', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display">
-						<?php echo fsCalendar::$valid_states[$evt->state]; ?></span>
-						<?php if ($action != 'view' && $evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
-						<a class="hide-if-no-js" href="" onClick="document.forms['event'].jsaction.value='draft'; document.forms['event'].submit(); return false;"><?php _e('Change to Draft', fsCalendar::$plugin_textdom)?></a>
+			<?php echo $this->pagePostBoxStart('state', __('Publish State', fsCalendar::$plugin_textdom)); ?>
+			<div id="submitpost" class="submitbox">
+				
+				<?php if ($action != 'view' && $evt->state == 'draft' && $evt->userCanPublishEvent()) { ?>
+				<div id="minor-publishing-actions">
+					<div id="save-action">
+						<?php if (empty($evt->eventid)) { ?>
+							<input id="save-post" class="button button-highlighted" type="submit" value="Save Draft" name="save"/>
+						<?php } else { ?>
+							<input id="save-post" class="button button-highlighted" type="submit" value="Save" name="save"/>
 						<?php } ?>
 					</div>
-					<div class="misc-pub-section">
-						<?php _e('Created by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : esc_attr($evt->author_t)); ?></span>
-					</div>
-					<div class="misc-pub-section">
-						<?php _e('Created', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
-					</div>
-					<div class="misc-pub-section">
-						<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
-					</div>
-					<div class="misc-pub-section">
-						<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
-					</div>
-					<?php 
-					if ($action != 'view' && $evt->updatedbypost == true) {
-						echo '<div class="misc-pub-section">';
-						echo sprintf(__('This event is synchronized with <a href="post.php?post=%d&action=edit">this post</a>. Click '."<a class=\"hide-if-no-js\" href=\"\" onClick=\"document.forms['event'].jsaction.value='nosync'; document.forms['event'].submit(); return false;\"'>".'here</a> to disable the synchronization.', fsCalendar::$plugin_textdom), $evt->postid);
-						echo '</div>';
-					}
-					?>
+					<div class="clear"/></div>
 				</div>
-				<div class="clear"/></div>
+				<?php } ?>
+				
+				<div id="minor-publishing">
+					<div id="misc-publishing-actions">
+						<div class="misc-pub-section">
+							<?php _e('State', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display">
+							<?php echo fsCalendar::$valid_states[$evt->state]; ?></span>
+							<?php if ($action != 'view' && $evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
+							<a class="hide-if-no-js" href="" onClick="document.forms['event'].jsaction.value='draft'; document.forms['event'].submit(); return false;"><?php _e('Change to Draft', fsCalendar::$plugin_textdom)?></a>
+							<?php } ?>
+						</div>
+						<div class="misc-pub-section">
+							<?php _e('Created by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : esc_attr($evt->author_t)); ?></span>
+						</div>
+						<div class="misc-pub-section">
+							<?php _e('Created', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
+						</div>
+						<div class="misc-pub-section">
+							<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
+						</div>
+						<div class="misc-pub-section">
+							<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
+						</div>
+						<?php 
+						if ($action != 'view' && $evt->updatedbypost == true) {
+							echo '<div class="misc-pub-section">';
+							echo sprintf(__('This event is synchronized with <a href="post.php?post=%d&action=edit">this post</a>. Click '."<a class=\"hide-if-no-js\" href=\"\" onClick=\"document.forms['event'].jsaction.value='nosync'; document.forms['event'].submit(); return false;\"'>".'here</a> to disable the synchronization.', fsCalendar::$plugin_textdom), $evt->postid);
+							echo '</div>';
+						}
+						?>
+					</div>
+					<div class="clear"/></div>
+				</div>
+			
+				<?php if ($action != 'view' || $evt->userCanEditEvent() ) { ?>
+				<div id="major-publishing-actions">
+					<div id="publishing-action">
+						<?php
+						if ($action == 'view') { 
+							echo '<input id="save" class="button-primary" type="button" value="'.__('Edit', fsCalendar::$plugin_textdom).'"'." name=\"changetoedit\" onClick=\"document.location.href=document.location.href.replace(/action=view/, 'action=edit')\" />";
+						} elseif ($evt->state == 'publish') {
+							echo '<input id="save" class="button-primary" type="submit" value="'.__('Save', fsCalendar::$plugin_textdom).'" name="save" />';
+						} elseif ( $evt->userCanPublishEvent() ) {
+							echo '<input id="publish" class="button-primary" type="submit" value="'.__('Publish', fsCalendar::$plugin_textdom).'" name="publish" />';
+						} elseif ( $evt->eventid > 0 ) {
+							echo '<input id="save" class="button-primary" type="submit" value="'.__('Save', fsCalendar::$plugin_textdom).'" name="save" />';
+						} else {
+							echo '<input id="save" class="button-primary" type="submit" value="'.__('Save Draft', fsCalendar::$plugin_textdom).'" name="save" />';
+						}
+						?>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<?php } ?>
 			</div>
-		
-			<?php if ($action != 'view' || $evt->userCanEditEvent() ) { ?>
-			<div id="major-publishing-actions">
-				<div id="publishing-action">
-					<?php
-					if ($action == 'view') { 
-						echo '<input id="save" class="button-primary" type="button" value="'.__('Edit', fsCalendar::$plugin_textdom).'"'." name=\"changetoedit\" onClick=\"document.location.href=document.location.href.replace(/action=view/, 'action=edit')\" />";
-					} elseif ($evt->state == 'publish') {
-						echo '<input id="save" class="button-primary" type="submit" value="'.__('Save', fsCalendar::$plugin_textdom).'" name="save" />';
-					} elseif ( $evt->userCanPublishEvent() ) {
-						echo '<input id="publish" class="button-primary" type="submit" value="'.__('Publish', fsCalendar::$plugin_textdom).'" name="publish" />';
-					} elseif ( $evt->eventid > 0 ) {
-						echo '<input id="save" class="button-primary" type="submit" value="'.__('Save', fsCalendar::$plugin_textdom).'" name="save" />';
-					} else {
-						echo '<input id="save" class="button-primary" type="submit" value="'.__('Save Draft', fsCalendar::$plugin_textdom).'" name="save" />';
-					}
-					?>
-				</div>
-				<div class="clear"></div>
+			
+			<?php echo $this->pagePostBoxEnd(); ?>
+			
+			<?php echo $this->pagePostBoxStart('date', __('When', fsCalendar::$plugin_textdom)); ?>
+			<?php echo $this->postBoxDateAndTime($evt, ($action == 'view' ? true : false)); ?>		
+			<?php echo $this->pagePostBoxEnd();	?>
+			
+			<?php echo $this->pagePostBoxStart('categorydiv', __('Categories', fsCalendar::$plugin_textdom)); ?>
+			<?php $this->postBoxCategories($evt->categories, (($action == 'view' || $evt->updatedbypost == true) ? true : false)); ?>		
+			<?php echo $this->pagePostBoxEnd();	?>
 			</div>
-			<?php } ?>
 		</div>
-		
-		<?php echo $this->pagePostBoxEnd(); ?>
-		
-		<?php echo $this->pagePostBoxStart('date', __('When', fsCalendar::$plugin_textdom)); ?>
-		<?php echo $this->postBoxDateAndTime($evt, ($action == 'view' ? true : false)); ?>		
-		<?php echo $this->pagePostBoxEnd();	?>
-		
-		<?php echo $this->pagePostBoxStart('categorydiv', __('Categories', fsCalendar::$plugin_textdom)); ?>
-		<?php $this->postBoxCategories($evt->categories, (($action == 'view' || $evt->updatedbypost == true) ? true : false)); ?>		
-		<?php echo $this->pagePostBoxEnd();	?>
+		<div id="post-body">
+			<div id="post-body-content">
+				<p>
+				<?php _e('Subject', fsCalendar::$plugin_textdom); ?>
+				<input id="title" 
+					type="text"
+					value="<?php echo esc_attr($evt->subject); ?>" 
+					tabindex="1" 
+					name="event_subject" 
+					maxlength="255" 
+					style="font-size: 1.7em; width: 100%;" 
+					<?php echo ($action=='view' || $evt->updatedbypost == true ? 'readonly="readonly"' : ''); ?>/>
+				</p>
+				<p>
+				<?php _e('Location', fsCalendar::$plugin_textdom); ?>
+				<input id="location" 
+					type="text"
+					value="<?php echo esc_attr($evt->location); ?>" 
+					tabindex="2" 
+					name="event_location" 
+					maxlength="255" 
+					style="width: 100%;" 
+					<?php echo ($action=='view' ? 'readonly="readonly"' : ''); ?>/>
+				</p>
+				<?php if ($action == 'view' || $evt->updatedbypost == true) { ?>
+					Description
+					<hr size="1" color="#DFDFDF" />
+					<div id="postdiv" class="postarea"><?php echo apply_filters('the_content', $evt->description); ?></div>
+					<input type="hidden" name="event_desc" value="<?php echo esc_attr($evt->description); ?>" />
+				<?php } else { ?>
+					<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
+					<?php the_editor($evt->description, 'event_desc'); // This has a parameter for TABINDEX ?>
+					</div>
+				<?php } ?>
+			</div>
 		</div>
+		<br class="clear"/>
 	</div>
-	<div id="post-body">
-		<div id="post-body-content">
-			<p>
-			<?php _e('Subject', fsCalendar::$plugin_textdom); ?>
-			<input id="title" 
-				type="text"
-				value="<?php echo esc_attr($evt->subject); ?>" 
-				tabindex="1" 
-				name="event_subject" 
-				maxlength="255" 
-				style="font-size: 1.7em; width: 100%;" 
-				<?php echo ($action=='view' || $evt->updatedbypost == true ? 'readonly="readonly"' : ''); ?>/>
-			</p>
-			<p>
-			<?php _e('Location', fsCalendar::$plugin_textdom); ?>
-			<input id="location" 
-				type="text"
-				value="<?php echo esc_attr($evt->location); ?>" 
-				tabindex="2" 
-				name="event_location" 
-				maxlength="255" 
-				style="width: 100%;" 
-				<?php echo ($action=='view' ? 'readonly="readonly"' : ''); ?>/>
-			</p>
-			<?php if ($action == 'view' || $evt->updatedbypost == true) { ?>
-				Description
-				<hr size="1" color="#DFDFDF" />
-				<div id="postdiv" class="postarea"><?php echo apply_filters('the_content', $evt->description); ?></div>
-				<input type="hidden" name="event_desc" value="<?php echo esc_attr($evt->description); ?>" />
-			<?php } else { ?>
-				<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-				<?php the_editor($evt->description, 'event_desc'); // This has a parameter for TABINDEX ?>
-				</div>
-			<?php } ?>
-		</div>
-	</div>
-	<br class="clear"/>
-</div>
-<input type="hidden" name="eventid" value="<?php echo $evt->eventid; ?>" />
-<input type="hidden" name="event_state" value="<?php echo $evt->state; ?>" />
-<input type="hidden" name="referer" value="<?php echo $referer; ?>" />
-<input type="hidden" name="jsaction" value="" />
-<?php wp_nonce_field('event', '_fseevent'); ?>
-</form>
+	<input type="hidden" name="eventid" value="<?php echo $evt->eventid; ?>" />
+	<input type="hidden" name="event_state" value="<?php echo $evt->state; ?>" />
+	<input type="hidden" name="referer" value="<?php echo $referer; ?>" />
+	<input type="hidden" name="jsaction" value="" />
+	<?php wp_nonce_field('event', '_fseevent'); ?>
+	</form>
 <?php
+}
 echo $this->pageEnd();
 ?>

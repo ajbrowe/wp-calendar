@@ -12,7 +12,7 @@ class fsCalendarAdmin {
 		
 		add_action('add_meta_boxes', 	   array(&$this, 'hookAddPostCalendarBox'));
 		add_action('save_post', 		   array(&$this, 'hookSaveEventFromPost'));
-		add_action('admin_notices', 	   array(&$this, 'hookSendMessagesFromPost'));
+		add_action('admin_notices', 	   array(&$this, 'hookSendDBUpdateNotice'));
 		
 		add_filter('plugin_action_links',  array(&$this, 'hookAddPlugInSettingsLink'), 10, 2 );
 		
@@ -290,30 +290,11 @@ class fsCalendarAdmin {
 		return $post_id;
 	}
 	
-	/**
-	 * TODO: Bring message in correct box!
-	 */
-	function hookSendMessagesFromPost() {
-		// Make sure the session is started
-		@session_start();
-
-		/*if (isset($_SESSION['fse_error'])) {
-			if (is_array($_SESSION['fse_error']))
-				print_r($_SESSION['fse_error']);
-			else
-				echo $_SESSION['fse_error'];
+	function hookSendDBUpdateNotice() {
+		$dbver = get_option('fse_db_version', -1);
+		if ($dbver < FSE_DB_VERSION) {
+			echo "<div class='updated'><p>".__('The database of <i>WP Calendar</i> has changed. Please <a href="'.get_admin_url().'plugins.php?s=wp%20calendar">reactivate</a> (deactivate and activate) the plugin to upgrade your database structure.')."</p></div>";
 		}
-		
-		if (isset($_SESSION['fse_success'])) {
-			if (is_array($_SESSION['fse_success']))
-				print_r($_SESSION['fse_success']);
-			else
-				echo $_SESSION['fse_success'];
-		}
-		
-		unset($_SESSION['fse_error']);
-		unset($_SESSION['fse_success']);
-		*/
 	}
 	
 	function createCalendarPage() {
