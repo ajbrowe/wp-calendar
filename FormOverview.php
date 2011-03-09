@@ -258,7 +258,7 @@ if ($dbver < FSE_DB_VERSION) {
 		//$count = $wpdb->get_var("SELECT COUNT(eventid) FROM ".$wpdb->prefix.'fsevents '." WHERE state='$k'");
 		//if ($count !== false && $count > 0)
 		if (isset($state_count[$k]) && $state_count[$k] > 0)
-			echo '<li>| <a '.($k == $filter['state'] ? 'class="current"' : '').' href="javascript: fse_overviewFilter('."'event_status','$k'".');">'.$l.'<span class="count"> ('.$state_count[$k].')</span></a></li>';
+			echo '<li>| <a '.((isset($filter['state']) && $k == $filter['state']) ? 'class="current"' : '').' href="javascript: fse_overviewFilter('."'event_status','$k'".');">'.$l.'<span class="count"> ('.$state_count[$k].')</span></a></li>';
 	}
 	?>
 	</ul>

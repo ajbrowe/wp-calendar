@@ -116,12 +116,14 @@ class fsCalendarAdmin {
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		
+		wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
+		
 		if ($datepicker) {
 			wp_enqueue_script('fs-datepicker', fsCalendar::$plugin_js_url.'ui.datepicker.js');
-			wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
 		}
 		
 		if ($tabs) {
+			wp_enqueue_script('jquery-ui-widget');
 			wp_enqueue_script('jquery-ui-tabs');
 		}
 
@@ -136,7 +138,7 @@ class fsCalendarAdmin {
 					
 					add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
 					add_action( 'admin_print_footer_scripts', 'wp_tiny_mce_preload_dialogs', 30 );
-					wp_enqueue_script('quicktags');
+					//wp_enqueue_script('quicktags');
 				}
 			}
 		}
@@ -173,7 +175,11 @@ class fsCalendarAdmin {
 		
 		if ($datepicker) {
 			wp_enqueue_style('wp-cale-ui-dp', fsCalendar::$plugin_css_url.'ui.datepicker.css');
-			wp_enqueue_style('wp-cale-ui-theme', fsCalendar::$plugin_css_url.'ui.theme.css');
+		}
+		
+		if ($tabs) {
+			//wp_enqueue_style('colors');
+			wp_enqueue_style('wp-tab-ui', fsCalendar::$plugin_css_url.'ui.tab.css');
 		}
 	}
 	
@@ -678,8 +684,10 @@ class fsCalendarAdmin {
 											  'hierarchical' => 1, 
 											  'show_count' => 0, 
 											  'name' => 'event_category', 
-											  'orderby' => 'name', 
-											  'selected' => $filter['categories'][0]);
+											  'orderby' => 'name');
+					if (isset($filter['categories'][0])) {
+						$dropdown_options['selected'] = $filter['categories'][0];
+					}
 					wp_dropdown_categories($dropdown_options);
 					?>
 					<input id="event-query-submit" class="button-secondary" type="submit" value="<?php _e('Filter', fsCalendar::$plugin_textdom);?>" />

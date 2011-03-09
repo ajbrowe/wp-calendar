@@ -5,9 +5,9 @@ Plugin URI: http://www.faebusoft.ch/webentwicklung/wpcalendar/
 Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
 Author: Fabian von Allmen
 Author URI: http://www.faebusoft.ch
-Version: 1.4.1
+Version: 1.4.2
 License: GPL
-Last Update: 2011-03-07
+Last Update: 2011-03-09
 */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -33,7 +33,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 	
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.4.1';
+	static $plugin_vers     = '1.4.2';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -153,7 +153,7 @@ class fsCalendar {
 		add_filter('page_link',             array(&$this, 'hookFixEventPageLink'), 99, 2);
 		
 		register_activation_hook(__FILE__,  array(&$this, 'hookActivate'));
-		register_uninstall_hook(__FILE__,   array(&$this, 'hookUninstall'));
+		register_uninstall_hook(__FILE__,   array('fsCalendar', 'hookUninstall')); // Static
 		
 		// Init Admin
 		if (is_admin()) {
@@ -197,6 +197,7 @@ class fsCalendar {
 				wp_enqueue_script('jquery');
 			if (get_option('fse_load_jqueryui') == true)
 				wp_enqueue_script('jquery-ui-core');
+				
 			wp_enqueue_script('fullcalendar', self::$plugin_js_url.'fullcalendar.min.js');
 			//Pass Ajax Url to Javascript Paraemter
 			wp_localize_script('fullcalendar', 'WPCalendar', array('ajaxUrl'=>admin_url('admin-ajax.php')));
@@ -231,7 +232,7 @@ class fsCalendar {
 		    // If we have a comment for the post (comment lists)
 		    // read the meta data and enrich the title, to make sure tags
 		    // are evaluated correctly
-		    if (!isset($_GET['event']) && $comment->comment_post_ID == $postid) {
+		    if (!isset($_GET['event']) && isset($comment) && $comment->comment_post_ID == $postid) {
 		    	$com_event_id = get_comment_meta($comment->comment_ID, FSE_META_EVENT_ID, true);
 		    	if (!empty($com_event_id) && strpos($title, '{event_id') === false) {
 					$title = '{event_id; id='.intval($com_event_id).'}'.$title.' ('.__('Event').')';		    		
@@ -484,7 +485,7 @@ class fsCalendar {
 	function hookFixEventPageLink($link, $pageid) {
 		global $comment;
 		
-	    if (!isset($_GET['event']) && $comment->comment_post_ID == $pageid &&
+	    if (!isset($_GET['event']) && isset($comment->comment_post_ID) && $comment->comment_post_ID == $pageid &&
 	    	strpos($link,'&event=') === false && strpos($link, '?event=') == false) {
 	    	$com_event_id = get_comment_meta($comment->comment_ID, FSE_META_EVENT_ID, true);
 	    	if (!empty($com_event_id)) {	    		
@@ -1624,23 +1625,23 @@ class fsCalendar {
 	}
 	
 	function userCanAddEvents() {
-		return current_user_can(1);	
+		return current_user_can('edit_posts');	
 	}
 	
 	function userCanViewEvents() {
-		return current_user_can(1);	
+		return current_user_can('read');	
 	}
 	
 	function userCanEditEvents() {
-		return current_user_can(1);
+		return current_user_can('edit_posts');
 	}
 	
 	function userCanPublishEvents() {
-		return current_user_can(2);
+		return current_user_can('publish_posts');
 	}
 	
 	function userCanDeleteEvents() {
-		return current_user_can(1);
+		return current_user_can('delete_posts');
 	}
 	
 	/**
@@ -1742,7 +1743,7 @@ class fsCalendar {
 	/**
 	 * Deletes the announcement page and all options
 	 */
-	function hookUninstall()  {
+	static function hookUninstall()  {
 		// Remove all options
 		foreach(self::$plugin_options as $k => $v) {
 			remove_option($k);

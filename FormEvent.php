@@ -8,6 +8,8 @@ $add_hour = 1;
 
 $action = $_GET['action'];
 
+$fatal = $errors = $success = array();
+
 // Get Post Data
 if (isset($_POST['eventid']) && $action != 'view') {
 	// Get all post data
@@ -21,7 +23,7 @@ if (isset($_POST['eventid']) && $action != 'view') {
 	$evt->time_admin_from   = $_POST['event_tfrom'];
 	$evt->time_admin_to     = $_POST['event_tto'];
 	$evt->location    		= $_POST['event_location'];
-	$evt->description 		= $_POST['event_desc'];
+	$evt->description 		= $_POST['content'];
 	$evt->subject     		= $_POST['event_subject'];
 	$evt->state       		= $_POST['event_state'];
 	$evt->categories  		= $_POST['post_category'];
@@ -362,7 +364,7 @@ if ($dbver < FSE_DB_VERSION) {
 					<input type="hidden" name="event_desc" value="<?php echo esc_attr($evt->description); ?>" />
 				<?php } else { ?>
 					<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-					<?php the_editor($evt->description, 'event_desc'); // This has a parameter for TABINDEX ?>
+					<?php the_editor($evt->description, 'content'); // This has a parameter for TABINDEX ?>
 					</div>
 				<?php } ?>
 			</div>

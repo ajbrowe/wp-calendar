@@ -224,11 +224,11 @@ class fsEvent {
 		if ($ret == false)
 			return false;
 		else
-			return current_user_can(2);	
+			return current_user_can('publish_posts');	
 	}
 	
 	function userCanViewEvent() {
-		return current_user_can(0);
+		return current_user_can('read');
 	}
 	
 	/**
@@ -246,12 +246,12 @@ class fsEvent {
 			return true;
 		
 		if ($this->author != $user_ID) {
-			return current_user_can(7);	
+			return current_user_can('edit_others_posts');	
 		// Edit of published only by editor!
 		} elseif ($this->state == 'publish') {
-			return current_user_can(7);
+			return current_user_can('edit_published_posts');
 		} else {
-			return current_user_can(1);	
+			return current_user_can('edit_posts');	
 		}
 	}
 	
@@ -270,11 +270,11 @@ class fsEvent {
 			return true;
 		
 		if ($this->author != $user_ID) {
-			return current_user_can(7);	
+			return current_user_can('delete_others_posts');	
 		} elseif ($this->state == 'publish') {
-			return current_user_can(2);
+			return current_user_can('delete_published_posts');
 		} else {
-			return current_user_can(1);	
+			return current_user_can('delete_posts');	
 		}
 	}
 	
