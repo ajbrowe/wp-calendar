@@ -104,7 +104,8 @@ class fsCalendarAdmin {
 			isset($_GET['action'])) {
 			$datepicker = true;
 			$editor = true;
-		} elseif (strpos($_SERVER['REQUEST_URI'], 'post.php') > 0) {
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'post.php') > 0 ||
+				  strpos($_SERVER['REQUEST_URI'], 'post-new.php') > 0) {
 			$datepicker = true;
 		} elseif (strpos($_SERVER['REQUEST_URI'], 'wp-cal-settings') > 0) {
 			$tabs = true;
