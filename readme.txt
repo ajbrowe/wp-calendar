@@ -1,12 +1,22 @@
 === WP Calendar ===
 Contributors: faebu
-Tags: calendar, events
-Requires at least: 3.0
-Tested up to: 3.1
-Stable tag: 1.4.3
+Tags: calendar, events, post, wp calendar, event, event calendar, termin, kalender, terminkalender, wp kalender
+Donate link: http://www.faebusoft.ch/webentwicklung/wpcalendar/
+Requires at least: 3.1
+Tested up to: 3.3
+Stable tag: 1.5.0 Beta1
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
+
+THIS IS A BETA VERSION. THE MAIN REASON FOR THIS IS, THAT I CHANGED ALL THE UNIX-TIMESTAMP BASED DATABASE FIELDS TO
+MYSQL DATETIME FIELDS. THIS WAS NECESSARY, BECAUSED I USED TIMESTAMPS IN A WRONG WAY (DID NOT CONVERT TO UTC!) WHICH
+CAUSED PROBLEMS WITH DAYLIGHT SAVING TIME ZONES!
+
+AS SOON YOU'RE UPDATING TO V1.5, ALL FIELDS ARE MIGRATED, THE OLD VALUES ARE STILL STORED. IT IS HIGHLY RECOMMENDED, THAT 
+YOU MAKE A FULL DATABASE BACKUP, JUST IN CASE SOMETHING GOES WRONG AND YOU HAVE TO REVERT BACK TO V1.4.X.
+
+I'M NOT RESPONSIBLE FOR ANY DATA LOSS!
 
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 The whole usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
@@ -14,7 +24,7 @@ To manage the event, the same authority checks as for post are used. The plug-in
 into any theme by using different functions and in any post and page by using different tags.
 
 = Features =
-* NEW: [Comments for WP Calendar](http://www.faebusoft.ch/webentwicklung/wp-calendar-1-4-0-freigegeben/)
+* NEW: Ical Feed of your events!
 * Graphical calendar for your blog
 * Widgets for your blog
 * Event categorization (using WP categories)
@@ -24,7 +34,9 @@ into any theme by using different functions and in any post and page by using di
 * Event overview including filters and pagination
 * Easy and fully documented integration
 * Mass operations on events (delete, set state)
+* Cloning of events
 * Event creation from post including content synchronization
+* [Comments for events](http://www.faebusoft.ch/webentwicklung/wp-calendar-1-4-0-freigegeben/)
 * Same authority checks as for post and pages
 * Supports special tags in post/page content and title
 * Many customization options
@@ -38,7 +50,7 @@ into any theme by using different functions and in any post and page by using di
 
 
 = Planned =
-* Repeating/Reccuring events (planned for 1.5.0)
+* Repeating/Reccuring events
 * Customer fields
 * Google Maps integration
 * Dashboard integration
@@ -132,9 +144,35 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 
 == Changelog ==
 
+= 1.5.0 Beta1 = 
+
+THIS IS A BETA VERSION. THE MAIN REASON FOR THIS IS, THAT I CHANGED ALL THE UNIX-TIMESTAMP BASED DATABASE FIELDS TO
+MYSQL DATETIME FIELDS. THIS WAS NECESSARY, BECAUSED I USED TIMESTAMPS IN A WRONG WAY (DID NOT CONVERT TO UTC!) WHICH
+CAUSED PROBLEMS WITH DAYLIGHT SAVING TIME ZONES!
+
+AS SOON YOU'RE UPDATING TO V1.5, ALL FIELDS ARE MIGRATED, THE OLD VALUES ARE STILL STORED. IT IS HIGHLY RECOMMENDED, THAT 
+YOU MAKE A FULL DATABASE BACKUP, JUST IN CASE SOMETHING GOES WRONG AND YOU HAVE TO REVERT BACK TO V1.4.X.
+
+I'M NOT RESPONSIBLE FOR ANY DATA LOSS!
+
+* FEATURE: Completely changed from unix timestamps to MySQL Date/Time because of problems with time zones
+* FEATURE: Filteroptions datefrom/dateto now supporting MySQL Datetime (YYYY-MM-DD HH:MM:SS). Timestamps are still supported.
+* FEATURE: Filteroptions datefrom/dateto supporting two keywords 'now' and 'today' and very basic arithmetic caluculations
+* FEATURE: iCalendar feed support
+* FEATURE: New option `truncate_more` for tag `event_description` the truncate the description part after the more-tag
+* FIXED: Settings link in plugin overview not working
+* FIXED: Some people getting DB errors when saving a new event
+* FIXED: Problem with timezones which have daylight saving 
+* FIXED: Wrong unicode character for back navigation in graphical calendar
+* FIXED: Editor not working anymore
+* FIXED: Events could not be deleted
+* FIXED: Filters not applied in admin interface when paginating
+* FIXED: Single event view page not highlighted correctly in page overview
+
 = 1.4.3 =
 * FIXED: Uninstall gives an error
 * FIXED: When adding a new post several functions are not working (tags, media, menu)
+* FIXED: Wrong uninstall hook
 
 = 1.4.2 =
 * FIXED: HTML Editor not working correctly

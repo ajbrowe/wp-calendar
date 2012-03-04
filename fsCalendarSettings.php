@@ -282,7 +282,7 @@ class fsCalendarSettings {
 				<li><a href="#fs_tab3"><?php _e('Event Page', fsCalendar::$plugin_textdom); ?></a></li>
 				<li><a href="#fs_tab4"><?php _e('Graphical calendar (FullCalendar)', fsCalendar::$plugin_textdom); ?></a></li>
 				<li><a href="#fs_tab5"><?php _e('Admin settings', fsCalendar::$plugin_textdom); ?></a></li>
-				<li><a href="#fs_tab9"><?php _e('Usage', fsCalendar::$plugin_textdom); ?></a></li>
+				<li><a href="#fs_tab9"><?php _e('Documentation', fsCalendar::$plugin_textdom); ?></a></li>
 				<li><a href="#fs_tab10"><?php _e('About', fsCalendar::$plugin_textdom); ?></a></li>
 			</ul>
 			<div id="fs_tab1">
@@ -498,7 +498,7 @@ class fsCalendarSettings {
 		}
 		?>
 		</select><br />
-		<input type="checkbox" value="1" name="fse_page_mark" id="fse_page_mark" <?php echo (get_option('fse_page_mark') == true ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_mark"><?php _e('Mark page in page overvie', fsCalendar::$plugin_textdom); ?></label><br />
+		<input type="checkbox" value="1" name="fse_page_mark" id="fse_page_mark" <?php echo (get_option('fse_page_mark') == true ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_mark"><?php _e('Mark page in page overview', fsCalendar::$plugin_textdom); ?></label><br />
 		<input type="checkbox" value="1" name="fse_page_hide" id="fse_page_hide" <?php echo (get_option('fse_page_hide') == true ? 'checked="checked" ' : ''); ?>/> <label for="fse_page_hide"><?php _e('Set page as hidden', fsCalendar::$plugin_textdom); ?></label>
 		<?php
 	}
@@ -828,8 +828,9 @@ fse_print_events(
 		</ul>
 		<p><?php _e('These constants are passed by the parameter <code>datemode</code>', fsCalendar::$plugin_textdom); ?>.</p>
 		</th></tr>
-		<tr><th><code>datefrom</code></th><td><?php _e('Current time', fsCalendar::$plugin_textdom); ?></td><td><?php _e('Timestamp of start time', fsCalendar::$plugin_textdom); ?>.</td></tr>
-		<tr><th><code>dateto</code></th><td>''</td><td><?php _e('Timestamp of end time', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>datefrom</code></th><td><?php _e('Current time', fsCalendar::$plugin_textdom); ?></td><td><?php _e('Timestamp or MySQL Datetime value (YYYY-MM-DD HH:MM:SS). Additionally the keywords <code>now</code> for the current time and <code>today</code> '.
+			'for the start of todays day are available. These two keyword can be extended by adding or subtracting hours (e.g. <code>today-24</code> for yesterday or <code>today+24</code>for the end of the current day). Other calculations are not supported, you can only add or subtract hours.', fsCalendar::$plugin_textdom); ?>.</td></tr>
+		<tr><th><code>dateto</code></th><td>''</td><td><?php _e('See documentation of <code>datefrom</code> above', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>datemode</code></th><td>FSE_DATE_MODE_ALL</td><td><?php _e('Use one of the above described constants', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>allday</code></th><td>-</td><td><?php _e('True or False to select eighter only allday or non-allday events', fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th colspan="3"><strong><?php _e('Date/Time filtering', fsCalendar::$plugin_textdom); ?></strong></th></tr>
@@ -846,7 +847,7 @@ fse_print_events(
 		<tr><th><code>{event_id; id=x}</code></th><td colspan="2"><?php _e("Explicitly loads an event by passing it's ID. <b>If no ID is specified the current ID is printed out</b>", fsCalendar::$plugin_textdom); ?>.</td></tr>
 		<tr><th><code>{event_subject}</code></th><td colspan="2"><?php _e("The event's subject", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_location}</code></th><td colspan="2"><?php _e("The event's location", fsCalendar::$plugin_textdom); ?></td></tr>
-		<tr><th><code>{event_description}</code></th><td colspan="2"><?php _e("The event's description", fsCalendar::$plugin_textdom); ?></td></tr>
+		<tr><th><code>{event_description; truncate_more=x}</code></th><td colspan="2"><?php _e("The event's description. If the parameter <code>truncate_more</code> ist set to true (1), the text after the &lt;!--more--&gt; is truncated.", fsCalendar::$plugin_textdom); ?></td></tr>
 		<tr><th><code>{event_startdate; fmt=x}</code></th><td colspan="2"><?php _e("The event's start date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />
 		<small><?php _e('Please refer to the php <a href="http://www.php.net/manual/function.date.php" target="_blank">date()</a> function for all valid parameters', fsCalendar::$plugin_textdom)?></small></td></tr>
 		<tr><th><code>{event_enddate; fmt=x; alwaysshowenddate=y; before=z}</code></th><td colspan="2"><?php _e("The event's end date; You can pass the parameter <code>fmt</code> to define a differing format", fsCalendar::$plugin_textdom); ?><br />

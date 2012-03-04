@@ -27,8 +27,8 @@ if (isset($_GET['action'])) {
 	}
 	
 	if (count($errors) == 0) {
-		$act1 = $_GET['action'];
-		$act2 = $_GET['action2'];
+		$act1 = (isset($_GET['action']) ? $_GET['action'] : '');
+		$act2 = (isset($_GET['action2'])? $_GET['action2'] : '');
 		if (!empty($act1))
 			$act = $act1;
 		elseif (!empty($act2))
@@ -37,6 +37,9 @@ if (isset($_GET['action'])) {
 			$act = '';
 		switch($act) {
 			case 'delete':
+				if (isset($_GET['event'])) {
+					$_GET['events'][] = $_GET['event'];
+				}
 				if (isset($_GET['events'])) {
 					$del_s = 0;
 					$del_e = 0;
@@ -48,11 +51,10 @@ if (isset($_GET['action'])) {
 							continue;
 						
 						if ($e->userCanDeleteEvent()) {
-							$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents '.' WHERE eventid='.$id;
-							if ($wpdb->query($sql) === false) {
-								$del_e++;
-							} else {
+							if ($e->delete()) {
 								$del_s++;
+							} else {
+								$del_e++;
 							}
 						} else {
 							$del_e++;
@@ -64,14 +66,6 @@ if (isset($_GET['action'])) {
 						$errors[] = __ngettext('No permission to delete event', 'No permission to delete events', $del_e, fsCalendar::$plugin_textdom);
 					} elseif (!empty($del_s) && !empty($del_e)) {
 						$errors[] = __('Some events could not be deleted because of missing permissions', fsCalendar::$plugin_textdom);
-					}
-				} else {
-					if ($e->userCanDeleteEvent()) {
-						$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents '.' WHERE eventid='.$e->eventid;
-						$wpdb->query($sql);
-						$success[] = __('Event successfully deleted', fsCalendar::$plugin_textdom);
-					} else {
-						$errors[] = __('No permission to delete event', fsCalendar::$plugin_textdom);
 					}
 				}
 				break;
@@ -88,21 +82,18 @@ if (isset($_GET['action'])) {
 							continue;
 						
 						if ($e->userCanEditEvent()) {
-							if ($act == 'publish')
-								$sql = 'UPDATE '.$wpdb->prefix.'fsevents '.' 
-										SET state="publish", publishauthor='.intval($user_ID).', publishdate='.time().' 
-										WHERE eventid='.$id;
-							else
-								$sql = 'UPDATE '.$wpdb->prefix.'fsevents '.' 
-										SET state="draft", publishauthor=NULL, publishdate=NULL  
-										WHERE eventid='.$id;
+							if ($act == 'publish') {
+								$ret = $e->setStatePublished();
+							} else {
+								$ret = $e->setStateDraft();
+							}
 							
 							$ret = $wpdb->query($sql);
 								
-							if ($ret === false) {
-								$c_e++;
-							} elseif ($ret > 0) {
+							if ($ret === true) {
 								$c_s++;
+							} else {
+								$c_e++;
 							}
 						} else {
 							$c_e++;
@@ -155,47 +146,49 @@ if ($dbver < FSE_DB_VERSION) {
 	
 	$filter = array();
 	
+	$link_actions = '';
+	
 	$filter_stat = (isset($_GET['event_status']) ? $_GET['event_status'] : '');
 	if (isset(fsCalendar::$valid_states[$filter_stat])) {
 		$filter['state'] = $filter_stat;
-		$link_actions = 'event_status='.$filter['state'].'&amp;';
+		$link_actions .= 'event_status='.$filter['state'].'&amp;';
 	}
 	
 	$filter_author = (isset($_GET['event_author']) ? intval($_GET['event_author']) : 0);
 	$user = new WP_User($filter_author);
 	if (!empty($user->data->ID)) {
 		$filter['author'] = $filter_author;
-		$link_actions = 'event_author='.$filter['author'].'&amp;';
+		$link_actions .= 'event_author='.$filter['author'].'&amp;';
 	}
 	
 	$filter_category = (isset($_GET['event_category']) ? intval($_GET['event_category']) : 0);
 	if (!empty($filter_category)) {
 		$filter['categories'] = array($filter_category);
-		$link_actions = 'event_category='.$filter_category.'&amp;';
+		$link_actions .= 'event_category='.$filter_category.'&amp;';
 	}
 		
 	$filter_date = (isset($_GET['event_start']) ? intval($_GET['event_start']) : 0); // 0 -> Future dates only!
 	if ($filter_date > 0) {
-		$m = fsCalendar::date('m', $filter_date);
-		$y = fsCalendar::date('Y', $filter_date);
+		$m = date('m', $filter_date);
+		$y = date('Y', $filter_date);
 		$filter['datefrom'] = mktime(0, 0, 0, $m, 1, $y);
 		$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
-		$link_actions = 'event_start='.$filter_date.'&amp;';
+		$link_actions .= 'event_start='.$filter_date.'&amp;';
 	// Only Future dates
 	} elseif ($filter_date == 0) {
 		$filter['datefrom'] = time();
 		//$filter['datemode'] = FSE_DATE_MODE_END;
 		//$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
-		$link_actions = 'event_start='.$filter_date.'&amp;';
+		$link_actions .= 'event_start='.$filter_date.'&amp;';
 	} elseif ($filter_date == -1) {
 		// No time filter
-		$link_actions = 'event_start='.$filter_date.'&amp;';
+		$link_actions .= 'event_start='.$filter_date.'&amp;';
 	}
 	
 	$sort = (isset($_GET['event_sort']) ? $_GET['event_sort'] : '');
 	$sortstring = '';
-	if (in_array($sort, array('subject', 'author', 'tsfrom', 'location'))) {
-		$sortstring = $sort;
+	if (in_array($sort, array('subject', 'author', 'from', 'location'))) {
+		$sortstring = '`'.$sort.'`';
 		$sortdir = $_GET['event_sortdir'];
 		if (in_array($sortdir, array('ASC', 'DESC'))) {
 			$sortstring .= ' '.$sortdir;
@@ -203,10 +196,10 @@ if ($dbver < FSE_DB_VERSION) {
 			$sortdir = 'ASC';
 		}
 	} else {
-		$sort = 'tsfrom';
+		$sort = 'from';
 		$sortdir = 'DESC';
 		
-		$sortstring = 'tsfrom DESC';
+		$sortstring = '`from` DESC';
 	}
 	
 	// Create Link for transporting filter actions!
@@ -232,7 +225,7 @@ if ($dbver < FSE_DB_VERSION) {
 	}
 	
 	// Get Events per Page
-	$epp = 20;
+	$epp = 5;
 	
 	if ($event_count > $epp) {
 		if (isset($_GET['paged'])) {
@@ -286,9 +279,9 @@ if ($dbver < FSE_DB_VERSION) {
 				<th id="author" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('author');">
 					<?php _e('Author', fsCalendar::$plugin_textdom);?></a>
 					<?php if ($sort == 'author') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
-				<th id="from" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('tsfrom');">
+				<th id="from" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('from');">
 					<?php _e('Date', fsCalendar::$plugin_textdom);?></a>
-					<?php if ($sort == 'tsfrom') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+					<?php if ($sort == 'from') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 				<th id="to" class="manage-column" scope="col"><?php _e('Time', fsCalendar::$plugin_textdom);?></th>
 				<th id="location" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('location');">
 					<?php _e('Location', fsCalendar::$plugin_textdom);?></a>
@@ -428,7 +421,7 @@ if ($dbver < FSE_DB_VERSION) {
 					?>
 					</td>
 					<td><?php echo esc_attr(fsCalendar::$valid_states[$e->state]); ?> <?php _e('on', fsCalendar::$plugin_textdom) ?><br />
-					<?php echo fsCalendar::date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
+					<?php echo mysql2date('d.m.Y H:i:s', ($e->state == 'publish' ? $e->publishdate : $e->createdate)); ?><br /></td>
 				</tr>
 				<?php
 				}

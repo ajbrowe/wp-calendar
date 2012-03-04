@@ -30,6 +30,27 @@ function fse_get_events($args = array()) {
 	return $fsCalendar->getEventsExternal($args);
 }
 
+function fse_get_ical_feed_url($categories = '') {
+	$url = get_bloginfo('url');
+	if ($url[strlen($url)-1] != '/') { $url .= '/'; }
+	$url .= 'feed/ical';
+	if (!empty($categories)) {
+		$url .= '?categories='.urlencode($categories);
+	}
+	return $url;
+}
+
+function fse_print_events_feed($args = array()) {
+	global $fsCalendar;
+	
+	$feed = $fsCalendar->getEventsFeed($args);
+	header("Content-Type: text/Calendar");
+    header("Content-Disposition: inline; filename=icalfeed.ics");
+    //echo '<pre>';
+	echo $feed;
+	//echo '</pre>';
+}
+
 function the_event_id() {
 	echo get_the_event_id();
 }

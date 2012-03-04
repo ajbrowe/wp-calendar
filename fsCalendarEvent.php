@@ -5,8 +5,8 @@ class fsEvent {
 	var $subject;
 	var $location; 
 	var $description;
-	var $tsfrom;
-	var $tsto;
+	var $from;
+	var $to;
 	var $allday;
 	var $author;
 	var $createdate;
@@ -59,6 +59,10 @@ class fsEvent {
 		else
 			$sql = 'SELECT * FROM '.$wpdb->prefix.'fsevents '.' WHERE eventid='.$this->eventid;
 		
+		if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
+			echo '<p>'.$sql.'</p>';
+		}
+			
 		$ret = $wpdb->get_row($sql, OBJECT);
 		
 		if ($ret == NULL) {
@@ -71,16 +75,23 @@ class fsEvent {
 		$this->subject = $ret->subject;
 		$this->location = $ret->location;
 		$this->description = $ret->description;
-		$this->tsfrom = $ret->tsfrom;
-		$this->tsto = $ret->tsto;
+		
+		$this->from = $ret->from;
+		$this->to = $ret->to;
+		
 		$this->allday = ($ret->allday == true ? true : false);
 		$this->author = $ret->author;
 		$this->publishauthor = $ret->publishauthor;
-		$this->createdate = $ret->createdate;
-		$this->publishdate = $ret->publishdate;
+		$this->createdate = $ret->createdaten;
+		$this->publishdate = $ret->publishdaten;
 		$this->state = $ret->state;
 		
-		$this->categories = $wpdb->get_col('SELECT catid FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid);
+		$sql = 'SELECT catid FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid;
+		if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
+			echo '<p>'.$sql.'</p>';
+		}
+			
+		$this->categories = $wpdb->get_col($sql);
 		
 		foreach($this as $k => $v) {
 			if (is_string($v)) {
@@ -120,10 +131,10 @@ class fsEvent {
 		}
 		
 		if ($admin_fields) {
-			$this->date_admin_from = fsCalendar::date_i18n($this->date_admin_format, $this->tsfrom);
-			$this->date_admin_to   = fsCalendar::date_i18n($this->date_admin_format, $this->tsto);
-			$this->time_admin_from = fsCalendar::date_i18n($this->time_admin_format, $this->tsfrom);
-			$this->time_admin_to   = fsCalendar::date_i18n($this->time_admin_format, $this->tsto);
+			$this->date_admin_from = mysql2date($this->date_admin_format, $this->from);
+			$this->date_admin_to   = mysql2date($this->date_admin_format, $this->to);
+			$this->time_admin_from = mysql2date($this->time_admin_format, $this->from);
+			$this->time_admin_to   = mysql2date($this->time_admin_format, $this->to);
 		}
 	}	
 
@@ -164,7 +175,7 @@ class fsEvent {
 	 * @return String Formatted date string
 	 */
 	function getStart($fmt = '', $mode = 1) {
-		if (empty($this->tsfrom))
+		if (empty($this->from) || $this->from == '0000-00-00 00:00:00')
 			return '';
 			
 		if (empty($fmt)) {
@@ -181,7 +192,7 @@ class fsEvent {
 			}
 		}
 		
-		return fsCalendar::date_i18n($fmt, $this->tsfrom);
+		return mysql2date($fmt, $this->from);
 	}
 	
 	/**
@@ -191,7 +202,7 @@ class fsEvent {
 	 * @return String Formatted date string
 	 */
 	function getEnd($fmt = '', $mode = 1) {
-		if (empty($this->tsto))
+		if (empty($this->to) || $this->to == '0000-00-00 00:00:00')
 			return '';
 			
 		if (empty($fmt)) {
@@ -208,11 +219,15 @@ class fsEvent {
 			}
 		}
 		
-		return fsCalendar::date_i18n($fmt, $this->tsto);
+		return mysql2date($fmt, $this->to);
 	}
 	
-	function getDescription() {
-		return apply_filters('the_content', $this->description);
+	function getDescription($truncate_more = false) {
+		$desc = $this->description;
+		if ($truncate_more == true) {
+			list($desc, $dummy) = explode('<!--more-->', $this->description, 2);
+		}
+		return apply_filters('the_content', $desc);
 	}
 	
 	function userCanPublishEvent() {
@@ -220,7 +235,7 @@ class fsEvent {
 		if (empty($this->eventid))
 			return true;
 		
-		$ret = $this->userCanEditEvent($e);
+		$ret = $this->userCanEditEvent();
 		if ($ret == false)
 			return false;
 		else
@@ -346,14 +361,17 @@ class fsEvent {
 		$td = fse_ValidateDate($this->date_admin_to, $this->date_admin_format, true);
 		$tt = fse_ValidateTime($this->time_admin_to, true);
 		
-		$ts_from = mktime($ft['h'], $ft['m'], 0, $fd['m'], $fd['d'], $fd['y']);
-		$ts_to   = mktime($tt['h'], $tt['m'], 0, $td['m'], $td['d'], $td['y']);
+		$from = date('Y-m-d H:i:s', mktime($ft['h'], $ft['m'], 0, $fd['m'], $fd['d'], $fd['y']));
+		$to   = date('Y-m-d H:i:s', mktime($tt['h'], $tt['m'], 0, $td['m'], $td['d'], $td['y']));
+				
+		//$ts_from = mktime($ft['h'], $ft['m'], 0, $fd['m'], $fd['d'], $fd['y']);
+		//$ts_to   = mktime($tt['h'], $tt['m'], 0, $td['m'], $td['d'], $td['y']);
 		
 		if (empty($this->state)) {
 			$this->state = 'draft';
 		}
 		
-		if ($ts_from > $ts_to) {
+		if ($from > $to) {
 			$errors[] = __('End is before start', fsCalendar::$plugin_textdom);
 		}
 		
@@ -366,26 +384,27 @@ class fsEvent {
 			// Check authority
 			if ($this->userCanEditEvent()) {
 				$sql = $wpdb->prepare("UPDATE ".$wpdb->prefix.'fsevents '."
-					SET subject=%s, tsfrom=$ts_from, tsto=$ts_to, allday=%d, description=%s, location=%s, state=%s, 
-					updatedbypost=%d 
-					WHERE eventid=$this->eventid",
-		        	$this->subject, ($this->allday == true ? 1 : 0), $this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
+					SET `subject`=%s, `from`=%s, `to`=%s, `allday`=%d, `description`=%s, `location`=%s, `state`=%s, 
+					`updatedbypost`=%d 
+					WHERE `eventid`=$this->eventid",
+		        	$this->subject, $from, $to, ($this->allday == true ? 1 : 0), $this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
 			} else {
 				$errors[] = __('No permission to edit event', fsCalendar::$plugin_textdom);
 			}
 		} else {
 			if ($fsCalendar->userCanAddEvents()) {
-				$time = time();
+				$now = get_date_from_gmt(date('Y-m-d H:i:s'));
 				
 				if (empty($this->postid))
 					$postid = 'NULL';
 				else
 					$postid = intval($this->postid);
 				
+					
 				$sql = $wpdb->prepare("INSERT INTO ".$wpdb->prefix.'fsevents '."
-					(subject, tsfrom, tsto, allday, description, location, author, createdate, state, postid, updatedbypost)
-					VALUES (%s, $ts_from, $ts_to, %d, %s, %s, $user_ID, $time, %s, $postid, %d)", 
-		        	$this->subject, ($this->allday == true ? 1 : 0), $this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
+					(`subject`, `from`, `to`, `allday`, `description`, `location`, `author`, `createdaten`, `state`, `postid`, `updatedbypost`)
+					VALUES (%s, %s, %s, %d, %s, %s, $user_ID, %s, %s, $postid, %d)", 
+		        	$this->subject, $from, $to, ($this->allday == true ? 1 : 0), $this->description, $this->location, $now, $this->state, ($this->updatedbypost == true ? 1 : 0));
 			} else {
 				$errors[] = __('No permission to create event', fsCalendar::$plugin_textdom);
 			}
@@ -396,12 +415,16 @@ class fsEvent {
 			return $errors;
 		}
 		
+		if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
+			echo '<p>'.$sql.'</p>';
+		}
+		
         if ($wpdb->query($sql) !== false) {
         	if ($this->eventid <= 0) {
 	        	$this->eventid = $wpdb->insert_id;
 	        	
 	        	$this->author = $user_ID;
-	        	$this->createdate = $time;
+	        	$this->createdate = $now;
 	        	
 	        	$u = new WP_User($user_ID);
 	        	$this->author_t = $u->display_name;
@@ -413,7 +436,7 @@ class fsEvent {
         	}
         	
         	// Handle categories
-        	$ret_cats = $wpdb->get_col('SELECT catid FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid);
+        	$ret_cats = $wpdb->get_col('SELECT `catid` FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid);
         	if (!is_array($ret_cats)) {
         		$ret_cats = array();
         	}
@@ -428,14 +451,13 @@ class fsEvent {
         	// Remove old
         	foreach($ret_cats as $c) {
         		if (!in_array($c, $this->categories)) {
-        			$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents_cats WHERE eventid='.$this->eventid.' AND catid='.$c;
+        			$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents_cats WHERE `eventid`='.$this->eventid.' AND `catid`='.$c;
         			$wpdb->query($sql);
         		}
         	}
         	return true;
         	
         } else {
-        	$errors[] = $sql;
         	$errors[] = __('DB Error', fsCalendar::$plugin_textdom);
         	return $errors;
         }
@@ -444,7 +466,7 @@ class fsEvent {
 	/**
 	 * Publishes the current event
 	 * @use To check the result compare it with true using === (3!)
-	 * @return True, if successfull or an array of error messages
+	 * @return True, if successfull or an error message
 	 */
 	function setStatePublished() {
 		global $user_ID;
@@ -457,13 +479,19 @@ class fsEvent {
 			return __('No permission to edit event', fsCalendar::$plugin_textdom);
 		}
 		
-		$time = time();
-		if ($wpdb->query('UPDATE '.$wpdb->prefix.'fsevents '.' 
-						  SET state="publish", publishauthor="'.intval($user_ID).'", publishdate='.$time.' 
-						  WHERE eventid='.$this->eventid) !== false) {
+		$publishdate = get_date_from_gmt(date('Y-m-d H:i:s'));
+		
+		$sql = 'UPDATE '.$wpdb->prefix.'fsevents '.' 
+						  SET `state`="publish", `publishauthor`="'.intval($user_ID).'", `publishdaten`="'.$publishdate.'" 
+						  WHERE `eventid`='.$this->eventid;
+		if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
+			echo '<p>'.$sql.'</p>';
+		}
+		
+		if ($wpdb->query($sql) !== false) {
 			$this->state = 'publish';
 			$this->publishauthor = $user_ID;
-			$this->publishdate   = $time;
+			$this->publishdate   = $publishdate;
 			$u = new WP_User($user_ID);
 			$this->publishauthor_t = $u->display_name;
 			unset($u);
@@ -477,7 +505,7 @@ class fsEvent {
 	/**
 	 * Publishes the current event
 	 * @use To check the result compare it with true using === (3!)
-	 * @return True, if successfull or an array of error messages
+	 * @return True, if successfull or an error message
 	 */
 	function setStateDraft() {
 		global $user_ID;
@@ -490,9 +518,15 @@ class fsEvent {
 			return __('No permission to edit event', fsCalendar::$plugin_textdom);
 		}
 		
-		if ($wpdb->query('UPDATE '.$wpdb->prefix.'fsevents '.' 
-					  SET state="draft", publishdate=NULL, publishauthor=NULL 
-					  WHERE eventid='.$this->eventid) !== false) {
+		$sql = 'UPDATE '.$wpdb->prefix.'fsevents '.' 
+					  SET `state`="draft", `publishdaten`=NULL, `publishauthor`=NULL 
+					  WHERE `eventid`='.$this->eventid;
+		
+		if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
+			echo '<p>'.$sql.'</p>';
+		}
+		
+		if ($wpdb->query($sql) !== false) {
 			$this->state = 'draft';
 			$this->publishauthor = '';
 			$this->publishauthor_t = '';
@@ -510,12 +544,24 @@ class fsEvent {
 		global $wpdb;
 		if ($this->updatedbypost) {
 			$sql = $wpdb->prepare("UPDATE ".$wpdb->prefix.'fsevents '."
-				SET updatedbypost=0 
-				WHERE eventid=$this->eventid");
+				SET `updatedbypost`=0 
+				WHERE `eventid`=$this->eventid");
+			
+			if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
+				echo '<p>'.$sql.'</p>';
+			}
+			
 			$wpdb->query($sql);
 			
 			$this->updatedbypost = false;
 		}
+	}
+	
+	function delete() {
+		global $wpdb;
+		$sql = 'DELETE FROM '.$wpdb->prefix.'fsevents '.' WHERE `eventid`='.$this->eventid;
+
+		return ($wpdb->query($sql) === false ? false : true);
 	}
 }
 ?>

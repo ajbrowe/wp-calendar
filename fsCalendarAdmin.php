@@ -131,14 +131,19 @@ class fsCalendarAdmin {
 		if ($editor) {
 			if (!isset($_GET['action']) || $_GET['action'] != 'view') {
 				wp_enqueue_script('post');
-				if (user_can_richedit()) {
+				if (user_can_richedit() && !function_exists('wp_editor')) {
 					wp_enqueue_script('editor');
 					wp_enqueue_script('word-count');
 					add_thickbox();
 					wp_enqueue_script('media-upload');
 					
 					add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
-					add_action( 'admin_print_footer_scripts', 'wp_tiny_mce_preload_dialogs', 30 );
+					
+					if (function_exists('wp_preload_dialogs')) { // WP 3.2
+						add_action( 'admin_print_footer_scripts', 'wp_preload_dialogs', 30 );
+					} else {
+						add_action( 'admin_print_footer_scripts', 'wp_preload_dialogs', 30 );
+					}
 					//wp_enqueue_script('quicktags');
 				}
 			}
@@ -164,9 +169,12 @@ class fsCalendarAdmin {
 			$datepicker = true;
 		} elseif (strpos($_SERVER['REQUEST_URI'], 'wp-cal-settings') > 0) {
 			$tabs = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'post_type=page') > 0) {
+			
 		} else {
 			return;
 		}
+		
 		wp_enqueue_style('fs-styles', fsCalendar::$plugin_css_url.'default.css');
 		wp_enqueue_style('wp-calendar', fsCalendar::$plugin_css_url.'wpcalendar.css');
 		
@@ -192,7 +200,7 @@ class fsCalendarAdmin {
 	 */
 	function hookAddPlugInSettingsLink($links, $file) {
 		if ($file == fsCalendar::$plugin_filename) {
-			array_unshift($links, '<a href="options-general.php?page='.$file.'&amp;action=settings">'.__('Settings', fsCalendar::$plugin_textdom).'</a>');
+			array_unshift($links, '<a href="options-general.php?page=wp-cal-settings">'.__('Settings', fsCalendar::$plugin_textdom).'</a>');
 		}
 		return $links;
 	}
@@ -369,7 +377,9 @@ class fsCalendarAdmin {
 		$active   = (isset($_SESSION['fse_postdata']['fseventactive']) && $_SESSION['fse_postdata']['fseventactive'] == true);
 		$sync     = (isset($_SESSION['fse_postdata']['fseventsync']) && $_SESSION['fse_postdata']['fseventsync'] == true);
 		
-		unset($_SESSION['fse_postdata']);
+		if (isset($_SESSION)) {
+			unset($_SESSION['fse_postdata']);
+		}
 		
 		// Create event?
 		if (empty($evt->eventid)) {
@@ -636,6 +646,7 @@ class fsCalendarAdmin {
 	function printNavigationBar($filter = array(), $part = 1, $page = 1, $epp = 20, $count = 0, $bl = '') {
 		global $wpdb;
 		global $fsCalendar;
+		print_r($filter);
 		?>
 		<div class="tablenav">
 			<div class="alignleft actions">
@@ -655,22 +666,22 @@ class fsCalendarAdmin {
 				</select>
 				<input id="doaction<?php echo $part; ?>" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
 				<?php if ($part == 1) {?>
-					<select name="event_start">
+					<select name="	">
 					<option value="-1"<?php echo (!isset($filter['datefrom']) ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
 					<option value="0"<?php echo (isset($filter['datefrom']) && !isset($filter['dateto']) ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
 					<?php 
-					$min = $wpdb->get_var('SELECT MIN(tsfrom) AS min FROM '.$wpdb->prefix.'fsevents');
-					$max = $wpdb->get_var('SELECT MAX(tsto)   AS max FROM '.$wpdb->prefix.'fsevents');
+					$min = $wpdb->get_var('SELECT MIN(from) AS min FROM '.$wpdb->prefix.'fsevents');
+					$max = $wpdb->get_var('SELECT MAX(to)   AS max FROM '.$wpdb->prefix.'fsevents');
 					if ($min != NULL && $max != NULL) {
-						$ms = fsCalendar::date('m', $min);
-						$ys = fsCalendar::date('Y', $min);
-						$me = fsCalendar::date('m', $max);
-						$ye = fsCalendar::date('Y', $max);
+						$ms = mysql2date('m', $min);
+						$ys = mysql2date('Y', $min);
+						$me = mysql2date('m', $max);
+						$ye = mysql2date('Y', $max);
 						
 						while($ys <= $ye) {
 							while($ms<=12 && ($ys < $ye || $ms <= $me)) {
 								$time = mktime(0, 0, 0, $ms, 1, $ys);
-								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.fsCalendar::date_i18n('F Y', $time).'</option>';
+								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date_i18n('F Y', $time).'</option>';
 								$ms++;
 							}
 							$ms = 1;
@@ -849,14 +860,14 @@ function fse_ValidateDate($date, $fmt, $ret_sep = false) {
 	// Validate date by creating it. If the day changes, the date is
 	// invalid
 	$ts = mktime(0,0,0,$month, $day, $year);
-	if (intval(fsCalendar::date('d', $ts)) <> $day) {
+	if (intval(date('d', $ts)) <> $day) {
 		return false;
 	}
 	
 	if ($ret_sep == true) {
 		return array('d'=>$day, 'm'=>$month, 'y'=>$year);
 	} else {
-		return fsCalendar::date_i18n($fmt, $ts);
+		return date_i18n($fmt, $ts);
 	}
 }
 

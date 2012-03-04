@@ -6,7 +6,7 @@ $steps = 15; // TODO: In Options page
 $add_min = 20;
 $add_hour = 1;
 
-$action = $_GET['action'];
+$action = (isset($_GET['action']) ? $_GET['action'] : '');
 
 $fatal = $errors = $success = array();
 
@@ -102,7 +102,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 					$action = 'edit';
 				}
 			} else {
-				$errors = $res;
+				$errors[] = $res;
 			}
 		} // End Save
 		
@@ -117,7 +117,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 					$success[] = __("Automatically switched to view mode beacause you don't have permissions to edit a published event", fsCalendar::$plugin_textdom);
 				}
 			} else {
-				$errors = $res;
+				$errors[] = $res;
 			}
 		}
 		
@@ -127,7 +127,7 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 					if (($res = $evt->setStateDraft()) === true) {
 						$success[] = __('Event set to draft state', fsCalendar::$plugin_textdom);
 					} else {
-						$errors = $res;
+						$errors[] = $res;
 					}
 					break;
 				case 'nosync':
@@ -139,12 +139,11 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 	} else {
 		if ($evt->eventid == 0 && !$copy) {
 			// Calculate date and time
-			$current = time();
-			$day = fsCalendar::date('d', $current);
-			$mon = fsCalendar::date('m', $current);
-			$yea = fsCalendar::date('Y', $current);
-			$std = fsCalendar::date('H', $current);
-			$min = fsCalendar::date('i', $current);
+			$day = date('d');
+			$mon = date('m');
+			$yea = date('Y');
+			$std = date('H');
+			$min = date('i');
 			
 			// No changes
 			if ($min > 0) {
@@ -154,8 +153,8 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 				}
 				$current = mktime($std, $min, 0, $mon, $day, $yea);
 			}
-			$evt->date_admin_from = fsCalendar::date_i18n($evt->date_admin_format, $current);
-			$evt->time_admin_from = fsCalendar::date_i18n($evt->time_admin_format, $current);
+			$evt->date_admin_from = date_i18n($evt->date_admin_format, $current);
+			$evt->time_admin_from = date_i18n($evt->time_admin_format, $current);
 			
 			// End date/time
 			$min += $add_min;
@@ -165,8 +164,8 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 			}
 			$std += $add_hour;
 			$future = mktime($std, $min, 0, $mon, $day, $yea);
-			$evt->date_admin_to = fsCalendar::date_i18n($evt->date_admin_format, $future);
-			$evt->time_admin_to = fsCalendar::date_i18n($evt->time_admin_format, $future);
+			$evt->date_admin_to = date_i18n($evt->date_admin_format, $future);
+			$evt->time_admin_to = date_i18n($evt->time_admin_format, $future);
 			$evt->allday    = false;
 			
 			
@@ -281,13 +280,13 @@ if ($dbver < FSE_DB_VERSION) {
 							<?php _e('Created by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->author_t) ? '-' : esc_attr($evt->author_t)); ?></span>
 						</div>
 						<div class="misc-pub-section">
-							<?php _e('Created', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->createdate) : '-'); ?></span>
+							<?php _e('Created', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->createdate) ? mysql2date($evt->date_time_format, $evt->createdate) : '-'); ?></span>
 						</div>
 						<div class="misc-pub-section">
 							<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
 						</div>
 						<div class="misc-pub-section">
-							<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? fsCalendar::date_i18n($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
+							<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? mysql2date($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
 						</div>
 						<?php 
 						if ($action != 'view' && $evt->updatedbypost == true) {
@@ -363,9 +362,18 @@ if ($dbver < FSE_DB_VERSION) {
 					<div id="postdiv" class="postarea"><?php echo apply_filters('the_content', $evt->description); ?></div>
 					<input type="hidden" name="event_desc" value="<?php echo esc_attr($evt->description); ?>" />
 				<?php } else { ?>
-					<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-					<?php the_editor($evt->description, 'content'); // This has a parameter for TABINDEX ?>
-					</div>
+					<?php
+					if (function_exists('wp_editor')) { // WP 3.3+
+						wp_editor( $evt->description, 'content' );
+					} else {
+					?>
+						<div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
+						<?php the_editor($evt->description, 'content'); // This has a parameter for TABINDEX ?>
+						</div>
+					<?php
+					}
+					?> 
+
 				<?php } ?>
 			</div>
 		</div>
