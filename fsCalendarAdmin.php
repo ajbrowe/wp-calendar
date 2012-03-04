@@ -647,7 +647,7 @@ class fsCalendarAdmin {
 	function printNavigationBar($filter = array(), $part = 1, $page = 1, $epp = 20, $count = 0, $bl = '') {
 		global $wpdb;
 		global $fsCalendar;
-		print_r($filter);
+		
 		?>
 		<div class="tablenav">
 			<div class="alignleft actions">
