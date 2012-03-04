@@ -309,7 +309,8 @@ class fsCalendarAdmin {
 	function hookSendDBUpdateNotice() {
 		$dbver = get_option('fse_db_version', -1);
 		if ($dbver < FSE_DB_VERSION) {
-			echo "<div class='updated'><p>".__('The database of <i>WP Calendar</i> has changed. Please <a href="'.get_admin_url().'plugins.php?s=wp%20calendar">reactivate</a> (deactivate and activate) the plugin to upgrade your database structure.')."</p></div>";
+			echo "<div class='updated'><p>".__('The database of <i>WP Calendar</i> has changed. Please <a href="'.get_admin_url().'plugins.php?s=wp%20calendar">reactivate</a> (deactivate and activate) the plugin to upgrade your database structure.')."</p>".
+			'<p>It is <b>highly</b> recommended to make a full backup of your database tables! The developer is not responsible for any data loss!</p>'."</div>";
 		}
 	}
 	
