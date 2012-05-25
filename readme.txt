@@ -138,6 +138,7 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 = 1.5.0 =
 * FIXED: Filter in Admin Interface not working
 * FIXED: Content lost, after chanigng synchornized post to draft
+* FIXED: Create tables in same collation as WP
 
 = 1.5.0 Beta1 = 
 

@@ -1849,6 +1849,13 @@ class fsCalendar {
 
 	 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
+		$charset_collate = '';
+	
+		if ( ! empty($wpdb->charset) )
+			$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+			$charset_collate .= " COLLATE $wpdb->collate";
+	 	
 	 	$sql = "CREATE TABLE `".$wpdb->prefix."fsevents` (
 			`eventid` INT NOT NULL AUTO_INCREMENT,
 			`subject` VARCHAR(255) NOT NULL,
@@ -1872,7 +1879,7 @@ class fsCalendar {
 			`updatedbypost` TINYINT NOT NULL DEFAULT '0',
 			PRIMARY KEY  (`eventid`),
 			KEY `postid` (`postid`)
-			);";
+			) $charset_collate;";
 
 	 	dbDelta($sql);
 
@@ -1880,7 +1887,7 @@ class fsCalendar {
 			`eventid` INT NOT NULL,
 			`catid` BIGINT NOT NULL,
 			PRIMARY KEY  (`eventid`, `catid`)
-			);";
+			) $charset_collate;";
 
 	 	dbDelta($sql);
 
