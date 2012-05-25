@@ -225,7 +225,7 @@ if ($dbver < FSE_DB_VERSION) {
 	}
 	
 	// Get Events per Page
-	$epp = 5;
+	$epp = 20;
 	
 	if ($event_count > $epp) {
 		if (isset($_GET['paged'])) {

@@ -4,19 +4,10 @@ Tags: calendar, events, post, wp calendar, event, event calendar, termin, kalend
 Donate link: http://www.faebusoft.ch/webentwicklung/wpcalendar/
 Requires at least: 3.1
 Tested up to: 3.3
-Stable tag: 1.5.0_Beta1b
+Stable tag: 1.5.0
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
-
-THIS IS A BETA VERSION. THE MAIN REASON FOR THIS IS, THAT I CHANGED ALL THE UNIX-TIMESTAMP BASED DATABASE FIELDS TO
-MYSQL DATETIME FIELDS. THIS WAS NECESSARY, BECAUSED I USED TIMESTAMPS IN A WRONG WAY (DID NOT CONVERT TO UTC!) WHICH
-CAUSED PROBLEMS WITH DAYLIGHT SAVING TIME ZONES!
-
-AS SOON YOU'RE UPDATING TO V1.5, ALL FIELDS ARE MIGRATED, THE OLD VALUES ARE STILL STORED. IT IS HIGHLY RECOMMENDED, THAT 
-YOU MAKE A FULL DATABASE BACKUP, JUST IN CASE SOMETHING GOES WRONG AND YOU HAVE TO REVERT BACK TO V1.4.X.
-
-I'M NOT RESPONSIBLE FOR ANY DATA LOSS!
 
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 The whole usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 

@@ -5,9 +5,9 @@
  Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
  Author: Fabian von Allmen
  Author URI: http://www.faebusoft.ch
- Version: 1.5.0 Beta 1
+ Version: 1.5.0
  License: GPL
- Last Update: 2011-03-27
+ Last Update: 2012-05-25
  */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
