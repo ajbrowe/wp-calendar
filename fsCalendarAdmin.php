@@ -211,7 +211,7 @@ class fsCalendarAdmin {
 	 */
 	function hookAddPostCalendarBox() {
 		add_meta_box('wpcalevent', 
-					 __('WP Calendar Event', fsCalendar::$plugin_textdom),
+					 __('Calendar Event', fsCalendar::$plugin_textdom),
 					 array(&$this, 'createCalendarPostEventBox'),
 					 'post',
 					 'side');
@@ -403,11 +403,11 @@ class fsCalendarAdmin {
 		} else {
 			
 			if (!$fsCalendar->userCanEditEvents()) {
-				echo '<p>'.__('This post is linked to an WP Calendar event, but you do not have the permission to edit this event', fsCalendar::$plugin_textdom).'.</p>';
+				echo '<p>'.__('This post is linked to a calendar event, but you do not have the permission to edit this event', fsCalendar::$plugin_textdom).'.</p>';
 				return;
 			}
 			
-			echo '<p>'.__('This post is linked to a WP Calendar Event. To jump to your WP Calender click '.
+			echo '<p>'.__('This post is linked to a calendar event. To jump to your calender event click '.
 			'<a href="admin.php?page='.fsCalendar::$plugin_filename.'&amp;action=edit&amp;event='.esc_attr($evt->eventid).'">here</a>', fsCalendar::$plugin_textdom).'.</p>';
 			if ($evt->updatedbypost) {
 				echo '<p>'.__('The events subject, description and categories are automatically updated when the post is saved', fsCalendar::$plugin_filename).'.<br />'.
@@ -431,6 +431,29 @@ class fsCalendarAdmin {
 		echo $this->postBoxDateAndTime($evt);
 		echo '</div>';
 		echo '</div>';
+		
+		?>
+		<div class="border">x</div>
+			<div id="minor-publishing">
+				<div id="misc-publishing-actions">
+					<div class="misc-pub-section">
+						<?php _e('State', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display">
+						<?php echo fsCalendar::$valid_states[$evt->state]; ?></span>
+						<?php if ($evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
+						<a class="hide-if-no-js" href="" onClick="document.forms['event'].jsaction.value='draft'; document.forms['event'].submit(); return false;"><?php _e('Change to Draft', fsCalendar::$plugin_textdom)?></a>
+						<?php } ?>
+					</div>
+					<div class="misc-pub-section">
+						<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
+					</div>
+					<div class="misc-pub-section">
+						<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? mysql2date($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
+					</div>
+				</div>
+				<div class="clear"/></div>
+			</div>
+		<?php 
+		
 		//echo '</div>';
 	}
 	
@@ -667,7 +690,7 @@ class fsCalendarAdmin {
 				</select>
 				<input id="doaction<?php echo $part; ?>" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
 				<?php if ($part == 1) {?>
-					<select name="	">
+					<select name="event_start">
 					<option value="-1"<?php echo (!isset($filter['datefrom']) ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
 					<option value="0"<?php echo (isset($filter['datefrom']) && !isset($filter['dateto']) ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
 					<?php 

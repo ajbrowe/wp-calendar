@@ -352,6 +352,16 @@ if ($dbver < FSE_DB_VERSION) {
 								<?php _e('Edit', fsCalendar::$plugin_textdom);?> | 
 							<?php } ?> 
 						</span>
+						<?php if (!empty($e->postid)) { ?>
+						<span class="editpost">
+							<?php if ($e->userCanEditEvent()) { ?>
+							<a title="<?php _e('Edit post', fsCalendar::$plugin_textdom); ?>" 
+								href="<?php echo get_edit_post_link($e->postid); ?>"><?php _e('Edit Post', fsCalendar::$plugin_textdom);?></a> |
+							<?php } else { ?>
+								<?php _e('Edit Post', fsCalendar::$plugin_textdom);?> | 
+							<?php } ?> 
+						</span>
+						<?php } ?>
 						<span class="duplicate">
 							<?php if ($fsCalendar->userCanAddEvents()) { ?>
 							<a title="<?php _e('Duplicate this event', fsCalendar::$plugin_textdom); ?>" 

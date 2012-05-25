@@ -23,7 +23,9 @@ if (isset($_POST['eventid']) && $action != 'view') {
 	$evt->time_admin_from   = $_POST['event_tfrom'];
 	$evt->time_admin_to     = $_POST['event_tto'];
 	$evt->location    		= $_POST['event_location'];
-	$evt->description 		= $_POST['content'];
+	if (isset($_POST['content'])) {
+		$evt->description 		= $_POST['content'];
+	}
 	$evt->subject     		= $_POST['event_subject'];
 	$evt->state       		= $_POST['event_state'];
 	$evt->categories  		= $_POST['post_category'];

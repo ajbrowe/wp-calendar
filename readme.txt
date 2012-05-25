@@ -144,6 +144,10 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 
 == Changelog ==
 
+= 1.5.0 =
+* FIXED: Filter in Admin Interface not working
+* FIXED: Content lost, after chanigng synchornized post to draft
+
 = 1.5.0 Beta1 = 
 
 THIS IS A BETA VERSION. THE MAIN REASON FOR THIS IS, THAT I CHANGED ALL THE UNIX-TIMESTAMP BASED DATABASE FIELDS TO
