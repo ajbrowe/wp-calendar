@@ -35,7 +35,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.5.0';
+	static $plugin_vers     = '1.5.1';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -138,8 +138,8 @@ class fsCalendar {
 	 	add_action('init',                  array(&$this, 'hookRegisterStyles'));
 	 	add_action('widgets_init', 		    array(&$this, 'hookRegisterWidgets'));
 
-	 	add_action( 'wp_ajax_nopriv_wpcal-getevents', array(&$this, 'hookAjaxGetEvents'));
-	 	add_action( 'wp_ajax_wpcal-getevents', array(&$this, 'hookAjaxGetEvents'));
+	 	add_action('wp_ajax_nopriv_wpcal-getevents', array(&$this, 'hookAjaxGetEvents'));
+	 	add_action('wp_ajax_wpcal-getevents', array(&$this, 'hookAjaxGetEvents'));
 
 	 	add_action('comment_form_top',      array(&$this, 'hookAddEventToCommentForm'));
 	 	add_action('comment_post',          array(&$this, 'hookSaveCommentMeta'), 1, 2);
