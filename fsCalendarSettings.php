@@ -83,6 +83,13 @@ class fsCalendarSettings {
 							   'fse_global', 'fse_global');
 		}
 		
+		add_settings_section('fse_global5', 
+							 '',  
+							 array(&$this, 'hookSettingHeader_Global5'), 
+							 'fse_global');
+		{
+
+		}
 					
 		add_settings_section('fse_global2', 
 							 '',  
@@ -367,6 +374,14 @@ class fsCalendarSettings {
 		</p>
 		<?php	
 	}
+	function hookSettingHeader_Global5() {
+		?>
+		<p>Using WP Calendar you can easily share your event on facebook and show who's attending on your event on your website.<br />To activate
+		Facebook integration, you have to authenticate first. Click on the <i>Connect</i> Button to connect now.</p>
+		
+		
+		<?php 	
+	}
 	function hookSettingHeader_Fc() {
 		?>
 		<p><?php _e('WP Calendar allows an easy integration of <a href="http://arshaw.com/fullcalendar/" target="_blank">FullCalendar</a>, a nice graphical calendar. '.
@@ -423,6 +438,7 @@ class fsCalendarSettings {
 	function hookSettingOption_fse_groupby() {
 		?>
 		<select name="fse_groupby">
+		<option value="" <?php echo (get_option('fse_groupby') == ''  ? ' selected="selected"' : ''); ?>><?php _e('None', fsCalendar::$plugin_textdom); ?></option>
 		<option value="d"<?php echo (get_option('fse_groupby') == 'd' ? ' selected="selected"' : ''); ?>><?php _e('Day', fsCalendar::$plugin_textdom); ?></option>
 		<option value="m"<?php echo (get_option('fse_groupby') == 'm' ? ' selected="selected"' : ''); ?>><?php _e('Month', fsCalendar::$plugin_textdom); ?></option>
 		<option value="y"<?php echo (get_option('fse_groupby') == 'y' ? ' selected="selected"' : ''); ?>><?php _e('Year', fsCalendar::$plugin_textdom); ?></option>

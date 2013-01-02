@@ -70,3 +70,21 @@ input.dp-applied {
 	float: left;
 	readonly
 }
+.ui-autocomplete {
+	width: 400px !important;
+	padding: 5px !important;
+	border-radius: 0px !important;
+	margin-top: -3px !important;
+	border-top: none !important;
+	background-color: white !important;
+	z-index: 999;
+}
+li .ui-menu-item {
+	padding: 0px !important;
+	margin: 0px !important;
+}
+li.ui-menu-item a.ui-state-hover {
+	background-color: white;
+	font-weight: bold;
+	border: none;
+}

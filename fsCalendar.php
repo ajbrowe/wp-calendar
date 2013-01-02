@@ -5,9 +5,9 @@
  Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
  Author: Fabian von Allmen
  Author URI: http://www.faebusoft.ch
- Version: 1.5.0
+ Version: 1.5.1
  License: GPL
- Last Update: 2012-05-25
+ Last Update: 2013-01-02
  */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -22,7 +22,7 @@ define('FSE_GROUPBY_YEAR', 'y'); // Event grouping by year
 define('FSE_META_EVENT_ID', 'event_id');
 define('FSE_META_EVENT_ID_TEMP', 'event_id_temp');
 
-define('FSE_DB_VERSION', 4);
+define('FSE_DB_VERSION', 5);
 
 define('FSE_SQL_DEBUG', false);
 
@@ -54,6 +54,8 @@ class fsCalendar {
 	 	 'subject', 
 		 'tsfrom', 
 		 'tsto', 
+	     'datefrom', 
+	     'dateto',
 		 'allday', 
 		 'description', 
 		 'location', 
@@ -168,7 +170,7 @@ class fsCalendar {
 	 function hookInit() {
 	 	load_plugin_textdomain(self::$plugin_textdom, false, self::$plugin_lang_dir);
 	 	self::$valid_states    = array('draft'=>__('Draft', self::$plugin_textdom),
-		   'publish'=>__('Published', self::$plugin_textdom));
+		   'publish'=>__('Published', self::$plugin_textdom), ''=>'-');
 
 
 	 	if (strpos($_SERVER['REQUEST_URI'], '/feed/ical') !== false) {
@@ -357,7 +359,7 @@ class fsCalendar {
 	 		if (count($classes) > 0) {
 	 			$e['className'] = $classes;
 	 		}
-
+	 		
 	 		$events_out[] = $e;
 	 	}
 
@@ -1118,9 +1120,9 @@ class fsCalendar {
 	 	$ret = $pagstr.$before.$ret.$after.$pagstr;
 
 	 	if ($echo == true)
-	 	echo $ret;
+	 		echo $ret;
 	 	else
-	 	return $ret;
+	 		return $ret;
 	 }
 
 	 /**
@@ -1160,7 +1162,7 @@ class fsCalendar {
 	 				$template = $a;
 	 				break;
 	 			case 'groupby':
-	 				if (in_array($a, array('d','m','y')))
+	 				if (in_array($a, array('','d','m','y')))
 	 				$groupby = $a;
 	 				break;
 	 			case 'groupby_header':
@@ -1177,7 +1179,7 @@ class fsCalendar {
 	 	if (isset($filter['orderby'])) {
 	 		unset($filter['orderby']);
 	 	}
-	 	$filter['orderby'] = array('from');
+	 	$filter['orderby'] = array('datefrom');
 
 	 	if (isset($filter['orderdir'])) {
 	 		$dir = $filter['orderdir'];
@@ -1244,9 +1246,9 @@ class fsCalendar {
 	 	$ret = $pagstr.$before.'<ul class="groups">'.$ret.'</ul>'.$after.$pagstr;
 
 	 	if ($echo == true)
-	 	echo $ret;
+	 		echo $ret;
 	 	else
-	 	return $ret;
+	 		return $ret;
 	 }
 
 	 /**
@@ -1271,23 +1273,37 @@ class fsCalendar {
 	 	global $wpdb;
 
 	 	if (empty($sort_string)) {
-	 		$sort_string = 'e.`from` ASC';
+	 		$sort_string = 'e.`datefrom` ASC';
 	 	}
-
+	 	
 	 	// Convert timestamps to mysql date format
 	 	if (isset($filter['datefrom']) && !empty($filter['datefrom'])) {
 	 		// Neu auch text unterstützen
-	 		if (!strpos(strtolower($filter['datefrom']), 'now') === false) {
-	 			$filter['datefrom'] = calculate_dates($filter['datefrom']);
-	 		} else if (!strpos(strtolower($filter['datefrom']), 'today') === false) {
-	 			$filter['datefrom'] = calculate_dates($filter['datefrom']);
-	 		} else if (strpos($filter['datefrom'], '-') === false) {
+	 		if (strpos(strtolower($filter['datefrom']), 'now') !== false) { // Now
+	 			$filter['datefrom'] = $this->calculate_dates($filter['datefrom']);
+	 		} else if (strpos(strtolower($filter['datefrom']), 'today') !== false) { // Today
+	 			$filter['datefrom'] = $this->calculate_dates($filter['datefrom']);
+	 		} else if (strpos($filter['datefrom'], '-') === false) { // Integer format
 	 			$filter['datefrom'] = date('Y-m-d H:i:s', $filter['datefrom']);
+	 		} else {
+	 			// Validate!
+	 			if (strtotime($filter['datefrom']) == false || strtotime($filter['datefrom']) == -1) {
+	 				$filter['datefrom'] = $this->calculate_dates('now');
+	 			}
 	 		}
 	 	}
 	 	if (isset($filter['dateto']) && !empty($filter['dateto'])) {
-	 		if (strpos($filter['dateto'], '-') === false) {
+	 		if (strpos(strtolower($filter['dateto']), 'now') !== false) {
+	 			$filter['dateto'] = $this->calculate_dates($filter['dateto']);
+	 		} else if (strpos(strtolower($filter['dateto']), 'today') !== false) {
+	 			$filter['dateto'] = $this->calculate_dates($filter['dateto'], true);
+	 		} else if (strpos($filter['dateto'], '-') === false) {
 	 			$filter['dateto'] = date('Y-m-d H:i:s', $filter['dateto']);
+	 		} else {
+	 			// Validate!
+	 			if (strtotime($filter['dateto']) == false || strtotime($filter['dateto']) == -1) {
+	 				unset($filter['dateto']);
+	 			}
 	 		}
 	 	}
 
@@ -1332,14 +1348,14 @@ class fsCalendar {
 
 	 		// Events must always start before the end and
 	 		// must end after start
-	 		$where .= ' (e.`from` <= "'.$filter['dateto'].'") AND '.
-  						' ((e.`to` >= "'.$filter['datefrom'].'") OR (e.`to` >= "'.$date_to_allday.'" AND `allday` = 1))'; 
+	 		$where .= ' (e.`datefrom` <= "'.$filter['dateto'].'") AND '.
+  						' ((e.`dateto` >= "'.$filter['datefrom'].'") OR (e.`dateto` >= "'.$date_to_allday.'" AND `allday` = 1))'; 
 
 	 		//
 	 		if ($filter['datemode'] == FSE_DATE_MODE_START) {
-	 			$where .= ' AND (e.`from` >= "'.$filter['datefrom'].'")';
+	 			$where .= ' AND (e.`datefrom` >= "'.$filter['datefrom'].'")';
 	 		} elseif ($filter['datemode'] == FSE_DATE_MODE_END) {
-	 			$where .= ' AND (e.`from` <= "'.$filter['dateto'].'")';
+	 			$where .= ' AND (e.`datefrom` <= "'.$filter['dateto'].'")';
 	 		}
 
 	 		$where .= ' AND';
@@ -1366,9 +1382,9 @@ class fsCalendar {
 	 	}
 
 	 	if ($where != ' WHERE ')
-	 	$where = substr($where, 0, strlen($where) - 3);
+	 		$where = substr($where, 0, strlen($where) - 3);
 	 	else
-	 	$where = '';
+	 		$where = '';
 
 	 	// Special Case 'Count'!
 	 	if ($count == true) {
@@ -1383,12 +1399,12 @@ class fsCalendar {
 
 	 	if (defined('FSE_SQL_DEBUG') && FSE_SQL_DEBUG == true && defined('WP_DEBUG') && WP_DEBUG == true) {
 	 		echo '<p>'.$sql.'</p>';
-	 	}
-
+	 	}	
+	 	
 	 	$res = $wpdb->get_col($sql);
 
 	 	if ($res === NULL)
-	 	return false;
+	 		return false;
 
 	 	return $res;
 	 }
@@ -1550,7 +1566,7 @@ class fsCalendar {
 	 	$state = 'publish';
 	 	//$d = time();
 	 	//$datefrom = mktime(0,0,0, fsCalendar::date('m', $d), fsCalendar::date('d', $d), fsCalendar::date('Y', $d));
-	 	$datefrom = mktime();
+	 	$datefrom = 'now';
 	 	$categories = $orderby = $orderdir = $include = $exclude = array();
 	 	$start = 0;
 	 	$count = false;
@@ -1611,8 +1627,6 @@ class fsCalendar {
 	 				}
 	 				break;
 	 			case 'datefrom':
-	 				$a = intval($a);
-	 				if ($a > 0)
 	 				$datefrom = $a;
 	 				break;
 	 			case 'allday':
@@ -1621,14 +1635,12 @@ class fsCalendar {
 	 				}
 	 				break;
 	 			case 'dateto':
-	 				$a = intval($a);
-	 				if ($a > 0)
 	 				$dateto = $a;
 	 				break;
 	 			case 'datemode':
 	 				$a = intval($a);
 	 				if (in_array($a, array(1,2,3)))
-	 				$datemode = $a;
+	 					$datemode = $a;
 	 				break;
 	 			case 'orderby':
 	 				if (!is_array($a))
@@ -1677,21 +1689,22 @@ class fsCalendar {
 	 	}
 
 	 	if (!empty($state))
-	 	$filter['state'] = $state;
+	 		$filter['state'] = $state;
 	 	if (!empty($author))
-	 	$filter['author'] = $author;
+	 		$filter['author'] = $author;
 	 	if (count($categories) > 0)
-	 	$filter['categories'] = $categories;
+	 		$filter['categories'] = $categories;
 	 	if (!empty($datefrom))
-	 	$filter['datefrom'] = $datefrom;
+	 		$filter['datefrom'] = $datefrom;
 	 	if (!empty($dateto))
-	 	$filter['dateto'] = $dateto;
+	 		$filter['dateto'] = $dateto;
 	 	if (count($include) > 0)
-	 	$filter['id_inc'] = $include;
+	 		$filter['id_inc'] = $include;
 	 	if (count($exclude) > 0)
-	 	$filter['id_exc'] = $exclude;
+	 		$filter['id_exc'] = $exclude;
 	 	if (is_bool($allday) == true) // Type!
-	 	$filter['allday'] = $allday;
+	 		$filter['allday'] = $allday;
+	 		
 	 	$filter['datemode'] = $datemode;
 
 	 	if ($count == true) {
@@ -1789,12 +1802,16 @@ class fsCalendar {
 	 	return paginate_links($wp_args);
 	 }
 
-	 function calculate_dates($date) {
+	 function calculate_dates($date, $endofday = false) {
 		$date = strtolower($date);
 		if (strpos($date, 'now') !== false) {
 			$time = mktime();
 		} elseif (strpos($date, 'today') !== false) {
-			$time = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+			if (!$endofday) {
+				$time = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+			} else {
+				$time = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+			}
 		} else {
 			return $date;
 		}
@@ -1849,6 +1866,69 @@ class fsCalendar {
 
 	 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
+	 	$vers = intval(get_option('fse_db_version'));
+	 	
+	 	// Own migration based on existing table
+	 	if ($vers > 0) {
+		 	// Migrate fields from/to to datefrom/dateto
+		 	if ($vers < 4) {
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `from` DATETIME NULL');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `to` DATETIME NULL');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `createdaten` DATETIME NULL');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `publishdaten` DATETIME NULL');
+		 		
+		 		$sql = 'SELECT `eventid`, `tsfrom`, `tsto`, `createdate`, `publishdate` FROM `'.$wpdb->prefix.'fsevents` WHERE `tsfrom` IS NOT NULL AND `from` IS NULL';
+	
+		 		$res = $wpdb->get_results($sql);
+	
+		 		foreach($res as $r) {
+		 			$sql = 'UPDATE `'.$wpdb->prefix.'fsevents` '.
+						'SET `from`="'.date('Y-m-d H:i:s', $r->tsfrom).'", '.
+						'`to`="'.date('Y-m-d H:i:s', $r->tsto).'", '.
+						'`createdaten`="'.date('Y-m-d H:i:s', $r->createdate).'" ';
+		 			if (!empty($r->publishdate)) {
+		 				$sql .= ', `publishdaten`="'.date('Y-m-d H:i:s', $r->publishdate).'" ';
+		 			}
+		 			$sql .= 'WHERE `eventid`='.$r->eventid;
+		 			$wpdb->query($sql);
+		 		}
+		 		
+		 		// Remove old columns
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsfrom`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsto`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `publishdate`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `createdate`');
+		 	}
+		 	
+		 	if ($vers < 5) {
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `datefrom` DATETIME NULL AFTER `subject`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `dateto` DATETIME NULL AFTER `datefrom`');
+		 		
+		 		 $sql = 'SELECT `eventid`, `from`, `to` FROM `'.$wpdb->prefix.'fsevents`';
+
+		 		$res = $wpdb->get_results($sql);
+	
+		 		foreach($res as $r) {
+		 			$sql = 'UPDATE `'.$wpdb->prefix.'fsevents` '.
+						'SET `datefrom`="'.$r->from.'", '.
+						'`dateto`="'.$r->to.'" '.
+		 				'WHERE `eventid`='.$r->eventid;
+		 			$wpdb->query($sql);
+		 		}
+		 		
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `from`');
+	 			$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `to`');
+	 			
+	 			// Late Removal
+	 			if ($vers == 4) {
+			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsfrom`');
+			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsto`');
+			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `publishdate`');
+			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `createdate`');
+	 			}
+		 	}
+	 	}
+	 	
 		$charset_collate = '';
 	
 		if ( ! empty($wpdb->charset) )
@@ -1856,60 +1936,37 @@ class fsCalendar {
 		if ( ! empty($wpdb->collate) )
 			$charset_collate .= " COLLATE $wpdb->collate";
 	 	
-	 	$sql = "CREATE TABLE `".$wpdb->prefix."fsevents` (
-			`eventid` INT NOT NULL AUTO_INCREMENT,
-			`subject` VARCHAR(255) NOT NULL,
-			`from` DATETIME NULL,
-			`to` DATETIME NULL,
-			`tsfrom` INT NULL,
-			`tsto` INT NULL,
-			`allday` TINYINT(1) NOT NULL DEFAULT '0',
-			`description` TEXT NULL,
-			`location` VARCHAR(255) NULL,
-			`author` BIGINT NOT NULL,
-			`createdate` INT NULL,
-			`createdaten` DATETIME NULL,
-			`publishauthor` BIGINT NULL,
-			`publishdaten` DATETIME NULL,
-			`publishdate` INT NULL, 
-			`state` VARCHAR(10) NOT NULL,
-			`recurring` TINYINT(1) NOT NULL DEFAULT '0',
-			`rec_main_id` INT NULL,
-			`postid` BIGINT NULL,
-			`updatedbypost` TINYINT NOT NULL DEFAULT '0',
-			PRIMARY KEY  (`eventid`),
-			KEY `postid` (`postid`)
+	 	$sql = "CREATE TABLE ".$wpdb->prefix."fsevents (
+			eventid INT NOT NULL AUTO_INCREMENT,
+			subject VARCHAR(255) NOT NULL,
+			datefrom DATETIME NULL,
+			dateto DATETIME NULL,
+			allday TINYINT(1) NOT NULL DEFAULT '0',
+			description TEXT NULL,
+			location VARCHAR(255) NULL,
+			author BIGINT NOT NULL,
+			createdaten DATETIME NULL,
+			publishauthor BIGINT NULL,
+			publishdaten DATETIME NULL,
+			state VARCHAR(10) NOT NULL,
+			recurring TINYINT(1) NOT NULL DEFAULT '0',
+			rec_main_id INT NULL,
+			postid BIGINT NULL,
+			updatedbypost TINYINT NOT NULL DEFAULT '0',
+			PRIMARY KEY  (eventid),
+			KEY postid (postid)
 			) $charset_collate;";
 
 	 	dbDelta($sql);
 
-	 	$sql = "CREATE TABLE `".$wpdb->prefix."fsevents_cats` (
-			`eventid` INT NOT NULL,
-			`catid` BIGINT NOT NULL,
-			PRIMARY KEY  (`eventid`, `catid`)
+	 	$sql = "CREATE TABLE ".$wpdb->prefix."fsevents_cats (
+			eventid INT NOT NULL,
+			catid BIGINT NOT NULL,
+			PRIMARY KEY  (eventid,catid)
 			) $charset_collate;";
 
 	 	dbDelta($sql);
-
-	 	// Convert all timestamps to datetime values!
-	 	if (intval(get_option('fse_db_version')) < 4) {
-	 		$sql = 'SELECT `eventid`, `tsfrom`, `tsto`, `createdate`, `publishdate` FROM `'.$wpdb->prefix.'fsevents` WHERE `tsfrom` IS NOT NULL AND `from` IS NULL';
-
-	 		$res = $wpdb->get_results($sql);
-
-	 		foreach($res as $r) {
-	 			$sql = 'UPDATE `'.$wpdb->prefix.'fsevents` '.
-					'SET `from`="'.date('Y-m-d H:i:s', $r->tsfrom).'", '.
-					'`to`="'.date('Y-m-d H:i:s', $r->tsto).'", '.
-					'`createdaten`="'.date('Y-m-d H:i:s', $r->createdate).'" ';
-	 			if (!empty($r->publishdate)) {
-	 				$sql .= ', `publishdaten`="'.date('Y-m-d H:i:s', $r->publishdate).'" ';
-	 			}
-	 			$sql .= 'WHERE `eventid`='.$r->eventid;
-	 			$wpdb->query($sql);
-	 		}
-	 	}
-
+	 	
 	 	// Save DB version
 	 	update_option('fse_db_version', FSE_DB_VERSION);
 	 }

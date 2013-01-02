@@ -167,27 +167,25 @@ if ($dbver < FSE_DB_VERSION) {
 		$link_actions .= 'event_category='.$filter_category.'&amp;';
 	}
 		
-	$filter_date = (isset($_GET['event_start']) ? intval($_GET['event_start']) : 0); // 0 -> Future dates only!
+	$filter_date = (isset($_GET['event_start']) ? $_GET['event_start'] : 'future'); // 0 -> Future dates only!
 	if ($filter_date > 0) {
-		$m = date('m', $filter_date);
-		$y = date('Y', $filter_date);
-		$filter['datefrom'] = mktime(0, 0, 0, $m, 1, $y);
-		$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
-		$link_actions .= 'event_start='.$filter_date.'&amp;';
+		$m = mysql2date('m', $filter_date);
+		$y = mysql2date('Y', $filter_date);
+		$filter['datefrom'] = date('Y-m-d H:i:s', mktime(0, 0, 0, $m, 1, $y));
+		$filter['dateto']   = date('Y-m-d H:i:s', mktime(0, 0, 0, ($m+1), 1, $y) - 1);
 	// Only Future dates
-	} elseif ($filter_date == 0) {
-		$filter['datefrom'] = time();
+	} elseif ($filter_date == 'future') {
+		$filter['datefrom'] = 'now';
 		//$filter['datemode'] = FSE_DATE_MODE_END;
 		//$filter['dateto']   = mktime(0, 0, 0, ($m+1), 1, $y) - 1;
-		$link_actions .= 'event_start='.$filter_date.'&amp;';
-	} elseif ($filter_date == -1) {
+	} elseif ($filter_date == 'all') {
 		// No time filter
-		$link_actions .= 'event_start='.$filter_date.'&amp;';
 	}
+	$link_actions .= 'event_start='.$filter_date.'&amp;';
 	
 	$sort = (isset($_GET['event_sort']) ? $_GET['event_sort'] : '');
 	$sortstring = '';
-	if (in_array($sort, array('subject', 'author', 'from', 'location'))) {
+	if (in_array($sort, array('subject', 'author', 'datefrom', 'location'))) {
 		$sortstring = '`'.$sort.'`';
 		$sortdir = $_GET['event_sortdir'];
 		if (in_array($sortdir, array('ASC', 'DESC'))) {
@@ -196,10 +194,10 @@ if ($dbver < FSE_DB_VERSION) {
 			$sortdir = 'ASC';
 		}
 	} else {
-		$sort = 'from';
+		$sort = 'datefrom';
 		$sortdir = 'DESC';
 		
-		$sortstring = '`from` DESC';
+		$sortstring = '`datefrom` DESC';
 	}
 	
 	// Create Link for transporting filter actions!
@@ -279,9 +277,9 @@ if ($dbver < FSE_DB_VERSION) {
 				<th id="author" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('author');">
 					<?php _e('Author', fsCalendar::$plugin_textdom);?></a>
 					<?php if ($sort == 'author') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
-				<th id="from" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('from');">
+				<th id="datefrom" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('datefrom');">
 					<?php _e('Date', fsCalendar::$plugin_textdom);?></a>
-					<?php if ($sort == 'from') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
+					<?php if ($sort == 'datefrom') { echo '<img src="'.fsCalendar::$plugin_img_url.'sort'.$sortdir.'.png" alt="" />'; } ?></th>
 				<th id="to" class="manage-column" scope="col"><?php _e('Time', fsCalendar::$plugin_textdom);?></th>
 				<th id="location" class="manage-column" scope="col"><a href="javascript: fse_overviewSort('location');">
 					<?php _e('Location', fsCalendar::$plugin_textdom);?></a>

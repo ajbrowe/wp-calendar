@@ -35,7 +35,11 @@ class WPCalendarGrouped extends WP_Widget {
     }
 
     /* Update values */
-    function update($new_instance, $old_instance) {				
+    function update($new_instance, $old_instance) {
+		if (!isset($new_instance['pagination'])) {
+			$new_instance['pagination'] = 0;	
+		}
+    	
         return $new_instance;
     }
 
@@ -62,7 +66,7 @@ class WPCalendarGrouped extends WP_Widget {
     	
     	// Abmischen der Argumente
     	$instance = wp_parse_args((array)$instance, $defaults);
-    	
+    	    	
         $title = esc_attr($instance['title']);
         $number = intval($instance['number']);
         $groupby_header = esc_attr($instance['groupby_header']);
@@ -70,8 +74,8 @@ class WPCalendarGrouped extends WP_Widget {
         $include = esc_attr($instance['evt_include']);
         $exclude = esc_attr($instance['exclude']);
         $categories = esc_attr($instance['categories']);
-        $pagination = $instance['pagination'] == true ? true : false;
-        $pagination_use_dots = $instance['pagination_use_dots'] == true ? true : false;
+        $pagination = ($instance['pagination'] ? true : false);
+        $pagination_use_dots = ($instance['pagination_use_dots'] ? true : false);	
         $pagination_prev_text = esc_attr($instance['pagination_prev_text']);
         $pagination_next_text = esc_attr($instance['pagination_next_text']);
         $pagination_end_size = intval($instance['pagination_end_size']);
@@ -134,7 +138,7 @@ class WPCalendarGrouped extends WP_Widget {
 		
 		<div id="wpag-<?php echo $uid; ?>">
 		<p>
-			<input type="checkbox" id="<?php echo $this->get_field_id( 'pagination' ); ?>" name="<?php echo $this->get_field_name( 'include' ); ?>" value="1" <?php echo ($pagination ? 'checked="checked"' : ''); ?>/>
+			<input type="checkbox" id="<?php echo $this->get_field_id( 'pagination' ); ?>" name="<?php echo $this->get_field_name( 'pagination' ); ?>" value="1" <?php echo ($pagination ? 'checked="checked"' : ''); ?>/>
 			<label for="<?php echo $this->get_field_id( 'pagination' ); ?>"><?php _e('Enable pagination', fsCalendar::$plugin_textdom); ?></label>
 		</p>
 		<p>
@@ -227,6 +231,10 @@ class WPCalendarSimple extends WP_Widget {
 
     /* Update values */
     function update($new_instance, $old_instance) {				
+    	if (!isset($new_instance['pagination'])) {
+			$new_instance['pagination'] = 0;	
+		}
+    	
         return $new_instance;
     }
 
@@ -306,7 +314,7 @@ class WPCalendarSimple extends WP_Widget {
 		
 		<div id="wpag-<?php echo $uid; ?>">
 		<p>
-			<input type="checkbox" id="<?php echo $this->get_field_id( 'pagination' ); ?>" name="<?php echo $this->get_field_name( 'include' ); ?>" value="1" <?php echo ($pagination ? 'checked="checked"' : ''); ?>/>
+			<input type="checkbox" id="<?php echo $this->get_field_id( 'pagination' ); ?>" name="<?php echo $this->get_field_name( 'pagination' ); ?>" value="1" <?php echo ($pagination ? 'checked="checked"' : ''); ?>/>
 			<label for="<?php echo $this->get_field_id( 'pagination' ); ?>"><?php _e('Enable pagination', fsCalendar::$plugin_textdom); ?></label>
 		</p>
 		<p>

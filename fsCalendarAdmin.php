@@ -14,6 +14,9 @@ class fsCalendarAdmin {
 		add_action('save_post', 		   array(&$this, 'hookSaveEventFromPost'));
 		add_action('admin_notices', 	   array(&$this, 'hookSendDBUpdateNotice'));
 		
+		add_action('wp_ajax_fs_subject_ac_cb', array(&$this, 'hockAjaxSubjectCallback'));
+		add_action('wp_ajax_fs_location_ac_cb', array(&$this, 'hockAjaxLocationCallback'));
+		
 		add_filter('plugin_action_links',  array(&$this, 'hookAddPlugInSettingsLink'), 10, 2 );
 		
 		$this->settings = new fsCalendarSettings();
@@ -109,6 +112,8 @@ class fsCalendarAdmin {
 			$datepicker = true;
 		} elseif (strpos($_SERVER['REQUEST_URI'], 'wp-cal-settings') > 0) {
 			$tabs = true;
+		} elseif (strpos($_SERVER['REQUEST_URI'], 'fsCalendar.php') > 0) {
+			
 		} else {
 			return;
 		}
@@ -116,6 +121,7 @@ class fsCalendarAdmin {
 		wp_enqueue_script('common');
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('jquery-ui-autocomplete');
 		
 		wp_enqueue_script(fsCalendar::$plugin_id, fsCalendar::$plugin_js_url.'helper.js');
 		
@@ -306,6 +312,32 @@ class fsCalendarAdmin {
 		return $post_id;
 	}
 	
+	function hockAjaxSubjectCallback() {
+		global $wpdb; 
+		
+		$term = $_GET['term'].'%';
+		$sql = $wpdb->prepare('SELECT DISTINCT subject FROM '.$wpdb->prefix.'fsevents '.' WHERE subject LIKE %s', $term);
+		
+		$res = $wpdb->get_col($sql);
+		
+		echo json_encode($res);
+		
+		die();
+	}
+	
+	function hockAjaxLocationCallback() {
+		global $wpdb; 
+		
+		$term = $_GET['term'].'%';
+		$sql = $wpdb->prepare('SELECT DISTINCT location FROM '.$wpdb->prefix.'fsevents '.' WHERE location LIKE %s', $term);
+		
+		$res = $wpdb->get_col($sql);
+		
+		echo json_encode($res);
+		
+		die();
+	}
+	
 	function hookSendDBUpdateNotice() {
 		$dbver = get_option('fse_db_version', -1);
 		if ($dbver < FSE_DB_VERSION) {
@@ -433,25 +465,24 @@ class fsCalendarAdmin {
 		echo '</div>';
 		
 		?>
-		<div class="border">x</div>
-			<div id="minor-publishing">
-				<div id="misc-publishing-actions">
-					<div class="misc-pub-section">
-						<?php _e('State', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display">
-						<?php echo fsCalendar::$valid_states[$evt->state]; ?></span>
-						<?php if ($evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
-						<a class="hide-if-no-js" href="" onClick="document.forms['event'].jsaction.value='draft'; document.forms['event'].submit(); return false;"><?php _e('Change to Draft', fsCalendar::$plugin_textdom)?></a>
-						<?php } ?>
-					</div>
-					<div class="misc-pub-section">
-						<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
-					</div>
-					<div class="misc-pub-section">
-						<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? mysql2date($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
-					</div>
+		<div id="minor-publishing">
+			<div id="misc-publishing-actions">
+				<div class="misc-pub-section">
+					<?php _e('State', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display">
+					<?php echo fsCalendar::$valid_states[$evt->state]; ?></span>
+					<?php if ($evt->state ==  'publish' && $evt->userCanEditEvent()) { ?>
+					<a class="hide-if-no-js" href="" onClick="document.forms['event'].jsaction.value='draft'; document.forms['event'].submit(); return false;"><?php _e('Change to Draft', fsCalendar::$plugin_textdom)?></a>
+					<?php } ?>
 				</div>
-				<div class="clear"/></div>
+				<div class="misc-pub-section">
+					<?php _e('Published by', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (empty($evt->publishauthor_t) ? '-' : esc_attr($evt->publishauthor_t)); ?></span>
+				</div>
+				<div class="misc-pub-section">
+					<?php _e('Published', fsCalendar::$plugin_textdom); ?>: <span id="post-status-display"> <?php echo (!empty($evt->publishdate) ? mysql2date($evt->date_time_format, $evt->publishdate) : '-'); ?></span>
+				</div>
 			</div>
+			<div class="clear"/></div>
+		</div>
 		<?php 
 		
 		//echo '</div>';
@@ -673,7 +704,7 @@ class fsCalendarAdmin {
 		
 		?>
 		<div class="tablenav">
-			<div class="alignleft actions">
+			<div class="alignleft ">
 				<select name="action<?php echo ($part == 2 ? '2' : ''); ?>">
 					<option selected="selected" value=""><?php _e('Choose action', fsCalendar::$plugin_textdom); ?></option>
 					<option value="delete"><?php _e('Delete', fsCalendar::$plugin_textdom); ?></option>
@@ -689,13 +720,17 @@ class fsCalendarAdmin {
 					?>
 				</select>
 				<input id="doaction<?php echo $part; ?>" class="button-secondary action" type="submit" name="doaction" value="<?php _e('Apply', fsCalendar::$plugin_textdom); ?>" />
+				
 				<?php if ($part == 1) {?>
 					<select name="event_start">
-					<option value="-1"<?php echo (!isset($filter['datefrom']) ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
-					<option value="0"<?php echo (isset($filter['datefrom']) && !isset($filter['dateto']) ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
+					<option value="all"<?php echo (!isset($filter['datefrom']) ? ' selected="selected"' : ''); ?>><?php _e('Show all dates', fsCalendar::$plugin_textdom); ?></option>
+					<option value="future"<?php echo (isset($filter['datefrom']) && !isset($filter['dateto']) ? ' selected="selected"' : ''); ?>><?php _e('Show future dates only', fsCalendar::$plugin_textdom); ?></option>
 					<?php 
-					$min = $wpdb->get_var('SELECT MIN(from) AS min FROM '.$wpdb->prefix.'fsevents');
-					$max = $wpdb->get_var('SELECT MAX(to)   AS max FROM '.$wpdb->prefix.'fsevents');
+					$min = $wpdb->get_var('SELECT MIN(datefrom) AS min FROM '.$wpdb->prefix.'fsevents');
+					$max = $wpdb->get_var('SELECT MAX(dateto)    AS max FROM '.$wpdb->prefix.'fsevents');
+					
+					echo $min.'-'.$max.'--';
+					
 					if ($min != NULL && $max != NULL) {
 						$ms = mysql2date('m', $min);
 						$ys = mysql2date('Y', $min);
@@ -705,7 +740,8 @@ class fsCalendarAdmin {
 						while($ys <= $ye) {
 							while($ms<=12 && ($ys < $ye || $ms <= $me)) {
 								$time = mktime(0, 0, 0, $ms, 1, $ys);
-								echo '<option value="'.$time.'"'.($time == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date_i18n('F Y', $time).'</option>';
+								$date = date('Y-m-d H:i:s', $time);
+								echo '<option value="'.$date.'"'.($date == $filter['datefrom'] ? ' selected="selected"' : '').'>'.date_i18n('F Y', $time).'</option>';
 								$ms++;
 							}
 							$ms = 1;

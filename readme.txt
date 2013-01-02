@@ -4,7 +4,7 @@ Tags: calendar, events, post, wp calendar, event, event calendar, termin, kalend
 Donate link: http://www.faebusoft.ch/webentwicklung/wpcalendar/
 Requires at least: 3.1
 Tested up to: 3.3
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -16,8 +16,8 @@ into any theme by using different functions and in any post and page by using di
 
 = Features =
 * NEW: Ical Feed of your events!
-* Graphical calendar for your blog
-* Widgets for your blog
+* Graphical calendar
+* Widget
 * Event categorization (using WP categories)
 * Event states (draft, published)
 * Normal and all-day events
@@ -30,15 +30,9 @@ into any theme by using different functions and in any post and page by using di
 * [Comments for events](http://www.faebusoft.ch/webentwicklung/wp-calendar-1-4-0-freigegeben/)
 * Same authority checks as for post and pages
 * Supports special tags in post/page content and title
-* Many customization options
 * Different functions for integration in your theme
-* Single event output
-* Multi event output with many options
 * Event grouping in output (per day, month or year)
-* Multi output allows filters on every field
-* Output of all fields (author, publisher, dates, states, ...)
-* Internationalization including dates
-
+* Internationalization including date formats
 
 = Planned =
 * Repeating/Reccuring events
@@ -47,6 +41,7 @@ into any theme by using different functions and in any post and page by using di
 * Dashboard integration
 * Location templates
 * Content templates
+* Search integration
 
 
 == Installation ==
@@ -134,6 +129,16 @@ for easy usage. If these widgets don't fit your needs, you may integration WP Ca
 For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebusoft.ch/webentwicklung/wp-calendar-integration/).
 
 == Changelog ==
+
+= 1.5.1 = 
+* FIXED: Full Calendar not working with WP 3.5 (Upgraded to newest FullCalendar Version)
+* FIXED: Fixed various database upgrade problems including the message "Unexpected output" when activating
+* FIXED: Sorting not working in events overview
+* FIXED: Filter not working correctly in events overview
+* FIXED: Default grouping to 'none' is missing
+* FIXED: Filter by datefrom and dateto not working correctly
+* FIXED: Pagination cannot be disabled in widget CONFIGURATION
+* FIXED: Keyword 'today' and 'now' not supported by dateto filter
 
 = 1.5.0 =
 * FIXED: Filter in Admin Interface not working

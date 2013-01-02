@@ -48,7 +48,7 @@ class fsEvent {
 		
 		// If post ID is provided just lookup and get eventid
 		if (empty($this->eventid) && !empty($this->postid)) {
-			$sql = $wpdb->prepare('SELECT eventid FROM '.$wpdb->prefix.'fsevents '.' WHERE postid='.$this->postid);
+			$sql = $wpdb->prepare('SELECT eventid FROM '.$wpdb->prefix.'fsevents '.' WHERE postid=%d', $this->postid);
 			$this->eventid = $wpdb->get_var($sql);
 			if (empty($this->eventid))
 				return;
@@ -76,8 +76,8 @@ class fsEvent {
 		$this->location = $ret->location;
 		$this->description = $ret->description;
 		
-		$this->from = $ret->from;
-		$this->to = $ret->to;
+		$this->from = $ret->datefrom;
+		$this->to = $ret->dateto;
 		
 		$this->allday = ($ret->allday == true ? true : false);
 		$this->author = $ret->author;
@@ -384,7 +384,7 @@ class fsEvent {
 			// Check authority
 			if ($this->userCanEditEvent()) {
 				$sql = $wpdb->prepare("UPDATE ".$wpdb->prefix.'fsevents '."
-					SET `subject`=%s, `from`=%s, `to`=%s, `allday`=%d, `description`=%s, `location`=%s, `state`=%s, 
+					SET `subject`=%s, `datefrom`=%s, `dateto`=%s, `allday`=%d, `description`=%s, `location`=%s, `state`=%s, 
 					`updatedbypost`=%d 
 					WHERE `eventid`=$this->eventid",
 		        	$this->subject, $from, $to, ($this->allday == true ? 1 : 0), $this->description, $this->location, $this->state, ($this->updatedbypost == true ? 1 : 0));
@@ -402,7 +402,7 @@ class fsEvent {
 				
 					
 				$sql = $wpdb->prepare("INSERT INTO ".$wpdb->prefix.'fsevents '."
-					(`subject`, `from`, `to`, `allday`, `description`, `location`, `author`, `createdaten`, `state`, `postid`, `updatedbypost`)
+					(`subject`, `datefrom`, `dateto`, `allday`, `description`, `location`, `author`, `createdaten`, `state`, `postid`, `updatedbypost`)
 					VALUES (%s, %s, %s, %d, %s, %s, $user_ID, %s, %s, $postid, %d)", 
 		        	$this->subject, $from, $to, ($this->allday == true ? 1 : 0), $this->description, $this->location, $now, $this->state, ($this->updatedbypost == true ? 1 : 0));
 			} else {

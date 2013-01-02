@@ -20,8 +20,13 @@ if (isset($_POST['eventid']) && $action != 'view') {
 	
 	$evt->date_admin_from   = $_POST['event_from'];
 	$evt->date_admin_to     = $_POST['event_to'];
-	$evt->time_admin_from   = $_POST['event_tfrom'];
-	$evt->time_admin_to     = $_POST['event_tto'];
+	
+	$evt->allday     		= (isset($_POST['event_allday']) ? 1 : 0);
+	
+	if (!$evt->allday) {
+		$evt->time_admin_from   = $_POST['event_tfrom'];
+		$evt->time_admin_to     = $_POST['event_tto'];
+	}
 	$evt->location    		= $_POST['event_location'];
 	if (isset($_POST['content'])) {
 		$evt->description 		= $_POST['content'];
@@ -29,7 +34,6 @@ if (isset($_POST['eventid']) && $action != 'view') {
 	$evt->subject     		= $_POST['event_subject'];
 	$evt->state       		= $_POST['event_state'];
 	$evt->categories  		= $_POST['post_category'];
-	$evt->allday     		= (isset($_POST['event_allday']) ? 1 : 0);
 	
 	foreach($evt as $k => $v) {
 		if (is_string($v)) {
@@ -386,6 +390,16 @@ if ($dbver < FSE_DB_VERSION) {
 	<input type="hidden" name="referer" value="<?php echo $referer; ?>" />
 	<input type="hidden" name="jsaction" value="" />
 	<?php wp_nonce_field('event', '_fseevent'); ?>
+	
+	<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('input#title').autocomplete(
+				{source: ajaxurl+"?action=fs_subject_ac_cb"});
+		jQuery('input#location').autocomplete(
+				{source: ajaxurl+"?action=fs_location_ac_cb"});
+	});
+	</script>
+	
 	</form>
 <?php
 }
