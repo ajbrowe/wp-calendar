@@ -2,8 +2,8 @@
 Contributors: faebu
 Tags: calendar, events, post, wp calendar, event, event calendar, termin, kalender, terminkalender, wp kalender
 Donate link: http://www.faebusoft.ch/webentwicklung/wpcalendar/
-Requires at least: 3.1
-Tested up to: 3.3
+Requires at least: 3.5
+Tested up to: 3.5
 Stable tag: 1.5.1
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
