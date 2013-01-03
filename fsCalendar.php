@@ -35,7 +35,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.5.1';
+	static $plugin_vers     = '1.5.2';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
