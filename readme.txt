@@ -81,11 +81,11 @@ theme's directory (not in a subdirectory of it). It will be loaded instead of th
 
 = How can i use custom colors in my graphical calendar =
 All calendar entries are created using a class foreach assigned category (e.g. `category-3` for category 3). Override the the default colors using:
-.fc-event.category-3,
-.fc-event.category-3 * {
-	background-color: red;
-	border-color: red;
-}
+`.fc-event.category-3,
+.fc-event.category-3 div {
+	background-color: #c0c0c0 !important;
+	border-color: red !important;
+}`
 
 = When i click on an event in the graphical calendar nothing happens =
 Make sure you set up the page for the single event view. If this is not set up, nothing will happen when clicking on an event.
@@ -123,6 +123,9 @@ You must pass the ID of this refered event by the tag `{event_id; id=x}` before 
 = No end date is printed out =
 Check your setting. You can predefine, if you want an end date always to be displayed, or only if it differs from the start date. You can also pass the parameter `alwaysshowenddate` when 
 using tags or functions. Please refer to the usage documentation in the calendar options.
+
+= Hide Widget when there are no events to display =
+Please check [this](http://wordpress.org/support/topic/plugin-wp-calendar-maybe-you-can-add-this-tip-in-faq-how-to-hide-event-widget?replies=2) forum post for a nice solution.
 
 == Screenshots ==
 
