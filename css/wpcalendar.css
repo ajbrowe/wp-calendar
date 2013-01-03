@@ -1,0 +1,24 @@
+#page_is_cal {
+	margin: 0px;
+	background-image: url(../images/calendar.png);
+	background-repeat: no-repeat;
+	background-position: 0px 0px; 
+	padding-left: 18px;
+}
+#page_is_cal span {
+	background-color: yellow;
+	padding: 2px;
+	color: red;
+}
+.ui-tabs .ui-tabs-hide {
+     display: none;
+}
+#fs_tabs h3 {
+	display: none;
+}
+#fs_tabs h3.show {
+	display: block;	
+}
+#fs_tabs th, #fs_tabs td {
+	font-size: normal;
+}
