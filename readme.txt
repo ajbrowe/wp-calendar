@@ -2,9 +2,9 @@
 Contributors: faebu
 Tags: calendar, events, post, wp calendar, event, event calendar, termin, kalender, terminkalender, wp kalender
 Donate link: http://www.faebusoft.ch/webentwicklung/wpcalendar/
-Requires at least: 3.3
-Tested up to: 3.4
-Stable tag: 1.5.0
+Requires at least: 3.5
+Tested up to: 3.5
+Stable tag: 1.5.2
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -13,6 +13,15 @@ WP Calendar is an easy-to-use calendar plug-in to manage all your events with ma
 The whole usage is extensive and completely documented. It supports all-day events, categorization and state management (draft, publish). 
 To manage the event, the same authority checks as for post are used. The plug-in can be integrated in your blog using widgets, 
 into any theme by using different functions and in any post and page by using different tags.
+
+= Important Upgrade Notice for 1.5.1/2 =
+Due to a jQuery update in Wordpress 3.5 the graphical Calendar stopped working and I had to update the external FullCalendar library. The newest 
+version of FullCalendar also needed an update of the graphical calendars stylesheet.  If you upgrade to 1.5.1 and if you have a modified fullcalendar.css 
+file in your theme directory, make sure you copy the fullcalendar.css file from the plug-in directory and adapt your modifications again!
+The graphical calendar will probably not work with your modified stylesheet!
+
+If you have any category specific styling, these style have to be slightly adjusted, because the DOM structure of the displayed events in the 
+graphical calendar have change. Have a look at the FAQ section, which discribes how to style events by it's category.
 
 = Features =
 * NEW: Ical Feed of your events!
@@ -66,10 +75,14 @@ The easiest way is to use the widgets. If you want to use a graphical calendar y
 other Tags and PHP functions (theme development) you can use for display information about events in your blog. Please refer to the plug-ins
 options page, which discribes all of it.
 
+= I want to customize the style of the calendar =
+You can find the Stylesheet fullcalendar.css in the plugin directory, which is loaded by default. Just copy this file in your 
+theme's directory (not in a subdirectory of it). It will be loaded instead of the plugin's stylesheet.
+
 = How can i use custom colors in my graphical calendar =
 All calendar entries are created using a class foreach assigned category (e.g. `category-3` for category 3). Override the the default colors using:
-div .fc-event.category-3,
-div .fc-event.category-3 a {
+.fc-event.category-3,
+.fc-event.category-3 * {
 	background-color: red;
 	border-color: red;
 }
@@ -111,10 +124,6 @@ You must pass the ID of this refered event by the tag `{event_id; id=x}` before 
 Check your setting. You can predefine, if you want an end date always to be displayed, or only if it differs from the start date. You can also pass the parameter `alwaysshowenddate` when 
 using tags or functions. Please refer to the usage documentation in the calendar options.
 
-= I want to customize the style of the calendar =
-You can find the Stylesheet fullcalendar.css in the plugin directory, which is loaded by default. Just copy this file in your 
-theme's directory (not in a subdirectory of it). It will be loaded instead of the plugin's stylesheet.
-
 == Screenshots ==
 
 1. Blog integration
@@ -130,6 +139,9 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 
 == Changelog ==
 
+= 1.5.2 =
+* FIXED: Database upgrade problem
+
 = 1.5.1 = 
 * FIXED: Full Calendar not working with WP 3.5 (Upgraded to newest FullCalendar Version)
 * FIXED: Fixed various database upgrade problems including the message "Unexpected output" when activating
@@ -137,25 +149,10 @@ For all german speaker plese see also the post [Integration von WP Calendar](htt
 * FIXED: Filter not working correctly in events overview
 * FIXED: Default grouping to 'none' is missing
 * FIXED: Filter by datefrom and dateto not working correctly
-* FIXED: Pagination cannot be disabled in widget CONFIGURATION
+* FIXED: Pagination cannot be disabled in widget configuration
 * FIXED: Keyword 'today' and 'now' not supported by dateto filter
 
 = 1.5.0 =
-* FIXED: Filter in Admin Interface not working
-* FIXED: Content lost, after chanigng synchornized post to draft
-* FIXED: Create tables in same collation as WP
-
-= 1.5.0 Beta1 = 
-
-THIS IS A BETA VERSION. THE MAIN REASON FOR THIS IS, THAT I CHANGED ALL THE UNIX-TIMESTAMP BASED DATABASE FIELDS TO
-MYSQL DATETIME FIELDS. THIS WAS NECESSARY, BECAUSED I USED TIMESTAMPS IN A WRONG WAY (DID NOT CONVERT TO UTC!) WHICH
-CAUSED PROBLEMS WITH DAYLIGHT SAVING TIME ZONES!
-
-AS SOON YOU'RE UPDATING TO V1.5, ALL FIELDS ARE MIGRATED, THE OLD VALUES ARE STILL STORED. IT IS HIGHLY RECOMMENDED, THAT 
-YOU MAKE A FULL DATABASE BACKUP, JUST IN CASE SOMETHING GOES WRONG AND YOU HAVE TO REVERT BACK TO V1.4.X.
-
-I'M NOT RESPONSIBLE FOR ANY DATA LOSS!
-
 * FEATURE: Completely changed from unix timestamps to MySQL Date/Time because of problems with time zones
 * FEATURE: Filteroptions datefrom/dateto now supporting MySQL Datetime (YYYY-MM-DD HH:MM:SS). Timestamps are still supported.
 * FEATURE: Filteroptions datefrom/dateto supporting two keywords 'now' and 'today' and very basic arithmetic caluculations
@@ -169,6 +166,9 @@ I'M NOT RESPONSIBLE FOR ANY DATA LOSS!
 * FIXED: Events could not be deleted
 * FIXED: Filters not applied in admin interface when paginating
 * FIXED: Single event view page not highlighted correctly in page overview
+* FIXED: Filter in Admin Interface not working
+* FIXED: Content lost, after chanigng synchornized post to draft
+* FIXED: Create tables in same collation as WP
 
 = 1.4.3 =
 * FIXED: Uninstall gives an error
