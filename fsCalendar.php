@@ -5,9 +5,9 @@
  Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
  Author: Fabian von Allmen
  Author URI: http://www.faebusoft.ch
- Version: 1.5.1
+ Version: 1.5.2
  License: GPL
- Last Update: 2013-01-02
+ Last Update: 2013-01-03
  */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -160,6 +160,8 @@ class fsCalendar {
 	 	// Init Admin
 	 	if (is_admin()) {
 	 		$this->admin = new fsCalendarAdmin();
+	 		
+	 		$this->upgradeDataBase( );
 	 	}
 	 }
 
@@ -1860,75 +1862,17 @@ class fsCalendar {
 	 function hookActivate() {
 	 	global $wpdb;
 
+	 	// Remove for debugging
+	 	$wpdb->hide_errors( );
+	 	
 	 	foreach(self::$plugin_options as $k => $v) {
 	 		add_option($k, $v);
 	 	}
 
 	 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-	 	$vers = intval(get_option('fse_db_version'));
-	 	
-	 	// Own migration based on existing table
-	 	if ($vers > 0) {
-		 	// Migrate fields from/to to datefrom/dateto
-		 	if ($vers < 4) {
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `from` DATETIME NULL');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `to` DATETIME NULL');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `createdaten` DATETIME NULL');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `publishdaten` DATETIME NULL');
-		 		
-		 		$sql = 'SELECT `eventid`, `tsfrom`, `tsto`, `createdate`, `publishdate` FROM `'.$wpdb->prefix.'fsevents` WHERE `tsfrom` IS NOT NULL AND `from` IS NULL';
-	
-		 		$res = $wpdb->get_results($sql);
-	
-		 		foreach($res as $r) {
-		 			$sql = 'UPDATE `'.$wpdb->prefix.'fsevents` '.
-						'SET `from`="'.date('Y-m-d H:i:s', $r->tsfrom).'", '.
-						'`to`="'.date('Y-m-d H:i:s', $r->tsto).'", '.
-						'`createdaten`="'.date('Y-m-d H:i:s', $r->createdate).'" ';
-		 			if (!empty($r->publishdate)) {
-		 				$sql .= ', `publishdaten`="'.date('Y-m-d H:i:s', $r->publishdate).'" ';
-		 			}
-		 			$sql .= 'WHERE `eventid`='.$r->eventid;
-		 			$wpdb->query($sql);
-		 		}
-		 		
-		 		// Remove old columns
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsfrom`');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsto`');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `publishdate`');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `createdate`');
-		 	}
-		 	
-		 	if ($vers < 5) {
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `datefrom` DATETIME NULL AFTER `subject`');
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `dateto` DATETIME NULL AFTER `datefrom`');
-		 		
-		 		 $sql = 'SELECT `eventid`, `from`, `to` FROM `'.$wpdb->prefix.'fsevents`';
+		$this->upgradeDataBase();
 
-		 		$res = $wpdb->get_results($sql);
-	
-		 		foreach($res as $r) {
-		 			$sql = 'UPDATE `'.$wpdb->prefix.'fsevents` '.
-						'SET `datefrom`="'.$r->from.'", '.
-						'`dateto`="'.$r->to.'" '.
-		 				'WHERE `eventid`='.$r->eventid;
-		 			$wpdb->query($sql);
-		 		}
-		 		
-		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `from`');
-	 			$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `to`');
-	 			
-	 			// Late Removal
-	 			if ($vers == 4) {
-			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsfrom`');
-			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsto`');
-			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `publishdate`');
-			 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `createdate`');
-	 			}
-		 	}
-	 	}
-	 	
 		$charset_collate = '';
 	
 		if ( ! empty($wpdb->charset) )
@@ -1967,10 +1911,70 @@ class fsCalendar {
 
 	 	dbDelta($sql);
 	 	
-	 	// Save DB version
+	 	// Save DB version (do again, because the upgrade will not save
+	 	// the version, when the plugin is the first time activated!!!)
 	 	update_option('fse_db_version', FSE_DB_VERSION);
 	 }
 
+	 function upgradeDataBase() {
+	 	global $wpdb;
+	 	
+	 	$wpdb->hide_errors( );
+	 	
+	 	$vers = intval(get_option('fse_db_version'));
+	 	
+	 	if ($vers >= FSE_DB_VERSION || empty($vers)) {
+	 		return;
+	 	}
+	 	
+	 	// Migrate fields from/to to datefrom/dateto
+	 	if ($vers < 4) {
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `from` DATETIME NULL');
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `to` DATETIME NULL');
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `createdaten` DATETIME NULL');
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` ADD COLUMN `publishdaten` DATETIME NULL');
+	 		
+	 		$sql = 'SELECT `eventid`, `tsfrom`, `tsto`, `createdate`, `publishdate` FROM `'.$wpdb->prefix.'fsevents` WHERE `tsfrom` IS NOT NULL AND `from` IS NULL';
+
+	 		$res = $wpdb->get_results($sql);
+
+	 		foreach($res as $r) {
+	 			$sql = 'UPDATE `'.$wpdb->prefix.'fsevents` '.
+					'SET `from`="'.date('Y-m-d H:i:s', $r->tsfrom).'", '.
+					'`to`="'.date('Y-m-d H:i:s', $r->tsto).'", '.
+					'`createdaten`="'.date('Y-m-d H:i:s', $r->createdate).'" ';
+	 			if (!empty($r->publishdate)) {
+	 				$sql .= ', `publishdaten`="'.date('Y-m-d H:i:s', $r->publishdate).'" ';
+	 			}
+	 			$sql .= 'WHERE `eventid`='.$r->eventid;
+	 			$wpdb->query($sql);
+	 		}
+	 		
+	 		// Remove old columns
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsfrom`');
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsto`');
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `publishdate`');
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `createdate`');
+	 	}
+	 	
+	 	if ($vers < 5) {
+			// Just rename it		 		
+	 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` CHANGE COLUMN `from` `datefrom` DATETIME NULL');
+ 			$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` CHANGE COLUMN `to` `dateto` DATETIME NULL');
+ 			
+ 			// Late Removal
+ 			if ($vers == 4) {
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsfrom`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `tsto`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `publishdate`');
+		 		$wpdb->query('ALTER TABLE `'.$wpdb->prefix.'fsevents` DROP COLUMN `createdate`');
+ 			}
+	 	}
+	 	
+	 	// Save DB version
+	 	update_option('fse_db_version', FSE_DB_VERSION);
+	 }
+	 
 	 /**
 	  * Convert the Format String from php to fullcalender
 	  * @see http://arshaw.com/fullcalendar/docs/utilities/formatDate/
