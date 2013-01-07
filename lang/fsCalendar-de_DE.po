@@ -1,0 +1,1521 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Calendar\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-18 12:28+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Fabain von Allmen <faebu@faebu.ch>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: H:\\wosportable\\www\\wordpress\\wp-content\\plugins\\fsCalendar\n"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:22
+#, php-format
+msgid "The event %d does not exist"
+msgstr "Der Event %d existiert nicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:64
+msgid "Some events could not be deleted because of missing permissions"
+msgstr "Einige Events konnte nicht gelöscht werden wegen fehlenden Berechtigungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:70
+msgid "Event successfully deleted"
+msgstr "Event wurde gelöscht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:72
+msgid "No permission to delete event"
+msgstr "Keine Berechtigungen zum Löschen des Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:114
+msgid "Some events could not be changed because of missing permissions"
+msgstr "Einige Events konnte nicht geändert werden wegen fehlenden Berechtigungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:122
+msgid "Edit Events"
+msgstr "Events bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:249
+msgid "All"
+msgstr "Alle"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:277
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:298
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:332
+msgid "Subject"
+msgstr "Titel"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:280
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:299
+msgid "Author"
+msgstr "Autor"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:283
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:300
+msgid "Date"
+msgstr "Datum"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:285
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:301
+msgid "Time"
+msgstr "Zeit"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:287
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:302
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:343
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:388
+msgid "Location"
+msgstr "Ort"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:289
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:303
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:324
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:126
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:298
+msgid "Categories"
+msgstr "Kategorien"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:290
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:304
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:267
+msgid "State"
+msgstr "Status"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:311
+msgid "No events found"
+msgstr "Keine Events vorhanden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:324
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:339
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:341
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:301
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:34
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:330
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:157
+msgid "Draft"
+msgstr "Entwurf"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:338
+msgid "Edit this event"
+msgstr "Event bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:346
+msgid "Duplicate this event"
+msgstr "Event duplizieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:347
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:349
+msgid "Duplicate"
+msgstr "Duplizieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:354
+#, php-format
+msgid ""
+"You are about to delete this event \\'%s\\'\\n"
+" \\'Cancel\\' to stop, \\'OK\\' to delete."
+msgstr ""
+"Sie sind im Begriff den Event \\'%s\\' zu löschen.\\n"
+"\\'Abbrechen\\' zum Abbrechen, \\'OK\\' zum Löschen."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:356
+msgid "Delete this event"
+msgstr "Event löschen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:356
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:358
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:614
+msgid "Delete"
+msgstr "Löschen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:362
+msgid "View this event"
+msgstr "Event anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:363
+msgid "View"
+msgstr "Anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:385
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:562
+msgid "All day event"
+msgstr "Ganztägiger Event"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:404
+msgid "on"
+msgstr "am"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormOverview.php:415
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:213
+msgid "Add New Event"
+msgstr "Event erstellen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:158
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:283
+msgid "Published"
+msgstr "Veröffentlicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:469
+msgid "Event not found"
+msgstr "Event wurde nicht gefunden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:764
+msgid "&nbsp;&#9668;&nbsp;"
+msgstr "&nbsp;&#9668;&nbsp;"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:765
+msgid "&nbsp;&#9658;&nbsp;"
+msgstr "&nbsp;&#9658;&nbsp;"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:766
+msgid "&nbsp;&lt;&lt;&nbsp;"
+msgstr "&nbsp;&lt;&lt;&nbsp;"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:767
+msgid "&nbsp;&gt;&gt;&nbsp;"
+msgstr "&nbsp;&gt;&gt;&nbsp;"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:768
+msgid "today"
+msgstr "Heute"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:769
+msgid "month"
+msgstr "Monat"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:770
+msgid "week"
+msgstr "Woche"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendar.php:771
+msgid "day"
+msgstr "TAg"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:58
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:295
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:390
+msgid "No permission to create event"
+msgstr "Keine Berechtigung zum Erstellen eines Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:64
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:76
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:454
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:487
+msgid "Event does not exist"
+msgstr "Event existiert nicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:70
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:215
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:298
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:374
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:457
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:490
+msgid "No permission to edit event"
+msgstr "Keine Berechtigung zum Bearbeiten des Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:79
+msgid "No permission to view event"
+msgstr "Keine Berechtigung zum Anzeigen des Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:88
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:181
+msgid "Security check failed"
+msgstr "Sicherheits Überprüfung fehlgeschlagen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:98
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:412
+msgid "Event updated"
+msgstr "Event wurde aktualisiert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:100
+msgid "New event saved"
+msgstr "Der Event wurde gespeichert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:111
+msgid "Event published"
+msgstr "Event wurde veröffentlicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:116
+msgid "Automatically switched to view mode beacause you don't have permissions to edit a published event"
+msgstr "Es wurde automatisch in den Anzeige Modus gewechselt wegen fehlender Berechtigung zum Bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:127
+msgid "Event set to draft state"
+msgstr "Event wurde als Entwurft gespeichert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:134
+msgid "Synchronization with post data has been disabled"
+msgstr "Synchronisation mit Artikelinhalt wurde deaktiviert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:207
+#, php-format
+msgid "Some fields are disabled, because this event is linked to <a href=\"post.php?post=%d&action=edit\">this post</a>."
+msgstr "Einige Felder wurden deaktiviert, weil der Kalendereintrag mit <a href=\"post.php?post=%d&action=edit\">diesem Artikel</a> synchronisiert wird."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:208
+msgid "Click <a class=\"hide-if-no-js\" href=\"\" onClick=\"document.forms['event'].jsaction.value='nosync'; document.forms['event'].submit(); return false;\"'>here</a> to disable post synchronization to edit this event."
+msgstr "<a class=\"hide-if-no-js\" href=\"\" onClick=\"document.forms['event'].jsaction.value='nosync'; document.forms['event'].submit(); return false;\"'>Hier</a> klicken, um die Synchronisation mit dem Artikel zu deaktivieren."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:213
+msgid "View Event"
+msgstr "Event anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:213
+msgid "Edit Event"
+msgstr "Event bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:248
+msgid "Publish State"
+msgstr "Status"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:270
+msgid "Change to Draft"
+msgstr "Entwurf"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:274
+msgid "Created by"
+msgstr "Erstellt von"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:277
+msgid "Created"
+msgstr "Erstellt am"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:280
+msgid "Published by"
+msgstr "Veröffentlicht von"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:288
+#, php-format
+msgid "This event is synchronized with <a href=\"post.php?post=%d&action=edit\">this post</a>. Click <a class=\"hide-if-no-js\" href=\"\" onClick=\"document.forms['event'].jsaction.value='nosync'; document.forms['event'].submit(); return false;\"'>here</a> to disable the synchronization."
+msgstr "Dieser Kalendereintrag wird synchronisiert mit <a href=\"post.php?post=%d&action=edit\">diesem Artikel</a>. <a class=\"hide-if-no-js\" href=\"\" onClick=\"document.forms['event'].jsaction.value='nosync'; document.forms['event'].submit(); return false;\"'>Hier</a> klicken um die Synchronisation zu deaktivieren."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:303
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:307
+msgid "Save"
+msgstr "Speichern"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:305
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:617
+msgid "Publish"
+msgstr "Veröffentlichen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:309
+msgid "Save Draft"
+msgstr "Entwurf speichern"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/FormEvent.php:320
+msgid "When"
+msgstr "Wann"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/Widgets.php:33
+msgid "Title:"
+msgstr "Titel:"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:61
+msgid "Number of events<br /><small>Number of events to display by default.</small>"
+msgstr "Anzahl Anlässe<br /><small>Anzahl Anlässedie standardmässig angezeigt werden.</small>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:65
+msgid "Date Format"
+msgstr "Datumsformat"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:69
+msgid "Time Format"
+msgstr "Zeitformat"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:73
+msgid "Weeks starts on"
+msgstr "Woche startet am"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:77
+msgid "Show end date"
+msgstr "Anzeige des Bis-Datums"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:81
+msgid "Show time for all-day events"
+msgstr "Uhrzeit anzeige für ganztätige Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:93
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:106
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:279
+msgid "Template"
+msgstr "Vorlage"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:98
+msgid "Template for Listoutput"
+msgstr "Vorlage für strukturierte Listausgabe"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:98
+msgid "The whole template is automatically surrounded by the &lt;li&gt; tag when a grouped list of events is created."
+msgstr "Die Vorlage wird automatisch in &lt;li&gt; Tags eingeschlossen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:109
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:93
+msgid "Group by"
+msgstr "Gruppieren nach"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:113
+msgid "Header Format"
+msgstr "Format"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:124
+msgid "Loading of jQuery library"
+msgstr "Laden der jQuery Bibliothek"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:128
+msgid "Loading of jQuery UI library"
+msgstr "Laden der jQuery UI Bibliothek"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:132
+msgid "Loading of FullCalendar files"
+msgstr "Laden der FullCalendar Bibliotheken"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:143
+msgid "Enable pagination by default"
+msgstr "Blättern aktivieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:147
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:148
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:320
+msgid "Text for prev link"
+msgstr "Text für \"Zurück\" Link"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:151
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:152
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:324
+msgid "Text for next link"
+msgstr "Text für \"Vorwärts\" Link"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:155
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:141
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:313
+msgid "Appearance"
+msgstr "Erscheinung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:159
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:156
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:328
+msgid "Number of pages at the beginning/end"
+msgstr "Anzahl Seite am Anfang/Ende"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:163
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:160
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:332
+msgid "Number of pages before/after current page"
+msgstr "Anzahl Seiten vor/nach der aktuellen Seite"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:174
+msgid "Date Format for Admin Interface"
+msgstr "Datumsformat für Admin Oberfläche"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:178
+msgid "Date chooser"
+msgstr "Datumswähler"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:182
+msgid "Mode"
+msgstr "Modus"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:186
+msgid "Week number"
+msgstr "Wochennummer"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:190
+msgid "Month/Year Selector"
+msgstr "Monat/Jahr Asuwahl"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:201
+msgid "Single view page"
+msgstr "Seite für Einzelanzeige"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:212
+msgid "Title format month view"
+msgstr "Titel Format Monatsansicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:216
+msgid "Title format week view"
+msgstr "Titel Format Wochenansicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:220
+msgid "Title format day view"
+msgstr "Titel Format Tagesansicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:224
+msgid "Colum header format month view"
+msgstr "Spaltenkopf Format Monatsansicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:228
+msgid "Colum format week view"
+msgstr "Spaltenkopf Format Wocheansicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:232
+msgid "Colum format day view"
+msgstr "Spaltenkopf Format Tagesansicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:244
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:245
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:28
+msgid "Calendar"
+msgstr "Kalender"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:263
+msgid "Calendar Settings"
+msgstr "Kalender Einstellungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:280
+msgid "Global Setting"
+msgstr "Global Einstellungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:281
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:786
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:133
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:305
+msgid "Pagination"
+msgstr "Blättern"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:282
+msgid "Event Page"
+msgstr "Anlass-Seite"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:283
+msgid "Graphical calendar (FullCalendar)"
+msgstr "Grafischer Kalender (FullCallendar)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:284
+msgid "Admin settings"
+msgstr "Administrationseinstellungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:285
+msgid "Usage"
+msgstr "Verwendung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:286
+msgid "About"
+msgstr "Über"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:328
+msgid "You can define a page for displaying a single event. This page will always be link to, when using a function of this plug-in to show an overview of events (list, graphical calendar,...). If you do not define a page for displaying a single event, make sure you change the template defined below, since it uses the paramter <code>{event_url}</code>, which is not available, if no single view page is defined."
+msgstr ""
+"Sie können eine spezielle Seite für die Darstellung von einzelnen Events in Ihrem Blog definieren. Auf diese Seite wird immer referenziert, wenn einen zu Verfügung gestellte Funktion (oder Tag) verwendet wird, um eine Liste von Events darzustellen (Liste, Grafischer Kalender, etc.).\n"
+"Wenn Sie keine solche Seite definieren, stellen Sie sicher, dass die untenstehenden Vorlagen angepasst werden, weil diese den parameter <code>{event_utl}</code> verwenden, welche keine Funktion aufweist, wenn keine Seite für die Einzeldarstellung eingestellt ist."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:329
+msgid "Because this page normally should not be displayed in any page listing, you can hide it and it will disapear from any lists in your blog, provided that your theme and plug-ins use standard wordpress functions and are not reading directly from the database. By ticking the flag <i>Mark page</i> the selected page will be <span id=\"page_is_cal\"><span>highlighted</span></span> in the page overview."
+msgstr "Da eine solche spezielle Seite normalerweise nicht aufgelistet werden soll, in einer Seitenauflistung, kann diese versteckt werden, vorausgesetzt Ihr Theme verwendet die Wordpress Standardfunktionen zum Darstellen von Seitenauflistungen. Zudem können Sie die Seite in der Administrationsoberfläche <span id=\"page_is_cal\"><span>farblich hervorheben</span></span>, indem Sie das Häkchen <i>Seite in der Übersicht hervorheben</i> anklicken."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:336
+msgid "Please notice, that the most of these settings are just defaults for your widgets, for the usage in post and pages using tags (e.g. <code>{events_list}</code>) and for the integration in your theme using WP Calendar functions"
+msgstr "Bitte beachte, dass die meisten Einstellungen nur Standardeinstellungen sind für Widgets, für die Verwendung von Tags in Artikeln und Seiten und für die Integration in dein Theme mittels WP Calendar Funktionen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:338
+msgid "When using widgets some of them can be overriden, when using tags or built-in function <u>all</u> these settings can be overriden. For more information please have a look a the <a href=\"#fs_tab9\">usage documentation</a>"
+msgstr "Bei der Verwendung von Widgets können einige Einstellung überschreiben werden. Bei der Verwendung von Tags oder Funktionen können <u>alle</u> diese Einstellungen übersteuert werden. Bitte beachte hierzu auch die  <a href=\"#fs_tab9\">Verwendungsdokumentation</a>."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:346
+msgid "When displaying a list of events using a widget, a function or a short tag, the single events are printed using the following templates."
+msgstr "Wenn eine Liste von Anlässen angzeigt wird mit einem Widget, einer Funktion oder einem Short Tag, dann werden die nachfolgenden Templates angewendet."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:347
+msgid "The first template is used for a &quot;flat&quot; list, make sure you have line breaks using the paragraph or line-break tag. The second template is used for a list, which allows the grouping of events."
+msgstr "Das erste Template wird benötigt für &quot;flach&quot; Listen. Stellen Sie also sicher, dass im Template ein Zeilenumbruch mittel Paragraph oder Line-Break Tag erfolgt. Der zweite Tag wird für eine gruppierbare Liste benötigt."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:348
+msgid "For more information about the short tags have a look at the usage documentation."
+msgstr "Für mehr Informationen über Short Tags schauen Sie bitte in die Verwendungsdokumentation"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:354
+msgid "If you are displaying your events using a list (e.g. the Grouped Calendar Widget), the events can be grouped by a date entity, which you can define below."
+msgstr "Wenn die Events gruppiert angezeigt werden, dann können Sie hier die Standardgruppierung und das Format der Überschrift festlegen."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:355
+msgid "Please refer to the php  <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> function for all the output format options."
+msgstr "Bitte beachten Sie die PHP Funktion <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> bezüglich den verwendbaren Parametern"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:362
+msgid "WP Calendar needs the jQuery and the jQuery UI library to work properly. These libraries are loaded using the recommended WP function which make sure that all libraries are loaded once only."
+msgstr "WP Calendar benötigt die jQuery und jQuery UI Bibliotheken um zu funktionieren. Diese Bibliotheken werden mittels den von WP vorgeschlagenen Funktionen geladen, um eine höchstmögliche Kompatibilität zu anderen Plug-Ins zu gewährleisten."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:364
+msgid "Since some plugins do not use these function, there may be compatibility issues preventing WP calendar to work as expected. If the required libraries are loaded by another plug-in you can disable the loading by WP calendar."
+msgstr "Da einige Plug-Ins sich nicht an diese Vorgaben halten, kommt es unter Umständen zu Fehlern, weil Bibliotheken mehrfach geladen werden, weshalb hier das Laden dieser Bibliotheken unterdrückt werden kann."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:366
+msgid "If you are using other plugins which load these libraries <b>using the WP functions</b>, these settings have not effect!"
+msgstr "Wenn es andere Plug-Ins gibt, welche die Bibliotheken mittels WP Funktionen laden (so wie es sein sollte), haben diese Einstellungen jedoch keinen Einfluss!"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:372
+msgid "WP Calendar allows an easy intergration of <a href=\"http://arshaw.com/fullcalendar/\" target=\"_blank\">FullCalendar</a>, a nice graphical calendar. This graphical calendar has many features and options, which can all be set when integration it in your blog (see usage documentation). All the options, which are relevant for localization are passed by WP Calenar (first day of week, time format, all translations like daynames). Since the date format varies depending on the view, you can define all the date formats here. "
+msgstr "Das WP Calendar plug-in erlaubt eine einfach Intergration von <a href=\"http://arshaw.com/fullcalendar/\" target=\"_blank\">FullCalendar</a>, einem schönen grafischen Kalendar. FullCalendar bietet viele Optionen, die alle bei der einfach Integration übergeben werden können (Siehe Verwendungs-Dokumentation). WP Calendar übergibt beim Erzeugen des grafischen Kalenders automatisch verschiedene Optionen. Insbesondere werden die Monats- und Tagesname vollständig übersetzt übergeben, das Zeitformat und der erste Tag der Woche werden gemäss den WP Grundeinstellungen übergeben. Da die Darstellung des Datumsformats abhängig ist von der Angezeigten Sicht (Monats-, Wochen-, Tagessicht) sollten hier die Formate für die jeweilige Sicht gepflegt werden."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:376
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:526
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:541
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:849
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:851
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:853
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:856
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:862
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:864
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:103
+msgid "Please refer to the php <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> function for all valid parameters"
+msgstr "Bitte beachten Sie die PHP Funktion <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> bezüglich den verwendbaren Parametern"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:377
+msgid "but refer to the <a href=\"http://arshaw.com/fullcalendar/docs/utilities/formatDates/\" target=\"_blank\">documentation</a> of FullCalendar for the correct syntax (how to use brackets)."
+msgstr "aber beachten Sie die <a href=\"http://arshaw.com/fullcalendar/docs/utilities/formatDates/\" target=\"_blank\">Dokumentation</a> von FullCalender bezüglich der korrekten Syntax im Zusammenhang mit den Klammern."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:426
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:577
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:578
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:579
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:580
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:95
+msgid "Day"
+msgstr "Tag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:427
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:577
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:578
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:579
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:580
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:96
+msgid "Month"
+msgstr "Monat"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:428
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:577
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:578
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:579
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:580
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:97
+msgid "Year"
+msgstr "Jahr"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:436
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:445
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:454
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:672
+msgid "Enabled"
+msgstr "Aktivieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:437
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:446
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:455
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:673
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:474
+msgid "Always show end date"
+msgstr "Bis-Datum immer anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:475
+msgid "Only show end date, if different from start date"
+msgstr "Bis-Datum nur Anzeigen, wenn es vom Von-Datum abweicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:483
+msgid "Hide time when all-day event"
+msgstr "Zeit ausblenden bei ganztägigen Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:484
+msgid "Always show time"
+msgstr "Bis-Datum immer anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:492
+msgid "No single view page"
+msgstr "Keine Seite verwenden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:501
+msgid "Mark page in page overvie"
+msgstr "Seite in der Übersicht hervorheben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:502
+msgid "Set page as hidden"
+msgstr "Seite verstecken"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:525
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:540
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:568
+msgid "Use WP settings"
+msgstr "Wordpress Einstellungen verwenden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:549
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:550
+msgid "Monday"
+msgstr "Montag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:551
+msgid "Tuesday"
+msgstr "Dienstag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:552
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:553
+msgid "Thursday"
+msgstr "Donnerstag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:554
+msgid "Friday"
+msgstr "Freitag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:555
+msgid "Saturday"
+msgstr "Samstag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:588
+msgid "separated by"
+msgstr "getrennt durch"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:606
+msgid "Graphical date chooser enabled"
+msgstr "Grafische Datumsauswahl aktiviert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:607
+msgid "Graphical date chooser disabled"
+msgstr "Grafische Datumsauswahl deaktiviert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:623
+msgid "Automatically open when enter field"
+msgstr "Automatisch öffnen, wenn das Feld fokusiert wird"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:624
+msgid "Open manually by clicking the calendar icon"
+msgstr "Manuell öffnen durch Klicken auf die Kalender Ikone"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:625
+msgid "Mixed mode (Open automatically and provide icon)"
+msgstr "Geschmischter Modus (Automatisch öffnen und Ikone anzeigen)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:640
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:657
+msgid "Show"
+msgstr "Anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:641
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:658
+msgid "Hide"
+msgstr "Ausblenden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:705
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:143
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:315
+msgid "Use dots (...)"
+msgstr "Punkte verwenden (...)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:706
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:144
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:316
+msgid "Show all pages"
+msgstr "Alle Seiten anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:714
+msgid "Use Widget for easy Intergration!"
+msgstr "Verwenden Sie Widgets für die Integration!"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:716
+msgid "The easiest way to display your events in your blog is the usage of widgets. There are two widgets you can use. One can be used for displaying an unordered list of your events, which are grouped by year, month or day. The other one just prints your events without any grouping.<br /> In both widgets you can use certain filters and limit the number of events to display. The template can be maintained in the widgets as well. For more information about templates, please read on."
+msgstr "Der einfachste Weg für Anzeige Ihrer Events in Ihrem Blog ist die Verwendung von Widgets. WP Calender bietet zwei verschiedene Widgets an. Eines davon erstellt eine hierarchisch gegliederte Liste, wobei sie die Möglichkeit haben, die Events nach Jahr, Monat oder Tag zu gruppieren. Das andere Widget gibt einfach eine Liste von Events aus. Sie können direkt in den Widget verschiedene Filter einsetzen und die Anzahl der anzuzeigenden Events limitieren. Zudem können Sie auch in Widgets sog. Templates verwenden um die Darstellung zu beeinflussen. Bitte lesen Sie unten weiter für weitere Informationen zu Templates."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:722
+msgid "If you dont want to use widgets, you can integrate all data in post/pages with the use of special tags, or you can integrate it directly in your theme using various php functions. Please read on for more information."
+msgstr "Wenn Sie keine Widgets verwendetn möchten, können Sie Ihre Events in jede Seite und in jeden Artikel intergrieren, indem Sie spezielle Tags verwenden. Zudem kann WP Calender durch die Verwendung von verschiedenen Funktionen auch direkt in Ihrem Theme eingebunden werden. Weitere Informationen finden Sie weiter unten."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:729
+msgid "Show a graphical calendar in your blog"
+msgstr "Einen grafischen Kalender in Ihrem Blog anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:730
+msgid "Use WP Calendar functions in your theme"
+msgstr "WP Calendar Funktionen direkt in Ihr Theme intergrieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:731
+msgid "Use short tags in your post and pages"
+msgstr "Short Tags in Artikeln und Seiten verwenden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:735
+msgid "Graphical Calendar"
+msgstr "Grafischer Kalender"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:737
+msgid "This plug-in comes with <a href=\"http://arshaw.com/fullcalendar/\" target=\"_blank\">FullCalendar</a>, a very nice, simple, customizeable ajax-based calendar. You can integrate this calendar by using the tag <code>{events_calendar}</code> in your page or post. WP Calendar will set some options for your, especially all the transaltions for day- and monthnames and some WP options like the time format or the first day of the week. All the date formatting options can be maintained the FullCalendar settings tab. All FullCalendar <a href=\"http://arshaw.com/fullcalendar/docs/\" target=\"_blank\">options</a> can be passed as a parameter of the tag. Nested options must be accessed using its path (e.g. Header->right: \"today\"). Along with the FullCalendar options, you can also pass various parameters for filtering the output (See <a href=\"#filters\">filter options</a>)."
+msgstr "Diese Plug-In beinhaltet <a href=\"http://arshaw.com/fullcalendar/\" target=\"_blank\">FullCalendar</a>, einen einfachen, flexiblen, ajax-basierten grafischen Kalender. Dieser Kalender kann einfach integriert werden in Ihr Blog, indem Sie das Tag <code>{events_calendar}</code> in Ihrer Seite oder Ihrem Artikel verwenden. WP Calender konfiguriert verschiedene Option von FullCalendar automatisch. Nebst den Einstellungen zum Datums- und Zeitformat wird auch der erste Tag der Woche aus den Grundeinstellungen verwendet und es werden sämtliche Texte von WP Calender korrekt übersetzt (Monats-/Tagbezeichnungen, statische Texte). Die Formattierungseinstellungen für die Datumsformate können direkt in dieser Admin Oberfläche gepflegt werden (Siehe oben).Bei der Verwendung des Tags können sämtliche <a href=\"http://arshaw.com/fullcalendar/docs/\" target=\"_blank\">Optionen</a> von FullCalendar als Parameter übergeben werden. Verschachtelte Optionen müssen über einen vollständigen Pfad gesetzt werden (z.B. Header->right: \"today\"). Nebst den FullCalendar Optionen können auch verschiedenen Parameter von WP Calendar verwendet werden, um die Ausgabe der Events zu filter (Siehe <a href=\"#filters\">Filter Optionen</a>)."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:743
+msgid "Here is a sample tag, which only shows events of the categories 3 and 5, and sets some options of FullCalendar"
+msgstr "Untenstehend sehen Sie ein Beispiel Tag, dass die Ausgabe von Events auf solche der Kategorien 3 und 5 reduziert und verschiedene Optionen von FullCalendar setzt."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:747
+msgid "If you pass any parameters for date or time formatting use the <a href=\"http://arshaw.com/fullcalendar/docs/utilities/formatDate/\" target=\"_blank\">parameters</a> of FullCalendar and not the parameters of the php date function."
+msgstr "Wenn Sie Paramter für die Datums- oder Zeitformatierung übergeben, müssen Sie sich an die <a href=\"http://arshaw.com/fullcalendar/docs/utilities/formatDate/\" target=\"_blank\">Optionen</a> von FullCalender halten und nicht an die Syntax der php date() funktion."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:751
+msgid "Usage in Themes"
+msgstr "Verwendung in Themen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:753
+msgid "At the moment there are four functions available"
+msgstr "Im Moment stehen vier Funktionen zu Verfügung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:756
+msgid "Returns an array of event objects for further processing by yourself"
+msgstr "Gibt ein Array mit Events zurück für die selbst implementierte Weiterverarbeitung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:757
+msgid "Prints a selection of events without any hierarchy"
+msgstr "Gibt eine Anzahl von Events aus ohne hierarchische Gruppierung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:758
+msgid "Prints an unordered list and allows grouping by a date entity"
+msgstr "Gibt eine Anzahl von Events in einer unsortierten Liste aus und erlaubt das Gruppieren nach Datumswerten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:759
+msgid "Just returns an event object corresponding to the passed Event-ID"
+msgstr "Gibt ein Objekt des Events zurück. Nebst der Event ID können keine weiteren Parameter übergeben werden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:761
+msgid "The first three functions accept one parameter, which expects to be an associative array. Call a function like this"
+msgstr "Die ersten drei Funktionen akzeptieren jeweils einen Parameter in Form eines assoziativen Arrays. Rufen Sie die Funktion folgendermassen auf"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:772
+msgid "The allowed paramters are described below. Some parameters are not supported by all functions, since they won't make any sense"
+msgstr "Die erlaubten Parameter sind unten beschrieben. Einige von ihnen werden nicht von allen Funktionen unterstützt, da sie keinen Sinn machen würden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:773
+msgid "Notice that every parameter, which expects a boolean value, must by supplied by 1 (true) or 0 (false)."
+msgstr "Beachte, dass jeder Parameter der einen boolschen Wert erwartet, mit einer 1 (true) oder mit 0 (false) versorgt werden muss."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:776
+msgid "Output control"
+msgstr "Ausgabesteuerung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:777
+msgid "Parameter"
+msgstr "Parameter"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:777
+msgid "Default"
+msgstr "Standardwert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:777
+msgid "Description"
+msgstr "Beschreibung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:778
+msgid "The functions <code>fse_print_events</code> and <code>fse_print_events_list</code> normally echos the result. By setting the parameter <code>echo</code> to false, the result is returned instead"
+msgstr "Die Funktionen <code>fse_print_events</code> und <code>fse_print_events_list</code> geben das Resultat normalerweise direkt aus. Sie können den Parameter <code>echo</code> auf false setzten um das Resultat stattdessen zurück zu geben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:779
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:780
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:784
+msgid "Calendar Options"
+msgstr "Kalender Einstellungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:779
+msgid "The number of events to return or print"
+msgstr "Maximale Anzahl Events zum aus- oder zurückgeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:780
+msgid "The template used for processing the output of an event. You can use the same tags as in post and pages, described <a href=\"#usage_posts\">here</a>"
+msgstr "Die Vorlage welche verwendet wird für die Ausgabe eines Events. Es können dieselben Tags verwendet werden, wie für die Artikel und Seiten, welche <a href=\"#usage_posts\">weiter unten</a> beschrieben sind."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:781
+msgid "If you use the parameter `template` in a tags (e.g. {events_print; template=\"{event_subject}\"}, make sure, you <b><u>escape</u></b> all the parentheses (e.g. {events_print; template=\"\\{event_subject\\}\"})"
+msgstr "Wenn Sie den Parameter `template` in tags verwenden (z.B. {events_print; template=\"{event_subject}\"}, stellen Sie sicher, dass sämtliche Klammern <b><u>escaped</u></b> werden (z.B. {events_print; template=\"\\{event_subject\\}\"})"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:782
+msgid "Additional HTML code to print before"
+msgstr "HTML Code, der vor dem Resultat ausgegeben wird"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:783
+msgid "Additional HTML code to print after"
+msgstr "HTML Code, der nach dem Resultat ausgegeben wird"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:784
+msgid "If set to false, the enddate is left empty, if it is not differing from the start date"
+msgstr "Wenn auf falsch gesetzt, wird das Bis-Datum nur ausgegeben, wenn es vom Von-Datum abweicht"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:787
+msgid "The pagination is only used in a list (grouped or ungrouped) of events. If all events can be displayed on one page the pagination bar will not appear"
+msgstr "Zeit anzeigen bei ganztägigen Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:790
+msgid "Set to true to enable pagination for a list of events, exceeding the maxium of events to show (parameter <code>number</code>"
+msgstr "Setze den Wert auf true um das Blättern zu aktivieren, wenn die Anzahl Events die maximale Anzahl der Events pro Seite übersteigt"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:792
+msgid "Text to use for moving to the previous page. Leave empty to supress link"
+msgstr "Text für den Link, der zu vorangehenden Seite führt."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:794
+msgid "Text to use for moving to the next page. Leave empty to supress link"
+msgstr "Text für den Link der zur nächsten Seite führt"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:796
+msgid "If true, the list of pages uses dots (...). For more information see parameter <code>pagination_end_size</code>"
+msgstr "Wenn true, dann werden für das Blätter Punkte verwendetm, um eine grosse Anzahl Seiten kompakt darzustellen. Für mehr Informationen beachte den Parameter <code>pagination_end_size</code>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:798
+msgid "The number of pages to show at the beginning and at the end of the page list, if the option <code>pagination_use_dots</code> is enabled"
+msgstr "Anzahl Seiten, die am Anfang und am Ende der Blätteleiste dargestellt werden sollen, wenn die Option <code>pagination_use_dots</code> aktiviert ist"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:800
+msgid "The number of pages to show before and after the current page, if the option <code>pagination_use_dots</code> is enabled"
+msgstr "Anzahl Seiten, die vor und nach der aktuellen Seite dargestellt werden sollen, wenn die Option <code>pagination_use_dots</code> aktiviert ist"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:802
+msgid "Standard filtering"
+msgstr "Filter"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:803
+msgid "An array of event IDs to explicitly include. In combinaion with other filter the results always is an intersection"
+msgstr "Ein Array mit Event IDs, welche explizit selektiert werden sollen. Bei mehreren Parameter wird immer die Schnittmenge verwendet."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:804
+msgid "An array of event IDs to explicitly exclude"
+msgstr "Ein Array mit Event IDs, welche explizit ausgeschlossen werden sollen."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:805
+msgid "Only events of this author will be fetched"
+msgstr "Nur Events von diesem Autor werden selektiert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:806
+msgid "Only events in this state will be fetched"
+msgstr "Nur Events in diesem Status werden selektiert"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:807
+msgid "Expects an <strong>array</strong> of categories, which the events must be linked to"
+msgstr "Erwartet ein <strong>Array</strong> mit Kategorien, welche selektiert werden sollen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:808
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:822
+msgid "Date/Time filtering"
+msgstr "Datum/Zeit Filter"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:810
+msgid "Since all events are valid for a certain period, the filtering needs an extended concept. For filtering you can define a start time or an end time or even both, which defines an interval. To define how theses times are handled, there are three constants"
+msgstr "Weil Events eine Gültigkeit haben, die sich über eine Zeitspanne erstrecken, erfordert das Filter ein erweitertes Konzept. Für das Filter kkönnen Sie ein Von-Zeitpunkt, Bis-Zeitpunkt oder biedes definieren. Um die Behandlung dieser Filter-Werte zu interpretieren können die drei folgenden Konstanten verwendet werden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:812
+msgid "is the most general selector, since the event just has to be valid at any time of your selection (after the start time or before the end time or during the intervall)"
+msgstr "ist der universelle Selektor. Der Event muss zu <b>irgendeinem</b> gültig sein (also nach dem Von-Zeitpunkt, vor der dem Bis-Zeitpunkt oder irgendwann während des Intervalls)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:813
+msgid "sets the start time of the event to be relevant. If you define a start time and the event starts before this time, it is not selected even if it ends after this time"
+msgstr "verwendet den Von-Zeitpunkt als relevantes Kriterium. Wenn ein Event <b>vor</b> dem Vor-Zeitpunkt beginnt, wird er nicht selektiert, auch wenn er danach endet."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:814
+msgid "sets the end time of the event to be releavant. If you define an endtime and the events ends after this time, it is not selected even if it starts before this time"
+msgstr "verwendet den Bis-Zeitpunkt als relevantes Kriterium. Wenn ein Event <b>nach</b> dem Bisr-Zeitpunkt endet, wird er nicht selektiert, auch wenn er davor beginnt"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:816
+msgid "These constants are passed by the parameter <code>datemode</code>"
+msgstr "Diese Konstanten werden dem Parameter <code>datemode</code> übergeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:818
+msgid "Current time"
+msgstr "Aktuelles Datum/Zeit"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:818
+msgid "Timestamp of start time"
+msgstr "Von-Zeit<b>stempel</b>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:819
+msgid "Timestamp of end time"
+msgstr "Bis-Zeit<b>stempel</b>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:820
+msgid "Use one of the above described constants"
+msgstr "Verwenden Sie eine der oben beschriebenen Konstanten oder den in Klammer notierten Wert."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:821
+msgid "True or False to select eighter only allday or non-allday events"
+msgstr "True oder falsch, um <b>entweder</b> nur ganztägige oder keine ganztägigen Events zu selektieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:823
+msgid "An array of fields to be sorted. This parameter is not available for the function <code>fse_print_events_list</code>, when grouping is active"
+msgstr "Ein Array mit Feldern, nach denen sortiert werden soll. Dieser Parameter ist nicht verfügbar für die Funktion <code>fse_print_events_list</code>, wenn die Gruppierung aktiv ist"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:824
+msgid "An array of sort directions (<code>asc</code> or <code>desc</code>). Use the same key as in the array <code>orderby</code> to join the right field"
+msgstr "Ein Array mit Sortierrichtungen (<code>asc</code> oder <code>desc</code>). Verwenden Sie denselben Schlüssel wie im Array <code>orderby</code>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:825
+msgid "Grouping"
+msgstr "Gruppierung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:826
+msgid "Grouping is only available for the function <code>fse_print_events_list</code>"
+msgstr "Gruppierung ist nur möglich mit der Funktion <code>fse_print_events_list</code>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:827
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:835
+msgid "Calendar options"
+msgstr "Kalender Einstellungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:827
+msgid "Use the following constants"
+msgstr "Verwenden Sie die folgenden Konstanten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:829
+msgid "No grouping"
+msgstr "Keine Gruppierung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:830
+msgid "Group by day"
+msgstr "Gruppierung nach Tag"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:831
+msgid "Group by month"
+msgstr "Gruppierung nach Monat"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:832
+msgid "Group by year"
+msgstr "Gruppierung nach Jahr"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:835
+msgid "The header format when grouping, refer to the php <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> function"
+msgstr "Das Format für den Gruppen-Kopf. Bitte verwenden Sie die in der PHP Funktion <a href=\"http://www.php.net/manual/function.date.php\" target=\"_blank\">date()</a> beschriebenen Parameter"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:837
+msgid "Single Event Usage in Posts and Pages"
+msgstr "Verwendung in Aritkeln und Seiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:838
+msgid "You can display event's details in a post or page by using predefined tags. The eventid is passed by url or directly in the post by using a special tag"
+msgstr "Sie können Event Details in Artikeln oder Seiten darstellen, indem Sie vordefinierte Tags verwenden. Die Event ID wird entweder per URL oder mit einem speziellen Tag übergeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:839
+msgid "To pass the ID by url, just append the paramter <code>event</code> to your url (e.g. <code>www.yourblog.com/pages/myevent?event=37</code>). To load an event in your post without passing by url, use the tag <code>{event_id; id=x}</code> (e.g. <code>{event_id; id=538}</code> directly in your post before using the other tags. By using this tag it is also possible to load more than one event in a sequentiall mechanism. Everytime you insert the <code>event_id</code> tag another event can be loaded"
+msgstr "Um die Event ID per URL zu übergeben, fügen Sie diese mit dem Parameter <code>event</code> zur URL hinzu  (z.B. <code>www.yourblog.com/pages/myevent?event=37</code>). Um einen Event direkt in einem Aritkel oder einer Seite zu laden, verwenden Sie den Tag <code>{event_id; id=x}</code> (z.B. <code>{event_id; id=538}</code> direkt im Artikel oder der Seite <b>bevor</b> Sie weitere Tags ausgeben. Diesen Tag können Sie auch mehrfach in ihren Seiten und Artikeln verwenden, um mehrere Events auszugeben. Die Verarbeitung erfolgt sequentiell."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:840
+msgid "Tags can also be used in the title of the post or page. The mechanism is the same as for the content"
+msgstr "Tags können auch im Titel von Artikeln und Seiten verwendet werden. Der Mechanismus entspricht exakt demjenigen für die Ausgabe im eigentlichen Inhalt."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:841
+msgid "Some tags accept <b>optional</b> parameters to control the output. All parameters in the tag should by separated by a \";\". Remember that all parameter values are trimmed. If you need some extra whitespaces at the begining or at the and of a value use quotes to surround the value (e.g. &quot;, &quot;)"
+msgstr "Einige Tags akzeptieren <b>optionale</b> Parameter. Alle Parameter in den Tags müssen durch ein \";\" getrennt werden. Beachten Sie das alle Parameter getrimmt werden (Leerzeichen werden am Anfang und Ende entfernt). Wenn Sie ein Leerzeichen explizit wünschenmüssen Sie den Wert mit Gänsefüsschen einschliessen (z.B. &quot;, &quot;)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:844
+msgid "Explicitly loads an event by passing it's ID. <b>If no ID is specified the current ID is printed out</b>"
+msgstr "Lädt den Event mit der angegebenen ID. <b>Wenn keine ID übergeben wird, wird die ID des aktuellen Events ausgegeben</b>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:845
+msgid "The event's subject"
+msgstr "Titel des Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:846
+msgid "The event's location"
+msgstr "Ort des Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:847
+msgid "The event's description"
+msgstr "Beschreibung des Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:848
+msgid "The event's start date; You can pass the parameter <code>fmt</code> to define a differing format"
+msgstr "Von-Datum; Mit dem Parameter <code>fmt</code> kann ein von den Einstellungen abweichendes Datumsformat übergeben werde"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:850
+msgid "The event's end date; You can pass the parameter <code>fmt</code> to define a differing format"
+msgstr "Bis-Datum; Mit dem Parameter <code>fmt</code> kann ein von den Einstellungen abweichendes Datumsformat übergeben werde"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:852
+msgid "The event's start time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> (using 0 or 1) if you wanna hide the time, if it's an all-day event."
+msgstr "Von-Zeit; Mit dem Parameter <code>fmt</code> kann ein von den Einstellungen abweichendes Datumsformat übergeben werden. Verwende den Parameter <code>hideifallday</code> um die Zeit auszublenden, wenn es sich um einen ganztätigen Event handelt."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:854
+msgid "The event's end time; You can pass the parameter <code>fmt</code> to define a differing format. Use the parameter <code>hideifallday</code> if you wanna hide the time, if it's an all-day event."
+msgstr "Bis-Datum; Mit dem Parameter <code>fmt</code> kann ein von den Einstellungen abweichendes Datumsformat übergeben werden. Verwende den Parameter <code>hideifallday</code> um die Zeit auszublenden, wenn es sich um einen ganztätigen Event handelt."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:855
+msgid "Use this tag to print out the parameter <code>text</code> if it is an allday event."
+msgstr "Verwende diesen Tag zum Ausgeben des Parameter <code>text</code>, wenn es sich um einen ganztägigen Event handelt"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:857
+msgid ""
+"The event's duration; Pass on of the values <code>d</code>, <code>h</code>, <code>m</code> to the argument \n"
+"\t\t\t<code>type</code> to get the days, hours and minutes. You can add a suffix to the output by passing the argument <code>suffix</code>. By default empty values are not printed out, by setting the argument <code>empty</code> to 1 you can change that behaviour."
+msgstr "Dauer des Events; Mit den Parametern <code>d</code>, <code>h</code>, <code>m</code> kann entweder die Dauer in Tagen, Stunden oder Minuten ausgegeben werden. Zudem kann ein Suffix mit dem Parameter <code>suffix</code> übergeben werden. Normalerweise erfolgt keine Aufgabe wenn der Wert initial ist (z.B. 0 Tage). Mit dem Wert 1 im Parameter <code>empty</code> können Sie die Ausgabe dennoch erzwingen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:859
+msgid "The event's categories; Use the paramter <code>exclude</code> to pass a comma-separated list of categories to exclude from displaying"
+msgstr "Kategorien des Events; Verwenden Sie den Parameter <code>exclude</code> mit einer Komma-getrennte Liste von Kategorien-IDs um diese von der Anzeige auszuschliessen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:860
+msgid "Use the paramter <code>sep</code> to define the separator (&quot;, &quot; is default). You can also pass the value <code>list</code>, which will force the output in unordered list"
+msgstr "Verwenden Sie den Parameter <code>sep</code> um den Separator zu definieren (quot;, &quot; ist der Standard-Wert). Es kann auch der Wert <code>list</code> übergeben werden, um die Kategorien in einer unsortieren Liste auszugeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:861
+msgid "The event's publish date; You can pass the parameter <code>fmt</code> to define a differing format"
+msgstr "Veröffentlichungsdatum; Mit dem Parameter <code>fmt</code> kann ein von den Einstellungen abweichendes Datumsformat übergeben werde"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:863
+msgid "The event's publish time; You can pass the parameter <code>fmt</code> to define a differing format"
+msgstr "Veröffentlichungszeit; Mit dem Parameter <code>fmt</code> kann ein von den Einstellungen abweichendes Datumsformat übergeben werde"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:865
+msgid "The event's author's display name"
+msgstr "Vollständiger Name des Autors"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:866
+msgid "The event's author's user ID"
+msgstr "Die Benutzer-ID des Autors"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:867
+msgid "The event's publisher's display name"
+msgstr "Vollständiger Name des Veröffentlichers"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:868
+msgid "The event's publisher's user ID"
+msgstr "Die Benutzer-ID des Veröffentlichers"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:869
+msgid "The event's url for the single view"
+msgstr "URL für die Einzelanzeige"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:870
+msgid "By using the following two tags you can print a list of events in the same way as in your themes."
+msgstr "Mit den folgenden zwei Tags können Sie eine Liste von EVents ausgeben. Bitte verwenden Sie dieselben Parameter wie bei den PHP Funktionen, welche in Themen verwendet werden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:871
+msgid "Please see the <a href=\"#usage_themes\">documentation</a> of the function <code>fse_print_events</code>"
+msgstr "Beachten Sie hierzu die <a href=\"#usage_themes\">Dokumentation</a> der Funktion <code>fse_print_events</code>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:872
+msgid "Please see the <a href=\"#usage_themes\">documentation</a> of the function <code>fse_print_events_list</code>"
+msgstr "Beachten Sie hierzu die <a href=\"#usage_themes\">Dokumentation</a> der Funktion <code>fse_print_events_list</code>"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:878
+msgid "Plugin website"
+msgstr "Plugin Website"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:879
+msgid "For further information please visit the"
+msgstr "Für weitere Informationen besuchen Sie bitte die "
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:879
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:881
+msgid "plugin website"
+msgstr "Plugin Website"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:880
+msgid "Support"
+msgstr "Support"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:881
+msgid "If you have any questions or if you find a bug, pleas leave a comment at the"
+msgstr "Bei Fragen und Fehlern schreiben Sie bitte einen Kommentar auf der"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:882
+msgid "Please consider that I am doing this (and a lot of other things) all in my free time. So please be patient if you don't get a reply within a few days."
+msgstr "Bendenken Sie, dass ich dieses Plugin (und vieles anderes) in meiner Freizeit weiterentwickle. Haben Sie also ein wenig Geduld, wenn Sie auf eine Antwort etwas länger warten müssen."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:883
+msgid "Donation"
+msgstr "Spenden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarSettings.php:884
+msgid "Like this plugin? Consider a small donation :-) --&gt; Use the donation button on the top right corner."
+msgstr "Du magst dieses Plugin? Über eine kleine Spende würde ich mich freuen :) --&gt; Verwende den Donation Button in der Ecke rechts oben."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:27
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:33
+msgid "Edit events"
+msgstr "Events bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:39
+msgid "Add new event"
+msgstr "Event erstellen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:40
+msgid "Add new"
+msgstr "Erstellen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:147
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:158
+msgid "WP Calendar Event"
+msgstr "WP Calendar (Einfach)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:205
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:349
+msgid "You do not have the permission to create events"
+msgstr "Keine Berechtigung zum Erstellen eines Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:355
+msgid "Create WP Calendar event"
+msgstr "Erzeuge WP Calendar Event"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:366
+msgid "This post is linked to an WP Calendar event, but you do not have the permission to edit this event"
+msgstr "Dieser Artikel wird mit einem WP Calendar Event synchronisiert, du hast jedoch keine Berechtigung diesen Event zu bearbeiten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:370
+msgid "This post is linked to a WP Calendar Event. To jump to your WP Calender click <a href=\"admin.php?page="
+msgstr "Dies Artikel ist synchronisiert mit einem WP Calendar Event. "
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:373
+msgid "The events subject, description and categories are automatically updated when the post is saved"
+msgstr "Der Titel, die Beschreibung und die Kategorien werden automatisch synchronisiert, wenn der Artikel gespeichert wird."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:374
+msgid "You can turn this feature off by unchecking the &laquo;Keep updated&raquo; checkbox"
+msgstr "Die Synchronisation kann deaktiviert werden indem die Checkbox &laquo;Immer synchronisieren&raquo; deaktiviert wird"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:376
+msgid "The events subject, description and categories are <strong>not</strong> automatically updated when the post is saved"
+msgstr "Der Titel, die Beschreibung und die Kategorien werden <strong>nicht</strong> automatisch synchronisiert, wenn der Artikel gespeichert wird."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:377
+msgid "Please check the &laquo;Update at next save&raquo; checkbox for updating these values at next save or turn it on by default for this post/event by checking the &laquo;Keep updated&raquo; checkbox"
+msgstr "Bitte aktiviere die &laquo;Aktualisieren beim Speichern&raquo; checkbox, um die Daten beim nächsten Speichern zu aktualisieren or aktiviere die Checkbox &laquo;Kalendereintrag synchronisieren&raquo; um die Daten permanent zu synchronisieren."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:379
+msgid "Update at next save"
+msgstr "Synchronisieren beim Speichern"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:387
+msgid "Keep updated"
+msgstr "Kalendereintrag synchronisieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:418
+msgid "Most Used"
+msgstr "Häufig genutzte"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:437
+msgid "You cannot modify this taxonomy."
+msgstr "You cannot modify this taxonomy."
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:445
+#, php-format
+msgid "+ %s"
+msgstr "+ %s"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:493
+msgid "From"
+msgstr "Von"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:506
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:537
+msgid "Please enter a valid date"
+msgstr "Bitte ein gültiges Bis-Datum eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:518
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:549
+msgid "Please enter a valid time"
+msgstr "Bitte eine gültige Bis-Zeit eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:524
+msgid "To"
+msgstr "Bis"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:613
+msgid "Choose action"
+msgstr "Aktion wählen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:622
+msgid "Set to Draft"
+msgstr "Als Entwurft"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:626
+msgid "Apply"
+msgstr "Übernehmen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:629
+msgid "Show all dates"
+msgstr "Alle Daten"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:630
+msgid "Show future dates only"
+msgstr "Nur zukünftige Events anzeigen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:654
+msgid "View all categories"
+msgstr "Alle Kategorien"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarAdmin.php:663
+msgid "Filter"
+msgstr "Filter"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:308
+msgid "Please enter a subject"
+msgstr "Bitte einen Titel eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:313
+msgid "Please enter a valid `from` date"
+msgstr "Bitte ein gültiges Von-Datum eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:320
+msgid "Please enter a valid `from` time"
+msgstr "Bitte eine gültige Von-Zeit eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:329
+msgid "Please enter a valid `to` date"
+msgstr "Bitte ein gültiges Bis-Datum eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:336
+msgid "Please enter a valid `to` time"
+msgstr "Bitte eine gültige Bis-Zeit eingeben"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:357
+msgid "End is before start"
+msgstr "Ende liegt vor dem Start"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:439
+msgid "DB Error"
+msgstr "Datenbank Fehler !"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:473
+msgid "Event could not be published"
+msgstr "Event konnte nicht veröffentlicht werden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarEvent.php:502
+msgid "Event could not be set to draft state"
+msgstr "Event konnte nicht als Entwurf gespeichert werden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:6
+msgid "Display Events grouped by day/month/year"
+msgstr "Gruppierung nach Tag/Monat/Jahr"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:12
+msgid "WP Calendar (Grouped)"
+msgstr "WP Calendar (Gruppiert)"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:45
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:236
+msgid "Upcoming Events"
+msgstr "Nächste Anlässe"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:84
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:271
+msgid "Title"
+msgstr "Titel"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:88
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:275
+msgid "Number of events"
+msgstr "Maximale Anzahl Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:101
+msgid "Group Header Format"
+msgstr "Format Gruppierung"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:108
+msgid "The whole template is automatically surrounded by the &lt;li&gt; tag."
+msgstr "Die Vorlage wird automatisch in &lt;li&gt; Tags eingeschlossen"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:111
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:283
+msgid "Filters"
+msgstr "Filter"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:111
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:133
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:283
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:305
+msgid "Show/hide"
+msgstr "Anzeigen/Ausblenden"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:116
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:288
+msgid "Event inclusion"
+msgstr "Einzuschliessende Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:118
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:290
+msgid "A comma separated list of event ids, which should be displayed."
+msgstr "Eine kommagetrennte Liste der anzuzeigenden Event Ids"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:121
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:293
+msgid "Event exclusion"
+msgstr "Auszuschliessende Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:123
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:295
+msgid "A comma separated list of event ids, which should <b>not</b> be displayed."
+msgstr "Eine kommagetrennte List der <b>nicht</b> anzuzeigenden Event Ids"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:128
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:300
+msgid "A comma separated list of category ids."
+msgstr "Eine kommagetrennte Liste der Kategorien Ids"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:138
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:310
+msgid "Enable pagination"
+msgstr "Blättern aktivieren"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:198
+msgid "Shows a number of events"
+msgstr "Maximale Anzahl Events"
+
+#: H:\wosportable\www\wordpress\wp-content\plugins\fsCalendar/fsCalendarWidgets.php:204
+msgid "WP Calendar (Simple)"
+msgstr "WP Calendar (Einfach)"
+
+#~ msgid "Back"
+#~ msgstr "Zurück"
+
+#~ msgid "If you like my work please consider a small donation"
+#~ msgstr ""
+#~ "Wenn Sie dieses Plug-In nutzen und mögen, denken Sie doch über eine "
+#~ "kleine Spende nach"
+
+#~ msgid "All Categories"
+#~ msgstr "Alle Kategorien"
+
+#~ msgid "+ Add New Category"
+#~ msgstr "+ Neue Kategorie hinzufügen"
+
+#~ msgid "Add New Category"
+#~ msgstr "Neue Kategorie hinzufügen"
+
+#~ msgid "Parent category"
+#~ msgstr "Oberkategorie"
+
+#~ msgid "Cheatin&#8217; uh?"
+#~ msgstr "Cheatin&#8217; uh?"
+
+#~ msgid "Events per Page"
+#~ msgstr "Anzahl Events pro Seite"
+
+#~ msgid "Graphical date chooser in admin interface"
+#~ msgstr "Grafische Datumsauswahl in der Admin Oberfläche"
+
+#~ msgid "Display"
+#~ msgstr "Darstellung"
+
+#~ msgid ""
+#~ "There are several ways to display events on your blog. You can use "
+#~ "different functions in your theme, or tags in your post and pages to "
+#~ "display an event."
+#~ msgstr ""
+#~ "Es gibt verschiedene Möglichekeiten, um Events in Ihrem Blog "
+#~ "darzustellen. Es existieren verschiedene PHP Funktionen für die "
+#~ "Integration in Themen und Tags für die Verwendung in Artikeln und Seiten."
+
+#~ msgid ""
+#~ "If you're using any the functions described below, you can pass many "
+#~ "options (e.g. number of events,...). Here you define the standard values, "
+#~ "if not specified in the function call."
+#~ msgstr ""
+#~ "Wenn Sie die weiter unten beschriebenen Funktionen zum Darstellen von "
+#~ "Events verwenden, können Sie eine Vielzahl von Parametern übergeben (z.B. "
+#~ "Anzahl Events, etc.). Hier können Sie die Standardwerte definieren, "
+#~ "welche verwendet werden, wenn beim Aufrufen von Funktionen (oder Tags) "
+#~ "diese Parameter nicht versorgt werden."
+
+#~ msgid ""
+#~ "The supported functions can eighter return an array of post or directly "
+#~ "print out the result. Define the template which is used to print an event "
+#~ "without any hierarchy and the template which is used for a grouped list. "
+#~ "The parameters are the same as for the posts and pages described <a href="
+#~ "\"#usage_posts\">below</a>."
+#~ msgstr ""
+#~ "Die zu Verfügung gestellten Funktionen können entweder ein Array mit "
+#~ "Events zurückgeben, oder die Events direkt ausgeben. Definieren Sie hier "
+#~ "nun die Standard Vorlagen, welche verwendet werden für eine "
+#~ "unstrukturierte und für eine strukturierte Ausgaben.Die Parameter "
+#~ "entsprechen den Parametern, die Sie auch für Artikel und Seiten verwenden "
+#~ "können. Die Dokumentation finden Sie <a href=\"#usage_posts\">weiter "
+#~ "unten</a>."
+
+#~ msgid ""
+#~ "There is a widget which allows the output in an unordered list, which "
+#~ "allows an hierarchical grouping by date entities. You can define the "
+#~ "default group entity and the output format for the grouped entity. Please "
+#~ "refer to the php  <a href=\"http://www.php.net/manual/function.date.php\" "
+#~ "target=\"_blank\">date()</a> function for all the output format options."
+#~ msgstr ""
+#~ "Die Funktion <code>fse_list_events</code> erlaubt die Ausgabe einer "
+#~ "unsortierten Liste, was eine hierarchische Gruppierung nach Datum "
+#~ "ermöglicht. Hier definieren Sie die Standard-Einheit, nach der gruppiert "
+#~ "werden soll und das Ausgabeformat. Bitte konsultieren Sie Dokumentation "
+#~ "der PHP Funktion <a href=\"http://www.php.net/manual/function.date.php\" "
+#~ "target=\"_blank\">date()</a> für eine Übersicht der unterstützten "
+#~ "Parametern."
+
+#~ msgid ""
+#~ "WP Calendar allows an easy intergration of <a href=\"http://arshaw.com/"
+#~ "fullcalendar/\" target=\"_blank\">FullCalendar</a>, a nice graphical "
+#~ "calendar. This graphical calendar has many features and options, which "
+#~ "can all be set when integration it in your blog (see <a href="
+#~ "\"#usage_themes\">Usage</a>). All the options, which are relevant for "
+#~ "localization are passed by WP Calenar (first day of week, time format, "
+#~ "all translations like daynames). Since the date format varies depending "
+#~ "on the view, you can define all the date formats here. "
+#~ msgstr ""
+#~ "Das WP Calendar plug-in erlaubt eine einfach Intergration von <a href="
+#~ "\"http://arshaw.com/fullcalendar/\" target=\"_blank\">FullCalendar</a>, "
+#~ "einem schönen grafischen Kalendar. FullCalendar bietet viele Optionen, "
+#~ "die alle bei der einfach Integration übergeben werden können (Siehe <a "
+#~ "href=\"#usage_themes\">Verwendung</a>). WP Calendar übergibt beim "
+#~ "Erzeugen des grafischen Kalenders automatisch verschiedene Optionen. "
+#~ "Insbesondere werden die Monats- und Tagesname vollständig übersetzt "
+#~ "übergeben, das Zeitformat und der erste Tag der Woche werden gemäss den "
+#~ "WP Grundeinstellungen übergeben. Da die Darstellung des Datumsformats "
+#~ "abhängig ist von der Angezeigten Sicht (Monats-, Wochen-, Tagessicht) "
+#~ "sollten hier die Formate für die jeweilige Sicht gepflegt werden."
+
+#~ msgid "Save Changes"
+#~ msgstr "Änderungen speichern"
+
+#~ msgid ""
+#~ "This plug-in comes with <a href=\"http://arshaw.com/fullcalendar/\" "
+#~ "target=\"_blank\">FullCalendar</a>, a very nice, simple, customizeable "
+#~ "ajax-based calendar. You can integrate this calendar by using the tag "
+#~ "<code>{events_calendar}</code> in your page or post. WP Calendar will set "
+#~ "some options for your, especially all the transaltions for day- and "
+#~ "monthnames and some WP options like the time format or the first day of "
+#~ "the week. All the date formatting options can be maintained in this "
+#~ "options page (see above). All FullCalendar <a href=\"http://arshaw.com/"
+#~ "fullcalendar/docs/\" target=\"_blank\">options</a> can be passed as a "
+#~ "parameter of the tag. Nested options must be accessed using its path (e."
+#~ "g. Header->right: \"today\"). Along with the FullCalendar options, you "
+#~ "can also pass various parameters for filtering the output (See <a href="
+#~ "\"#filters\">filter options</a>)."
+#~ msgstr ""
+#~ "Diese Plug-In beinhaltet <a href=\"http://arshaw.com/fullcalendar/\" "
+#~ "target=\"_blank\">FullCalendar</a>, einen einfachen, flexiblen, ajax-"
+#~ "basierten grafischen Kalender. Dieser Kalender kann einfach integriert "
+#~ "werden in Ihr Blog, indem Sie das Tag <code>{events_calendar}</code> in "
+#~ "Ihrer Seite oder Ihrem Artikel verwenden. WP Calender konfiguriert "
+#~ "verschiedene Option von FullCalendar automatisch. Nebst den Einstellungen "
+#~ "zum Datums- und Zeitformat wird auch der erste Tag der Woche aus den "
+#~ "Grundeinstellungen verwendet und es werden sämtliche Texte von WP "
+#~ "Calender korrekt übersetzt (Monats-/Tagbezeichnungen, statische Texte). "
+#~ "Die Formattierungseinstellungen für die Datumsformate können direkt in "
+#~ "dieser Admin Oberfläche gepflegt werden (Siehe oben).Bei der Verwendung "
+#~ "des Tags können sämtliche <a href=\"http://arshaw.com/fullcalendar/docs/"
+#~ "\" target=\"_blank\">Optionen</a> von FullCalendar als Parameter "
+#~ "übergeben werden. Verschachtelte Optionen müssen über einen vollständigen "
+#~ "Pfad gesetzt werden (z.B. Header->right: \"today\"). Nebst den "
+#~ "FullCalendar Optionen können auch verschiedenen Parameter von WP Calendar "
+#~ "verwendet werden, um die Ausgabe der Events zu filter (Siehe <a href="
+#~ "\"#filters\">Filter Optionen</a>)."
+
+#~ msgid "At the moment there are four functions to use"
+#~ msgstr "Im Moment können vier Funktionen verwendet werden"
+
+#~ msgid ""
+#~ "Just returns an event object an accepts only the event's ID to be passed"
+#~ msgstr ""
+#~ "Gibt ein Objekt des Events zurück. Nebst der Event ID können keine "
+#~ "weiteren Parameter übergeben werden"
+
+#~ msgid "plugin homepage"
+#~ msgstr "Plug-In Website"
