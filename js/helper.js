@@ -218,6 +218,9 @@ function fse_transformStringToTime(input) {
 		var token = input.split(":");
 		h = token[0];
 		m = token[1];
+	} else if (input.length <= 2) {
+		h = input;
+		m = 0;
 	} else if (input.length == 3) {
 		h = input.substr(0, 1);
 		m = input.substr(1, 2);

@@ -160,18 +160,31 @@ if (!isset($fatal) || (is_array($fatal) && count($fatal) == 0)) {
 				$current = mktime($std, $min, 0, $mon, $day, $yea);
 			}
 			$evt->date_admin_from = date_i18n($evt->date_admin_format, $current);
-			$evt->time_admin_from = date_i18n($evt->time_admin_format, $current);
 			
-			// End date/time
-			$min += $add_min;
-			if ($min >= 60) {
-				$std++;
-				$min -= 60;
+			$default_start_time = get_option('fse_adm_default_start_time');
+			
+			if (!empty($default_start_time)) {
+				$evt->time_admin_from = $default_start_time;	
+			} else {
+				$evt->time_admin_from = date_i18n($evt->time_admin_format, $current);
 			}
-			$std += $add_hour;
-			$future = mktime($std, $min, 0, $mon, $day, $yea);
-			$evt->date_admin_to = date_i18n($evt->date_admin_format, $future);
-			$evt->time_admin_to = date_i18n($evt->time_admin_format, $future);
+			
+			$default_end_time = get_option('fse_adm_default_end_time');
+			
+			if (!empty($default_end_time)) {
+				$evt->date_admin_to = $evt->date_admin_from;
+				$evt->time_admin_to = $default_end_time;
+			} else {
+				$min += $add_min;
+				if ($min >= 60) {
+					$std++;
+					$min -= 60;
+				}
+				$std += $add_hour;
+				$future = mktime($std, $min, 0, $mon, $day, $yea);
+				$evt->date_admin_to = date_i18n($evt->date_admin_format, $future);
+				$evt->time_admin_to = date_i18n($evt->time_admin_format, $future);
+			}
 			$evt->allday    = false;
 			
 			

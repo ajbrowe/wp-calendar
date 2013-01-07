@@ -185,6 +185,14 @@ class fsCalendarSettings {
 							   __('Date chooser', fsCalendar::$plugin_textdom), 
 							   array(&$this, 'hookSettingOption_fse_adm_gc_enabled'), 
 							   'fse_admin', 'fse_admin');
+			add_settings_field('fse_adm_default_start_time', 
+							   __('Default start time', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_adm_default_start_time'), 
+							   'fse_admin', 'fse_admin');
+			add_settings_field('fse_adm_default_end_time', 
+							   __('Default end time', fsCalendar::$plugin_textdom), 
+							   array(&$this, 'hookSettingOption_fse_adm_default_end_time'), 
+							   'fse_admin', 'fse_admin');
 			add_settings_field('fse_adm_gc_mode', 
 							   __('Mode', fsCalendar::$plugin_textdom), 
 							   array(&$this, 'hookSettingOption_fse_adm_gc_mode'), 
@@ -629,6 +637,34 @@ class fsCalendarSettings {
 		?>
 		</select>
 		<?php	
+	}
+	
+	function hookSettingOption_fse_adm_default_start_time() {
+		?>
+		<input type="text" 
+			value="<?php echo get_option('fse_adm_default_start_time'); ?>" 
+			size="5" 
+			name="fse_adm_default_start_time"
+			onblur="if (fse_validateTime(this) == false) { 
+	    		this.focus(); 
+	    		this.value = ''; 
+	    		alert('<?php _e('Please enter a valid time', fsCalendar::$plugin_textdom); ?>.'); 
+	    		}" />
+		<?php
+	}
+	
+	function hookSettingOption_fse_adm_default_end_time() {
+		?>
+		<input type="text" 
+			value="<?php echo get_option('fse_adm_default_end_time'); ?>" 
+			size="5" 
+			name="fse_adm_default_end_time"
+			onblur="if (fse_validateTime(this) == false) { 
+	    		this.focus(); 
+	    		this.value = ''; 
+	    		alert('<?php _e('Please enter a valid time', fsCalendar::$plugin_textdom); ?>.'); 
+	    		}" />
+		<?php
 	}
 	
 	function hookSettingOption_fse_adm_gc_mode() {

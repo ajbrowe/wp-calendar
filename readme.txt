@@ -4,7 +4,7 @@ Tags: calendar, events, post, wp calendar, event, event calendar, termin, kalend
 Donate link: http://www.faebusoft.ch/webentwicklung/wpcalendar/
 Requires at least: 3.5
 Tested up to: 3.5
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage. 
 
 == Description ==
@@ -141,6 +141,9 @@ for easy usage. If these widgets don't fit your needs, you may integration WP Ca
 For all german speaker plese see also the post [Integration von WP Calendar](http://www.faebusoft.ch/webentwicklung/wp-calendar-integration/).
 
 == Changelog ==
+
+= 1.5.3 = 
+* FEATURE: Set default start/end time in calendar settings
 
 = 1.5.2 =
 * FIXED: Database upgrade problem

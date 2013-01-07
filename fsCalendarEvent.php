@@ -41,7 +41,7 @@ class fsEvent {
 			
 		$this->eventid = intval($eventid);
 		$this->postid  = intval($postid);
-		
+				
 		if (empty($this->eventid) && empty($this->postid)) {
 			return;
 		}

@@ -5,9 +5,9 @@
  Description: WP Calendar is an easy-to-use calendar plug-in to manage all your events with many options and a flexible usage.
  Author: Fabian von Allmen
  Author URI: http://www.faebusoft.ch
- Version: 1.5.2
+ Version: 1.5.3
  License: GPL
- Last Update: 2013-01-03
+ Last Update: 2013-01-07
  */
 
 define('FSE_DATE_MODE_ALL', 1); // Event is valid in the interval
@@ -35,7 +35,7 @@ require_once('fsCalendarFunctions.php');
 class fsCalendar {
 
 	static $plugin_name     = 'Calendar';
-	static $plugin_vers     = '1.5.2';
+	static $plugin_vers     = '1.5.3';
 	static $plugin_id       = 'fsCal'; // Unique ID
 	static $plugin_options  = '';
 	static $plugin_filename = '';
@@ -119,7 +119,9 @@ class fsCalendar {
 			'fse_pagination_end_size'=>3,
 			'fse_pagination_mid_size'=>3,
 			'fse_gmt_hack'=>0,
-			'fse_load_fc_libs'=>1
+			'fse_load_fc_libs'=>1,
+	 		'fse_adm_default_start_time'=>'',
+	 		'fse_adm_default_end_time'=>''
 	 	);
 
 	 	self::$plugin_filename = plugin_basename( __FILE__ );
