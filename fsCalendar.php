@@ -196,9 +196,9 @@ class fsCalendar {
 	 function hookRegisterStyles() {
 	 	if (!is_admin() && get_option('fse_load_fc_libs') == true) {
 	 		// Check if user has its own CSS file in the theme folder
-	 		$custcss = get_template_directory().'/fullcalendar.css';
+	 		$custcss = get_stylesheet_directory().'/fullcalendar.css';
 	 		if (file_exists($custcss))
-	 		$css = get_bloginfo('template_url').'/fullcalendar.css';
+	 		$css = get_stylesheet_directory_uri().'/fullcalendar.css';
 	 		else
 	 		$css = self::$plugin_css_url.'fullcalendar.css';
 	 		wp_enqueue_style('fullcalendar', $css);
